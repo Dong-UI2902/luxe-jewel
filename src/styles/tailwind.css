@@ -1,0 +1,331 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Montserrat:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+  --gold: #C5A059;
+  --gold-light: #D4B87A;
+  --gold-dark: #7A5C10;
+  --gold-button: #8B6914;
+  --charcoal: #1A1A1A;
+  --charcoal-mid: #2C2C2C;
+  --charcoal-light: #4A4A4A;
+  --luxury-white: #FFFFFF;
+  --warm-white: #FAFAFA;
+  --muted: #767676;
+  --border: #EBEBEB;
+  --border-dark: #D8D8D8;
+  --radius: 0.25rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Montserrat', 'Inter', sans-serif;
+  background-color: var(--luxury-white);
+  color: var(--charcoal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-display {
+  font-family: 'Playfair Display', serif;
+}
+
+/* Gold grid lines background */
+.gold-grid-lines {
+  background-image:
+    linear-gradient(to right, rgba(197, 160, 89, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(197, 160, 89, 0.06) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* Subtle dot pattern */
+.dot-pattern {
+  background-image: radial-gradient(circle, rgba(197, 160, 89, 0.12) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Text gradient gold */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #C5A059 0%, #D4B87A 50%, #A8863D 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Shimmer animation */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, #C5A059 0%, #D4B87A 25%, #C5A059 50%, #D4B87A 75%, #C5A059 100%);
+  background-size: 200% auto;
+  animation: shimmer 3s linear infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Neon line animations — light mode: very subtle */
+@keyframes neonH {
+  from { transform: translateX(-120%); }
+  to { transform: translateX(120vw); }
+}
+
+@keyframes neonV {
+  from { transform: translateY(-120%); }
+  to { transform: translateY(120vh); }
+}
+
+.neon-line-h {
+  position: absolute;
+  height: 1px;
+  width: 200px;
+  background: linear-gradient(to right, transparent, rgba(197, 160, 89, 0.25), transparent);
+  animation: neonH linear infinite;
+  pointer-events: none;
+}
+
+.neon-line-v {
+  position: absolute;
+  width: 1px;
+  height: 200px;
+  background: linear-gradient(to bottom, transparent, rgba(197, 160, 89, 0.25), transparent);
+  animation: neonV linear infinite;
+  pointer-events: none;
+}
+
+/* Fade up reveal */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Char reveal */
+@keyframes charReveal {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0%); }
+}
+
+/* Product card hover */
+.product-card-img {
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.product-card:hover .product-card-img {
+  transform: scale(1.05);
+}
+
+/* Slide in from right */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Slider transition */
+.slider-track {
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+/* Gold underline hover */
+.gold-underline {
+  position: relative;
+}
+
+.gold-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--gold);
+  transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.gold-underline:hover::after {
+  width: 100%;
+}
+
+/* Header scroll behavior */
+.header-scrolled {
+  background-color: rgba(255, 255, 255, 0.97) !important;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 1px 0 rgba(26, 26, 26, 0.08);
+}
+
+/* Drawer overlay */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+/* Price range input */
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+input[type='range']::-webkit-slider-track {
+  background: var(--border);
+  height: 2px;
+  border-radius: 1px;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  background: var(--gold);
+  border-radius: 50%;
+  margin-top: -6px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--warm-white);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gold);
+  border-radius: 2px;
+}
+
+/* Step indicator */
+.step-active {
+  background: var(--gold);
+  color: var(--charcoal);
+}
+
+.step-completed {
+  background: var(--charcoal);
+  color: white;
+}
+
+.step-inactive {
+  background: var(--border);
+  color: var(--muted);
+}
+
+/* Admin sidebar */
+.admin-nav-active {
+  background: rgba(212, 175, 55, 0.12);
+  color: var(--gold);
+  border-left: 2px solid var(--gold);
+}
+
+/* Recharts custom */
+.recharts-tooltip-wrapper {
+  font-family: 'Manrope', sans-serif !important;
+}
+
+/* Zoom container */
+.zoom-container {
+  overflow: hidden;
+  cursor: zoom-in;
+}
+
+.zoom-container:hover img {
+  transform: scale(1.5);
+  transition: transform 0.3s ease;
+}
+
+/* Modal backdrop */
+@keyframes backdropIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-backdrop {
+  animation: backdropIn 0.2s ease forwards;
+}
+
+/* Floating label */
+.floating-label {
+  position: relative;
+}
+
+.floating-label input:focus ~ label,
+.floating-label input:not(:placeholder-shown) ~ label {
+  transform: translateY(-1.5rem) scale(0.8);
+  color: var(--gold);
+}
+
+.floating-label label {
+  position: absolute;
+  left: 0.75rem;
+  top: 0.875rem;
+  font-size: 0.875rem;
+  color: var(--muted);
+  transition: all 0.2s ease;
+  pointer-events: none;
+  transform-origin: left;
+}
+
+/* Stagger animation delays */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+.stagger-6 { animation-delay: 0.6s; }
+
+/* Opacity 0 initial for stagger */
+.opacity-0-init {
+  opacity: 0;
+}
+
+/* Grain texture overlay */
+.grain-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+}
