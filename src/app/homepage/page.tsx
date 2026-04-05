@@ -417,7 +417,7 @@ const GiftBoxesSection: React.FC = () => {
             </h2>
           </div>
           <Link
-            href="/product-listing?category=gift-box"
+            href="/product-listing?category=gift-boxes"
             className="hidden md:flex items-center gap-2 text-sm font-medium text-charcoal-light hover:text-gold transition-colors gold-underline font-sans"
           >
             {t('gift_boxes.view_all')}
@@ -555,7 +555,7 @@ const HeroSection: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
               </p>
               <div className="overflow-hidden">
                 <h1
-                  className="font-display text-charcoal leading-none"
+                  className="font-display text-charcoal-light leading-none"
                   style={{
                     fontSize: 'clamp(3rem, 6vw, 5rem)',
                     fontWeight: 400,
@@ -613,7 +613,7 @@ const HeroSection: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
                   {t('hero.tagline')}
                 </p>
                 <div className="flex items-baseline gap-2 mt-1">
-                  <span className="font-display text-charcoal text-3xl sm:text-4xl font-normal tracking-[0.12em]">
+                  <span className="font-display text-charcoal-light text-3xl sm:text-4xl font-normal tracking-[0.12em]">
                     LUXE
                   </span>
                   <span className="font-display text-gold-dark text-3xl sm:text-4xl font-semibold tracking-[0.12em]">
@@ -727,7 +727,7 @@ const HeroSection: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
                 Year
               </p>
               <span
-                className="font-display text-luxury-border leading-none select-none"
+                className="font-display text-charcoal-light leading-none select-none"
                 style={{ fontSize: 'clamp(3rem, 5vw, 6rem)', fontWeight: 700 }}
               >
                 26
@@ -857,7 +857,7 @@ const CategoriesSection: React.FC = () => {
               <h3 className="font-display text-white text-base sm:text-xl md:text-2xl font-light mb-1">
                 {t(cat.nameKey)}
               </h3>
-              <p className="text-gold/90 text-xs tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-sans">
+              <p className="text-white text-xs tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-sans">
                 {countsLoading ? '...' : `${categoryCounts[cat.slug] ?? 0} sản phẩm`} →
               </p>
             </div>

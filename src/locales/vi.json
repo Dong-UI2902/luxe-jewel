@@ -3,7 +3,7 @@
     "collections": "B\u1ed9 S\u01b0u T\u1eadp",
     "rings": "Nh\u1eabn",
     "necklaces": "Dây chuyền",
-    "bracelets": "V\u00f2ng Tay",
+    "bracelets": "Lắc Tay",
     "earrings": "B\u00f4ng Tai",
     "gift_boxes": "Box Qu\u00e0 T\u1eb7ng",
     "search_placeholder": "T\u00ecm ki\u1ebfm nh\u1eabn, v\u00f2ng c\u1ed5, v\u00f2ng tay...",
@@ -232,7 +232,8 @@
     "signing_in": "\u0110ang \u0110\u0103ng Nh\u1eadp...",
     "new_to": "M\u1edbi \u0111\u1ebfn LuxeJewel?",
     "create_account": "T\u1ea1o t\u00e0i kho\u1ea3n",
-    "continue_shopping": "\u2190 Ti\u1ebfp T\u1ee5c Mua S\u1eafm"
+    "continue_shopping": "\u2190 Ti\u1ebfp T\u1ee5c Mua S\u1eafm",
+    "Invalid login credentials": "Thông tin đăng nhập không hợp lệ"
   },
   "register": {
     "join_collection": "Tham Gia B\u1ed9 S\u01b0u T\u1eadp",

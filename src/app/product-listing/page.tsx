@@ -41,7 +41,7 @@ const categoryLabels: Record<string, string> = {
   All: 'Tất cả',
   Rings: 'Nhẫn',
   Necklaces: 'Dây chuyền',
-  Bracelets: 'Vòng tay',
+  Bracelets: 'Lắc tay',
   Earrings: 'Bông tai',
   'Gift-Boxes': 'Box quà tặng',
 };
@@ -84,6 +84,12 @@ function mapProduct(p: any): Product {
     gender: p.gender || 'Unisex',
   };
 }
+
+const discountPct = (p: Product) => {
+  return p.originalPrice && p.originalPrice > p.price
+    ? Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100)
+    : null;
+};
 
 function ProductListingContent() {
   const { t } = useLanguage();
@@ -706,8 +712,13 @@ function ProductListingContent() {
                             className={`object-cover transition-all duration-700 absolute inset-0 ${hoveredId === product.id ? 'opacity-100 scale-105' : 'opacity-0 scale-100'}`}
                           />
                           {product.isNew && (
-                            <span className="absolute top-2 left-2 sm:top-3 sm:left-3 text-[10px] uppercase tracking-[0.15em] font-bold text-charcoal bg-gold px-2 py-0.5 z-10">
+                            <span className="absolute top-2 left-2 sm:top-3 sm:left-3 text-[10px] uppercase tracking-[0.15em] font-bold text-white bg-gold px-2 py-0.5 z-10">
                               {t('product_listing.new_badge')}
+                            </span>
+                          )}
+                          {discountPct(product) && (
+                            <span className="absolute bottom-3 left-3 text-[10px] uppercase tracking-[0.15em] font-semibold text-white bg-red-500 px-2.5 py-1">
+                              -{discountPct(product)}%
                             </span>
                           )}
                           {!product.inStock && (
@@ -842,7 +853,7 @@ function ProductListingContent() {
                       onClick={() => goToPage(page as number)}
                       className={`min-w-[44px] px-2 sm:px-3 py-2 text-xs font-medium border transition-colors min-h-[44px] ${
                         currentPage === page
-                          ? 'bg-gold border-gold text-charcoal font-semibold'
+                          ? 'bg-gold border-gold text-white font-semibold'
                           : 'border-luxury-border text-charcoal-light hover:border-gold hover:text-gold'
                       }`}
                       aria-current={currentPage === page ? 'page' : undefined}

@@ -9,11 +9,11 @@ module.exports = {
     extend: {
       colors: {
         gold: {
-          DEFAULT: '#C5A059',
-          light: '#D4B87A',
-          dark: '#7A5C10',
-          button: '#8B6914',
-          subtle: 'rgba(197,160,89,0.12)',
+          DEFAULT: 'rgb(13 13 13 / 0.9)', // Màu đen chủ đạo bạn muốn
+          light: 'rgb(204 204 204)', // Màu xám bạc bạn muốn
+          dark: '#000000', // Đen tuyền
+          button: '#1a1a1a', // Đen nhẹ cho nút bấm
+          subtle: 'rgba(0, 0, 0, 0.05)', // Xám cực nhạt cho background nhẹ
         },
         charcoal: {
           DEFAULT: '#1A1A1A',
@@ -44,17 +44,17 @@ module.exports = {
       animation: {
         'fade-up': 'fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards',
         'slide-in-right': 'slideInRight 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards',
-        'shimmer': 'shimmer 3s linear infinite',
+        shimmer: 'shimmer 3s linear infinite',
         'fade-in': 'fadeIn 0.3s ease forwards',
       },
       transitionTimingFunction: {
-        'luxury': 'cubic-bezier(0.22, 1, 0.36, 1)',
+        luxury: 'cubic-bezier(0.22, 1, 0.36, 1)',
       },
       boxShadow: {
-        'product': '0 4px 24px rgba(26, 26, 26, 0.08)',
+        product: '0 4px 24px rgba(26, 26, 26, 0.08)',
         'product-hover': '0 12px 40px rgba(26, 26, 26, 0.14)',
-        'gold': '0 4px 24px rgba(212, 175, 55, 0.2)',
-        'drawer': '-4px 0 40px rgba(26, 26, 26, 0.12)',
+        gold: '0 4px 24px rgba(212, 175, 55, 0.2)',
+        drawer: '-4px 0 40px rgba(26, 26, 26, 0.12)',
       },
     },
   },

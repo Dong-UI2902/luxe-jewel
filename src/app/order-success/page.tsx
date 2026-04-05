@@ -52,11 +52,13 @@ function OrderSuccessContent() {
     const fetchOrder = async () => {
       const { data, error } = await supabase
         .from('orders')
-        .select(`
+        .select(
+          `
           id, order_number, status, payment_method, total_amount,
           shipping_name, shipping_phone, shipping_address, shipping_city, created_at,
           order_items (id, product_name, product_image, quantity, unit_price, total_price)
-        `)
+        `
+        )
         .eq('id', orderId)
         .single();
 
@@ -112,8 +114,13 @@ function OrderSuccessContent() {
         <Header />
         <main className="pt-24 pb-16 max-w-lg mx-auto px-6 text-center">
           <Icon name="ExclamationCircleIcon" size={48} className="text-luxury-muted mx-auto mb-4" />
-          <h2 className="font-display text-2xl font-light text-charcoal mb-3">Không tìm thấy đơn hàng</h2>
-          <Link href="/homepage" className="inline-block px-8 py-3 bg-gold text-charcoal text-sm font-semibold">
+          <h2 className="font-display text-2xl font-light text-white mb-3">
+            Không tìm thấy đơn hàng
+          </h2>
+          <Link
+            href="/homepage"
+            className="inline-block px-8 py-3 bg-gold text-charcoal text-sm font-semibold"
+          >
             Về trang chủ
           </Link>
         </main>
@@ -233,11 +240,18 @@ function OrderSuccessContent() {
           {isBankTransfer && (
             <div className="mb-6 p-5 bg-blue-50 border border-blue-200 rounded-sm">
               <div className="flex items-start gap-3 mb-4">
-                <Icon name="InformationCircleIcon" size={18} className="text-blue-600 flex-shrink-0 mt-0.5" />
+                <Icon
+                  name="InformationCircleIcon"
+                  size={18}
+                  className="text-blue-600 flex-shrink-0 mt-0.5"
+                />
                 <div>
-                  <p className="text-sm font-semibold text-blue-800 mb-1">Xác nhận thanh toán qua Zalo</p>
+                  <p className="text-sm font-semibold text-blue-800 mb-1">
+                    Xác nhận thanh toán qua Zalo
+                  </p>
                   <p className="text-xs text-blue-700">
-                    Sau khi chuyển khoản, vui lòng chụp màn hình giao dịch và gửi vào Zalo để được xác nhận đơn hàng nhanh nhất.
+                    Sau khi chuyển khoản, vui lòng chụp màn hình giao dịch và gửi vào Zalo để được
+                    xác nhận đơn hàng nhanh nhất.
                   </p>
                 </div>
               </div>
@@ -257,7 +271,7 @@ function OrderSuccessContent() {
           <div className="flex flex-col sm:flex-row gap-3">
             <Link
               href="/product-listing"
-              className="flex-1 py-3 bg-gold text-charcoal text-sm font-semibold tracking-wide hover:bg-gold-light transition-colors text-center"
+              className="flex-1 py-3 bg-gold text-white text-sm font-semibold tracking-wide hover:bg-gold-light transition-colors text-center"
             >
               Tiếp tục mua sắm
             </Link>
@@ -278,11 +292,13 @@ function OrderSuccessContent() {
 
 export default function OrderSuccessPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-luxury-white flex items-center justify-center">
-        <div className="text-luxury-muted text-sm">Đang tải...</div>
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-luxury-white flex items-center justify-center">
+          <div className="text-luxury-muted text-sm">Đang tải...</div>
+        </div>
+      }
+    >
       <OrderSuccessContent />
     </Suspense>
   );
