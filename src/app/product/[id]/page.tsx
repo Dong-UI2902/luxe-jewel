@@ -558,7 +558,7 @@ export default function ProductPage() {
                       ? 'bg-luxury-warm border border-luxury-border text-luxury-muted cursor-not-allowed'
                       : addedToCart
                         ? 'bg-green-600 text-white'
-                        : 'bg-gold text-charcoal hover:bg-gold-light'
+                        : 'bg-gold text-white hover:bg-gold-dark hover:text-white'
                   }`}
                 >
                   {addedToCart ? (

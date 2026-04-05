@@ -78,6 +78,7 @@ const Header: React.FC<HeaderProps> = ({ transparent = false }) => {
     { label: t('nav.rings'), href: '/product-listing?category=rings' },
     { label: t('nav.necklaces'), href: '/product-listing?category=necklaces' },
     { label: t('nav.bracelets'), href: '/product-listing?category=bracelets' },
+    { label: t('nav.earrings'), href: '/product-listing?category=earrings' },
     { label: t('nav.gift_boxes'), href: '/product-listing?category=gift-boxes' },
   ];
 
@@ -85,6 +86,7 @@ const Header: React.FC<HeaderProps> = ({ transparent = false }) => {
     { label: 'Tất cả Bộ Sưu Tập', href: '/product-listing' },
     { label: 'Trang sức Nam', href: '/product-listing?gender=Nam' },
     { label: 'Trang sức Nữ', href: '/product-listing?gender=N%E1%BB%AF' },
+    { label: 'Trang sức Unisex', href: '/product-listing?gender=Unisex' },
   ];
 
   return (

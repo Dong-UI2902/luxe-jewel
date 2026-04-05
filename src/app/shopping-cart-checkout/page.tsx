@@ -47,7 +47,10 @@ const isRingProduct = (name: string): boolean => {
 function getItemMaterialOptions(item: { material?: string; materialOptions?: string[] }): string[] {
   if (item.materialOptions && item.materialOptions.length > 0) return item.materialOptions;
   if (item.material) {
-    const parts = item.material.split(',').map((m) => m.trim()).filter(Boolean);
+    const parts = item.material
+      .split(',')
+      .map((m) => m.trim())
+      .filter(Boolean);
     if (parts.length > 0) return parts;
   }
   return [];
@@ -55,36 +58,41 @@ function getItemMaterialOptions(item: { material?: string; materialOptions?: str
 
 // ─── Bank Info Box ────────────────────────────────────────────────────────────
 
-const BankTransferInfo: React.FC<{ orderNumber: string; phone: string }> = ({ orderNumber, phone }) => (
+const BankTransferInfo: React.FC<{ orderNumber: string; phone: string }> = ({
+  orderNumber,
+  phone,
+}) => (
   <div className="mt-5 p-5 bg-amber-50 border border-amber-200 rounded-sm">
     <div className="flex items-center gap-2 mb-4">
       <Icon name="BanknotesIcon" size={18} className="text-amber-700" />
-      <h4 className="text-sm font-bold text-amber-800 uppercase tracking-wide">Thông tin chuyển khoản</h4>
+      <h4 className="text-sm font-bold text-amber-800 uppercase tracking-wide">
+        Thông tin chuyển khoản
+      </h4>
     </div>
     <div className="space-y-2 text-sm mb-4">
       <div className="flex justify-between">
         <span className="text-amber-700 font-medium">Ngân hàng:</span>
-        <span className="text-amber-900 font-semibold">[Tên Ngân Hàng]</span>
+        <span className="text-amber-900 font-semibold">TECHCOMBANK</span>
       </div>
       <div className="flex justify-between">
         <span className="text-amber-700 font-medium">Số tài khoản:</span>
-        <span className="text-amber-900 font-semibold font-mono">[Số Tài Khoản]</span>
+        <span className="text-amber-900 font-semibold font-mono">6868687282</span>
       </div>
       <div className="flex justify-between">
         <span className="text-amber-700 font-medium">Chủ tài khoản:</span>
-        <span className="text-amber-900 font-semibold">[Tên Chủ TK]</span>
+        <span className="text-amber-900 font-semibold">TRAN NGUYEN LONG PHUONG</span>
       </div>
       <div className="flex justify-between items-start">
         <span className="text-amber-700 font-medium">Nội dung CK:</span>
         <span className="text-amber-900 font-semibold text-right">
-          {orderNumber || 'Mã đơn'} {phone || 'SĐT'}
+          {orderNumber || 'Mã đơn'} {phone || `"SỐ ĐIỆN THOẠI"`}
         </span>
       </div>
     </div>
     <div className="bg-amber-100 border border-amber-300 p-3 rounded-sm">
       <p className="text-xs text-amber-800 leading-relaxed">
-        📸 Khách chuyển khoản xong chụp lại màn hình giao dịch và gửi vào{' '}
-        <strong>Zalo</strong> trên màn hình để được xác nhận.
+        📸 Khách chuyển khoản xong chụp lại màn hình giao dịch và gửi vào <strong>Zalo</strong> trên
+        màn hình để được xác nhận.
       </p>
     </div>
   </div>
@@ -167,7 +175,9 @@ const OrderSummary: React.FC<{
                     }
                     if (materialOpts.length === 1) {
                       // Single material — show as static text
-                      return <span className="text-[10px] text-luxury-muted">{materialOpts[0]}</span>;
+                      return (
+                        <span className="text-[10px] text-luxury-muted">{materialOpts[0]}</span>
+                      );
                     }
                     // Multiple materials — show dropdown
                     return (
@@ -175,7 +185,9 @@ const OrderSummary: React.FC<{
                         <button
                           type="button"
                           onClick={() => {
-                            setOpenMaterialDropdown(openMaterialDropdown === item.id ? null : item.id);
+                            setOpenMaterialDropdown(
+                              openMaterialDropdown === item.id ? null : item.id
+                            );
                             setOpenSizeDropdown(null);
                           }}
                           className="flex items-center gap-1 text-[10px] text-luxury-muted hover:text-gold transition-colors"
@@ -191,7 +203,9 @@ const OrderSummary: React.FC<{
                                 type="button"
                                 onClick={() => handleMaterialSelect(item.id, mat)}
                                 className={`w-full text-left px-3 py-1.5 text-xs hover:bg-luxury-warm transition-colors ${
-                                  currentMaterial === mat ? 'text-gold font-semibold' : 'text-charcoal'
+                                  currentMaterial === mat
+                                    ? 'text-gold font-semibold'
+                                    : 'text-charcoal'
                                 }`}
                               >
                                 {mat}
@@ -227,7 +241,9 @@ const OrderSummary: React.FC<{
                               type="button"
                               onClick={() => handleSizeSelect(item.id, size)}
                               className={`px-3 py-1.5 text-xs text-center hover:bg-luxury-warm transition-colors border-b border-r border-luxury-border/50 ${
-                                currentSize === size ? 'bg-gold/10 text-gold font-semibold' : 'text-charcoal'
+                                currentSize === size
+                                  ? 'bg-gold/10 text-gold font-semibold'
+                                  : 'text-charcoal'
                               }`}
                             >
                               {size}
@@ -254,7 +270,9 @@ const OrderSummary: React.FC<{
                   >
                     −
                   </button>
-                  <span className="text-xs font-medium text-charcoal w-4 text-center">{item.quantity}</span>
+                  <span className="text-xs font-medium text-charcoal w-4 text-center">
+                    {item.quantity}
+                  </span>
                   <button
                     type="button"
                     onClick={() => handleQuantityChange(item.id, 1, item.quantity)}
@@ -281,7 +299,9 @@ const OrderSummary: React.FC<{
         </div>
         <div className="flex justify-between pt-3 border-t border-luxury-border">
           <span className="font-semibold text-charcoal">Tổng cộng</span>
-          <span className="font-bold text-charcoal text-lg">{subtotal.toLocaleString('vi-VN')}đ</span>
+          <span className="font-bold text-charcoal text-lg">
+            {subtotal.toLocaleString('vi-VN')}đ
+          </span>
         </div>
       </div>
     </div>
@@ -292,63 +312,572 @@ const OrderSummary: React.FC<{
 
 const VN_LOCATIONS: Record<string, Record<string, string[]>> = {
   'Hà Nội': {
-    'Quận Ba Đình': ['Phường Cống Vị', 'Phường Điện Biên', 'Phường Đội Cấn', 'Phường Giảng Võ', 'Phường Kim Mã', 'Phường Liễu Giai', 'Phường Ngọc Hà', 'Phường Ngọc Khánh', 'Phường Phúc Xá', 'Phường Quán Thánh', 'Phường Thành Công', 'Phường Trúc Bạch', 'Phường Vĩnh Phúc'],
-    'Quận Hoàn Kiếm': ['Phường Chương Dương', 'Phường Cửa Đông', 'Phường Cửa Nam', 'Phường Đồng Xuân', 'Phường Hàng Bạc', 'Phường Hàng Bài', 'Phường Hàng Bồ', 'Phường Hàng Buồm', 'Phường Hàng Đào', 'Phường Hàng Gai', 'Phường Hàng Mã', 'Phường Hàng Trống', 'Phường Lý Thái Tổ', 'Phường Phan Chu Trinh', 'Phường Phúc Tân', 'Phường Tràng Tiền', 'Phường Trần Hưng Đạo', 'Phường Đông Kinh Nghĩa Thục'],
-    'Quận Đống Đa': ['Phường Cát Linh', 'Phường Hàng Bột', 'Phường Khâm Thiên', 'Phường Kim Liên', 'Phường Láng Hạ', 'Phường Láng Thượng', 'Phường Nam Đồng', 'Phường Ngã Tư Sở', 'Phường Ô Chợ Dừa', 'Phường Phương Liên', 'Phường Phương Mai', 'Phường Quang Trung', 'Phường Quốc Tử Giám', 'Phường Thịnh Quang', 'Phường Thổ Quan', 'Phường Trung Liệt', 'Phường Trung Phụng', 'Phường Trung Tự', 'Phường Văn Chương', 'Phường Văn Miếu', 'Phường Xã Đàn'],
-    'Quận Hai Bà Trưng': ['Phường Bách Khoa', 'Phường Bạch Đằng', 'Phường Bạch Mai', 'Phường Bùi Thị Xuân', 'Phường Cầu Dền', 'Phường Đồng Nhân', 'Phường Đồng Tâm', 'Phường Lê Đại Hành', 'Phường Minh Khai', 'Phường Nguyễn Du', 'Phường Phạm Đình Hổ', 'Phường Phố Huế', 'Phường Quỳnh Lôi', 'Phường Quỳnh Mai', 'Phường Thanh Lương', 'Phường Thanh Nhàn', 'Phường Trương Định', 'Phường Vĩnh Tuy'],
-    'Quận Cầu Giấy': ['Phường Dịch Vọng', 'Phường Dịch Vọng Hậu', 'Phường Mai Dịch', 'Phường Nghĩa Đô', 'Phường Nghĩa Tân', 'Phường Quan Hoa', 'Phường Trung Hòa', 'Phường Yên Hòa'],
-    'Quận Thanh Xuân': ['Phường Hạ Đình', 'Phường Khương Đình', 'Phường Khương Mai', 'Phường Khương Trung', 'Phường Kim Giang', 'Phường Nhân Chính', 'Phường Phương Liệt', 'Phường Thanh Xuân Bắc', 'Phường Thanh Xuân Nam', 'Phường Thanh Xuân Trung', 'Phường Thượng Đình'],
-    'Quận Hoàng Mai': ['Phường Đại Kim', 'Phường Định Công', 'Phường Giáp Bát', 'Phường Hoàng Liệt', 'Phường Hoàng Văn Thụ', 'Phường Lĩnh Nam', 'Phường Mai Động', 'Phường Tân Mai', 'Phường Thanh Trì', 'Phường Thịnh Liệt', 'Phường Tương Mai', 'Phường Vĩnh Hưng', 'Phường Yên Sở'],
-    'Quận Long Biên': ['Phường Bồ Đề', 'Phường Cự Khối', 'Phường Đức Giang', 'Phường Gia Thụy', 'Phường Giang Biên', 'Phường Long Biên', 'Phường Ngọc Lâm', 'Phường Ngọc Thụy', 'Phường Phúc Đồng', 'Phường Phúc Lợi', 'Phường Sài Đồng', 'Phường Thạch Bàn', 'Phường Thượng Thanh', 'Phường Việt Hưng'],
+    'Quận Ba Đình': [
+      'Phường Cống Vị',
+      'Phường Điện Biên',
+      'Phường Đội Cấn',
+      'Phường Giảng Võ',
+      'Phường Kim Mã',
+      'Phường Liễu Giai',
+      'Phường Ngọc Hà',
+      'Phường Ngọc Khánh',
+      'Phường Phúc Xá',
+      'Phường Quán Thánh',
+      'Phường Thành Công',
+      'Phường Trúc Bạch',
+      'Phường Vĩnh Phúc',
+    ],
+    'Quận Hoàn Kiếm': [
+      'Phường Chương Dương',
+      'Phường Cửa Đông',
+      'Phường Cửa Nam',
+      'Phường Đồng Xuân',
+      'Phường Hàng Bạc',
+      'Phường Hàng Bài',
+      'Phường Hàng Bồ',
+      'Phường Hàng Buồm',
+      'Phường Hàng Đào',
+      'Phường Hàng Gai',
+      'Phường Hàng Mã',
+      'Phường Hàng Trống',
+      'Phường Lý Thái Tổ',
+      'Phường Phan Chu Trinh',
+      'Phường Phúc Tân',
+      'Phường Tràng Tiền',
+      'Phường Trần Hưng Đạo',
+      'Phường Đông Kinh Nghĩa Thục',
+    ],
+    'Quận Đống Đa': [
+      'Phường Cát Linh',
+      'Phường Hàng Bột',
+      'Phường Khâm Thiên',
+      'Phường Kim Liên',
+      'Phường Láng Hạ',
+      'Phường Láng Thượng',
+      'Phường Nam Đồng',
+      'Phường Ngã Tư Sở',
+      'Phường Ô Chợ Dừa',
+      'Phường Phương Liên',
+      'Phường Phương Mai',
+      'Phường Quang Trung',
+      'Phường Quốc Tử Giám',
+      'Phường Thịnh Quang',
+      'Phường Thổ Quan',
+      'Phường Trung Liệt',
+      'Phường Trung Phụng',
+      'Phường Trung Tự',
+      'Phường Văn Chương',
+      'Phường Văn Miếu',
+      'Phường Xã Đàn',
+    ],
+    'Quận Hai Bà Trưng': [
+      'Phường Bách Khoa',
+      'Phường Bạch Đằng',
+      'Phường Bạch Mai',
+      'Phường Bùi Thị Xuân',
+      'Phường Cầu Dền',
+      'Phường Đồng Nhân',
+      'Phường Đồng Tâm',
+      'Phường Lê Đại Hành',
+      'Phường Minh Khai',
+      'Phường Nguyễn Du',
+      'Phường Phạm Đình Hổ',
+      'Phường Phố Huế',
+      'Phường Quỳnh Lôi',
+      'Phường Quỳnh Mai',
+      'Phường Thanh Lương',
+      'Phường Thanh Nhàn',
+      'Phường Trương Định',
+      'Phường Vĩnh Tuy',
+    ],
+    'Quận Cầu Giấy': [
+      'Phường Dịch Vọng',
+      'Phường Dịch Vọng Hậu',
+      'Phường Mai Dịch',
+      'Phường Nghĩa Đô',
+      'Phường Nghĩa Tân',
+      'Phường Quan Hoa',
+      'Phường Trung Hòa',
+      'Phường Yên Hòa',
+    ],
+    'Quận Thanh Xuân': [
+      'Phường Hạ Đình',
+      'Phường Khương Đình',
+      'Phường Khương Mai',
+      'Phường Khương Trung',
+      'Phường Kim Giang',
+      'Phường Nhân Chính',
+      'Phường Phương Liệt',
+      'Phường Thanh Xuân Bắc',
+      'Phường Thanh Xuân Nam',
+      'Phường Thanh Xuân Trung',
+      'Phường Thượng Đình',
+    ],
+    'Quận Hoàng Mai': [
+      'Phường Đại Kim',
+      'Phường Định Công',
+      'Phường Giáp Bát',
+      'Phường Hoàng Liệt',
+      'Phường Hoàng Văn Thụ',
+      'Phường Lĩnh Nam',
+      'Phường Mai Động',
+      'Phường Tân Mai',
+      'Phường Thanh Trì',
+      'Phường Thịnh Liệt',
+      'Phường Tương Mai',
+      'Phường Vĩnh Hưng',
+      'Phường Yên Sở',
+    ],
+    'Quận Long Biên': [
+      'Phường Bồ Đề',
+      'Phường Cự Khối',
+      'Phường Đức Giang',
+      'Phường Gia Thụy',
+      'Phường Giang Biên',
+      'Phường Long Biên',
+      'Phường Ngọc Lâm',
+      'Phường Ngọc Thụy',
+      'Phường Phúc Đồng',
+      'Phường Phúc Lợi',
+      'Phường Sài Đồng',
+      'Phường Thạch Bàn',
+      'Phường Thượng Thanh',
+      'Phường Việt Hưng',
+    ],
   },
   'TP. Hồ Chí Minh': {
-    'Quận 1': ['Phường Bến Nghé', 'Phường Bến Thành', 'Phường Cầu Kho', 'Phường Cầu Ông Lãnh', 'Phường Cô Giang', 'Phường Đa Kao', 'Phường Nguyễn Cư Trinh', 'Phường Nguyễn Thái Bình', 'Phường Phạm Ngũ Lão', 'Phường Tân Định'],
-    'Quận 3': ['Phường 1', 'Phường 2', 'Phường 3', 'Phường 4', 'Phường 5', 'Phường 6', 'Phường 7', 'Phường 8', 'Phường 9', 'Phường 10', 'Phường 11', 'Phường 12', 'Phường 13', 'Phường 14'],
-    'Quận 5': ['Phường 1', 'Phường 2', 'Phường 3', 'Phường 4', 'Phường 5', 'Phường 6', 'Phường 7', 'Phường 8', 'Phường 9', 'Phường 10', 'Phường 11', 'Phường 12', 'Phường 13', 'Phường 14', 'Phường 15'],
-    'Quận 7': ['Phường Bình Thuận', 'Phường Phú Mỹ', 'Phường Phú Thuận', 'Phường Tân Hưng', 'Phường Tân Kiểng', 'Phường Tân Phong', 'Phường Tân Phú', 'Phường Tân Quy', 'Phường Tân Thuận Đông', 'Phường Tân Thuận Tây'],
-    'Quận Bình Thạnh': ['Phường 1', 'Phường 2', 'Phường 3', 'Phường 5', 'Phường 6', 'Phường 7', 'Phường 11', 'Phường 12', 'Phường 13', 'Phường 14', 'Phường 15', 'Phường 17', 'Phường 19', 'Phường 21', 'Phường 22', 'Phường 24', 'Phường 25', 'Phường 26', 'Phường 27', 'Phường 28'],
-    'Quận Tân Bình': ['Phường 1', 'Phường 2', 'Phường 3', 'Phường 4', 'Phường 5', 'Phường 6', 'Phường 7', 'Phường 8', 'Phường 9', 'Phường 10', 'Phường 11', 'Phường 12', 'Phường 13', 'Phường 14', 'Phường 15'],
-    'Quận Gò Vấp': ['Phường 1', 'Phường 3', 'Phường 4', 'Phường 5', 'Phường 6', 'Phường 7', 'Phường 8', 'Phường 9', 'Phường 10', 'Phường 11', 'Phường 12', 'Phường 13', 'Phường 14', 'Phường 15', 'Phường 16', 'Phường 17'],
-    'Thành phố Thủ Đức': ['Phường An Khánh', 'Phường An Lợi Đông', 'Phường An Phú', 'Phường Bình Chiểu', 'Phường Bình Thọ', 'Phường Bình Trưng Đông', 'Phường Bình Trưng Tây', 'Phường Cát Lái', 'Phường Hiệp Bình Chánh', 'Phường Hiệp Bình Phước', 'Phường Hiệp Phú', 'Phường Linh Chiểu', 'Phường Linh Đông', 'Phường Linh Tây', 'Phường Linh Trung', 'Phường Linh Xuân', 'Phường Long Bình', 'Phường Long Phước', 'Phường Long Thạnh Mỹ', 'Phường Long Trường', 'Phường Phú Hữu', 'Phường Phước Bình', 'Phường Phước Long A', 'Phường Phước Long B', 'Phường Tam Bình', 'Phường Tam Phú', 'Phường Tân Phú', 'Phường Thảo Điền', 'Phường Thủ Thiêm', 'Phường Trường Thạnh', 'Phường Trường Thọ'],
+    'Quận 1': [
+      'Phường Bến Nghé',
+      'Phường Bến Thành',
+      'Phường Cầu Kho',
+      'Phường Cầu Ông Lãnh',
+      'Phường Cô Giang',
+      'Phường Đa Kao',
+      'Phường Nguyễn Cư Trinh',
+      'Phường Nguyễn Thái Bình',
+      'Phường Phạm Ngũ Lão',
+      'Phường Tân Định',
+    ],
+    'Quận 3': [
+      'Phường 1',
+      'Phường 2',
+      'Phường 3',
+      'Phường 4',
+      'Phường 5',
+      'Phường 6',
+      'Phường 7',
+      'Phường 8',
+      'Phường 9',
+      'Phường 10',
+      'Phường 11',
+      'Phường 12',
+      'Phường 13',
+      'Phường 14',
+    ],
+    'Quận 5': [
+      'Phường 1',
+      'Phường 2',
+      'Phường 3',
+      'Phường 4',
+      'Phường 5',
+      'Phường 6',
+      'Phường 7',
+      'Phường 8',
+      'Phường 9',
+      'Phường 10',
+      'Phường 11',
+      'Phường 12',
+      'Phường 13',
+      'Phường 14',
+      'Phường 15',
+    ],
+    'Quận 7': [
+      'Phường Bình Thuận',
+      'Phường Phú Mỹ',
+      'Phường Phú Thuận',
+      'Phường Tân Hưng',
+      'Phường Tân Kiểng',
+      'Phường Tân Phong',
+      'Phường Tân Phú',
+      'Phường Tân Quy',
+      'Phường Tân Thuận Đông',
+      'Phường Tân Thuận Tây',
+    ],
+    'Quận Bình Thạnh': [
+      'Phường 1',
+      'Phường 2',
+      'Phường 3',
+      'Phường 5',
+      'Phường 6',
+      'Phường 7',
+      'Phường 11',
+      'Phường 12',
+      'Phường 13',
+      'Phường 14',
+      'Phường 15',
+      'Phường 17',
+      'Phường 19',
+      'Phường 21',
+      'Phường 22',
+      'Phường 24',
+      'Phường 25',
+      'Phường 26',
+      'Phường 27',
+      'Phường 28',
+    ],
+    'Quận Tân Bình': [
+      'Phường 1',
+      'Phường 2',
+      'Phường 3',
+      'Phường 4',
+      'Phường 5',
+      'Phường 6',
+      'Phường 7',
+      'Phường 8',
+      'Phường 9',
+      'Phường 10',
+      'Phường 11',
+      'Phường 12',
+      'Phường 13',
+      'Phường 14',
+      'Phường 15',
+    ],
+    'Quận Gò Vấp': [
+      'Phường 1',
+      'Phường 3',
+      'Phường 4',
+      'Phường 5',
+      'Phường 6',
+      'Phường 7',
+      'Phường 8',
+      'Phường 9',
+      'Phường 10',
+      'Phường 11',
+      'Phường 12',
+      'Phường 13',
+      'Phường 14',
+      'Phường 15',
+      'Phường 16',
+      'Phường 17',
+    ],
+    'Thành phố Thủ Đức': [
+      'Phường An Khánh',
+      'Phường An Lợi Đông',
+      'Phường An Phú',
+      'Phường Bình Chiểu',
+      'Phường Bình Thọ',
+      'Phường Bình Trưng Đông',
+      'Phường Bình Trưng Tây',
+      'Phường Cát Lái',
+      'Phường Hiệp Bình Chánh',
+      'Phường Hiệp Bình Phước',
+      'Phường Hiệp Phú',
+      'Phường Linh Chiểu',
+      'Phường Linh Đông',
+      'Phường Linh Tây',
+      'Phường Linh Trung',
+      'Phường Linh Xuân',
+      'Phường Long Bình',
+      'Phường Long Phước',
+      'Phường Long Thạnh Mỹ',
+      'Phường Long Trường',
+      'Phường Phú Hữu',
+      'Phường Phước Bình',
+      'Phường Phước Long A',
+      'Phường Phước Long B',
+      'Phường Tam Bình',
+      'Phường Tam Phú',
+      'Phường Tân Phú',
+      'Phường Thảo Điền',
+      'Phường Thủ Thiêm',
+      'Phường Trường Thạnh',
+      'Phường Trường Thọ',
+    ],
   },
   'Đà Nẵng': {
-    'Quận Hải Châu': ['Phường Bình Hiên', 'Phường Bình Thuận', 'Phường Hải Châu 1', 'Phường Hải Châu 2', 'Phường Hòa Cường Bắc', 'Phường Hòa Cường Nam', 'Phường Hòa Thuận Đông', 'Phường Hòa Thuận Tây', 'Phường Nam Dương', 'Phường Phước Ninh', 'Phường Thạch Thang', 'Phường Thanh Bình', 'Phường Thuận Phước'],
-    'Quận Thanh Khê': ['Phường An Khê', 'Phường Chính Gián', 'Phường Hòa Khê', 'Phường Tam Thuận', 'Phường Tân Chính', 'Phường Thạc Gián', 'Phường Thanh Khê Đông', 'Phường Thanh Khê Tây', 'Phường Vĩnh Trung', 'Phường Xuân Hà'],
-    'Quận Sơn Trà': ['Phường An Hải Bắc', 'Phường An Hải Đông', 'Phường An Hải Tây', 'Phường Mân Thái', 'Phường Nại Hiên Đông', 'Phường Phước Mỹ', 'Phường Thọ Quang'],
+    'Quận Hải Châu': [
+      'Phường Bình Hiên',
+      'Phường Bình Thuận',
+      'Phường Hải Châu 1',
+      'Phường Hải Châu 2',
+      'Phường Hòa Cường Bắc',
+      'Phường Hòa Cường Nam',
+      'Phường Hòa Thuận Đông',
+      'Phường Hòa Thuận Tây',
+      'Phường Nam Dương',
+      'Phường Phước Ninh',
+      'Phường Thạch Thang',
+      'Phường Thanh Bình',
+      'Phường Thuận Phước',
+    ],
+    'Quận Thanh Khê': [
+      'Phường An Khê',
+      'Phường Chính Gián',
+      'Phường Hòa Khê',
+      'Phường Tam Thuận',
+      'Phường Tân Chính',
+      'Phường Thạc Gián',
+      'Phường Thanh Khê Đông',
+      'Phường Thanh Khê Tây',
+      'Phường Vĩnh Trung',
+      'Phường Xuân Hà',
+    ],
+    'Quận Sơn Trà': [
+      'Phường An Hải Bắc',
+      'Phường An Hải Đông',
+      'Phường An Hải Tây',
+      'Phường Mân Thái',
+      'Phường Nại Hiên Đông',
+      'Phường Phước Mỹ',
+      'Phường Thọ Quang',
+    ],
     'Quận Ngũ Hành Sơn': ['Phường Hòa Hải', 'Phường Hòa Quý', 'Phường Khuê Mỹ', 'Phường Mỹ An'],
-    'Quận Liên Chiểu': ['Phường Hòa Hiệp Bắc', 'Phường Hòa Hiệp Nam', 'Phường Hòa Khánh Bắc', 'Phường Hòa Khánh Nam', 'Phường Hòa Minh'],
-    'Quận Cẩm Lệ': ['Phường Hòa An', 'Phường Hòa Phát', 'Phường Hòa Thọ Đông', 'Phường Hòa Thọ Tây', 'Phường Hòa Xuân', 'Phường Khuê Trung'],
+    'Quận Liên Chiểu': [
+      'Phường Hòa Hiệp Bắc',
+      'Phường Hòa Hiệp Nam',
+      'Phường Hòa Khánh Bắc',
+      'Phường Hòa Khánh Nam',
+      'Phường Hòa Minh',
+    ],
+    'Quận Cẩm Lệ': [
+      'Phường Hòa An',
+      'Phường Hòa Phát',
+      'Phường Hòa Thọ Đông',
+      'Phường Hòa Thọ Tây',
+      'Phường Hòa Xuân',
+      'Phường Khuê Trung',
+    ],
   },
   'Hải Phòng': {
-    'Quận Hồng Bàng': ['Phường Hoàng Văn Thụ', 'Phường Minh Khai', 'Phường Phan Bội Châu', 'Phường Quán Toan', 'Phường Sở Dầu', 'Phường Thượng Lý', 'Phường Trại Chuối', 'Phường Trần Nguyên Hãn'],
-    'Quận Lê Chân': ['Phường An Biên', 'Phường An Dương', 'Phường Cát Dài', 'Phường Dư Hàng', 'Phường Dư Hàng Kênh', 'Phường Đông Hải', 'Phường Hàng Kênh', 'Phường Lam Sơn', 'Phường Nghĩa Xá', 'Phường Niệm Nghĩa', 'Phường Trần Nguyên Hãn', 'Phường Vĩnh Niệm'],
-    'Quận Ngô Quyền': ['Phường Cầu Đất', 'Phường Cầu Tre', 'Phường Đằng Giang', 'Phường Đằng Hải', 'Phường Đằng Lâm', 'Phường Đổng Quốc Bình', 'Phường Gia Viên', 'Phường Lạc Viên', 'Phường Lê Lợi', 'Phường Máy Chai', 'Phường Máy Tơ', 'Phường Vạn Mỹ'],
+    'Quận Hồng Bàng': [
+      'Phường Hoàng Văn Thụ',
+      'Phường Minh Khai',
+      'Phường Phan Bội Châu',
+      'Phường Quán Toan',
+      'Phường Sở Dầu',
+      'Phường Thượng Lý',
+      'Phường Trại Chuối',
+      'Phường Trần Nguyên Hãn',
+    ],
+    'Quận Lê Chân': [
+      'Phường An Biên',
+      'Phường An Dương',
+      'Phường Cát Dài',
+      'Phường Dư Hàng',
+      'Phường Dư Hàng Kênh',
+      'Phường Đông Hải',
+      'Phường Hàng Kênh',
+      'Phường Lam Sơn',
+      'Phường Nghĩa Xá',
+      'Phường Niệm Nghĩa',
+      'Phường Trần Nguyên Hãn',
+      'Phường Vĩnh Niệm',
+    ],
+    'Quận Ngô Quyền': [
+      'Phường Cầu Đất',
+      'Phường Cầu Tre',
+      'Phường Đằng Giang',
+      'Phường Đằng Hải',
+      'Phường Đằng Lâm',
+      'Phường Đổng Quốc Bình',
+      'Phường Gia Viên',
+      'Phường Lạc Viên',
+      'Phường Lê Lợi',
+      'Phường Máy Chai',
+      'Phường Máy Tơ',
+      'Phường Vạn Mỹ',
+    ],
   },
   'Cần Thơ': {
-    'Quận Ninh Kiều': ['Phường An Bình', 'Phường An Cư', 'Phường An Hòa', 'Phường An Khánh', 'Phường An Lạc', 'Phường An Nghiệp', 'Phường An Phú', 'Phường Cái Khế', 'Phường Hưng Lợi', 'Phường Tân An', 'Phường Thới Bình', 'Phường Xuân Khánh'],
-    'Quận Bình Thủy': ['Phường An Thới', 'Phường Bình Thủy', 'Phường Bùi Hữu Nghĩa', 'Phường Long Hòa', 'Phường Long Tuyền', 'Phường Thới An Đông', 'Phường Trà An', 'Phường Trà Nóc'],
-    'Quận Cái Răng': ['Phường Ba Láng', 'Phường Hưng Phú', 'Phường Hưng Thạnh', 'Phường Lê Bình', 'Phường Phú Thứ', 'Phường Tân Phú', 'Phường Thường Thạnh'],
+    'Quận Ninh Kiều': [
+      'Phường An Bình',
+      'Phường An Cư',
+      'Phường An Hòa',
+      'Phường An Khánh',
+      'Phường An Lạc',
+      'Phường An Nghiệp',
+      'Phường An Phú',
+      'Phường Cái Khế',
+      'Phường Hưng Lợi',
+      'Phường Tân An',
+      'Phường Thới Bình',
+      'Phường Xuân Khánh',
+    ],
+    'Quận Bình Thủy': [
+      'Phường An Thới',
+      'Phường Bình Thủy',
+      'Phường Bùi Hữu Nghĩa',
+      'Phường Long Hòa',
+      'Phường Long Tuyền',
+      'Phường Thới An Đông',
+      'Phường Trà An',
+      'Phường Trà Nóc',
+    ],
+    'Quận Cái Răng': [
+      'Phường Ba Láng',
+      'Phường Hưng Phú',
+      'Phường Hưng Thạnh',
+      'Phường Lê Bình',
+      'Phường Phú Thứ',
+      'Phường Tân Phú',
+      'Phường Thường Thạnh',
+    ],
   },
   'Bình Dương': {
-    'Thành phố Thủ Dầu Một': ['Phường Chánh Mỹ', 'Phường Chánh Nghĩa', 'Phường Định Hòa', 'Phường Hiệp An', 'Phường Hiệp Thành', 'Phường Hòa Phú', 'Phường Phú Cường', 'Phường Phú Hòa', 'Phường Phú Lợi', 'Phường Phú Mỹ', 'Phường Phú Thọ', 'Phường Tân An', 'Phường Tương Bình Hiệp'],
-    'Thành phố Dĩ An': ['Phường An Bình', 'Phường Bình An', 'Phường Bình Thắng', 'Phường Đông Hòa', 'Phường Dĩ An', 'Phường Tân Bình', 'Phường Tân Đông Hiệp'],
-    'Thành phố Thuận An': ['Phường An Phú', 'Phường An Thạnh', 'Phường Bình Chuẩn', 'Phường Bình Hòa', 'Phường Bình Nhâm', 'Phường Hưng Định', 'Phường Lái Thiêu', 'Phường Thuận Giao', 'Phường Vĩnh Phú'],
+    'Thành phố Thủ Dầu Một': [
+      'Phường Chánh Mỹ',
+      'Phường Chánh Nghĩa',
+      'Phường Định Hòa',
+      'Phường Hiệp An',
+      'Phường Hiệp Thành',
+      'Phường Hòa Phú',
+      'Phường Phú Cường',
+      'Phường Phú Hòa',
+      'Phường Phú Lợi',
+      'Phường Phú Mỹ',
+      'Phường Phú Thọ',
+      'Phường Tân An',
+      'Phường Tương Bình Hiệp',
+    ],
+    'Thành phố Dĩ An': [
+      'Phường An Bình',
+      'Phường Bình An',
+      'Phường Bình Thắng',
+      'Phường Đông Hòa',
+      'Phường Dĩ An',
+      'Phường Tân Bình',
+      'Phường Tân Đông Hiệp',
+    ],
+    'Thành phố Thuận An': [
+      'Phường An Phú',
+      'Phường An Thạnh',
+      'Phường Bình Chuẩn',
+      'Phường Bình Hòa',
+      'Phường Bình Nhâm',
+      'Phường Hưng Định',
+      'Phường Lái Thiêu',
+      'Phường Thuận Giao',
+      'Phường Vĩnh Phú',
+    ],
   },
   'Đồng Nai': {
-    'Thành phố Biên Hòa': ['Phường An Bình', 'Phường An Hòa', 'Phường Bình Đa', 'Phường Bửu Hòa', 'Phường Bửu Long', 'Phường Hiệp Hòa', 'Phường Hòa Bình', 'Phường Hố Nai', 'Phường Long Bình', 'Phường Long Bình Tân', 'Phường Quang Vinh', 'Phường Quyết Thắng', 'Phường Tam Hiệp', 'Phường Tam Hòa', 'Phường Tân Biên', 'Phường Tân Hiệp', 'Phường Tân Mai', 'Phường Tân Phong', 'Phường Tân Tiến', 'Phường Tân Vạn', 'Phường Thanh Bình', 'Phường Thống Nhất', 'Phường Trảng Dài', 'Phường Trung Dũng'],
+    'Thành phố Biên Hòa': [
+      'Phường An Bình',
+      'Phường An Hòa',
+      'Phường Bình Đa',
+      'Phường Bửu Hòa',
+      'Phường Bửu Long',
+      'Phường Hiệp Hòa',
+      'Phường Hòa Bình',
+      'Phường Hố Nai',
+      'Phường Long Bình',
+      'Phường Long Bình Tân',
+      'Phường Quang Vinh',
+      'Phường Quyết Thắng',
+      'Phường Tam Hiệp',
+      'Phường Tam Hòa',
+      'Phường Tân Biên',
+      'Phường Tân Hiệp',
+      'Phường Tân Mai',
+      'Phường Tân Phong',
+      'Phường Tân Tiến',
+      'Phường Tân Vạn',
+      'Phường Thanh Bình',
+      'Phường Thống Nhất',
+      'Phường Trảng Dài',
+      'Phường Trung Dũng',
+    ],
   },
   'Khánh Hòa': {
-    'Thành phố Nha Trang': ['Phường Lộc Thọ', 'Phường Ngọc Hiệp', 'Phường Phong Phú', 'Phường Phước Hải', 'Phường Phước Hòa', 'Phường Phước Long', 'Phường Phước Tân', 'Phường Phước Tiến', 'Phường Tân Lập', 'Phường Vạn Thắng', 'Phường Vạn Thạnh', 'Phường Vĩnh Hải', 'Phường Vĩnh Hòa', 'Phường Vĩnh Nguyên', 'Phường Vĩnh Phước', 'Phường Vĩnh Thọ', 'Phường Vĩnh Trường', 'Phường Xương Huân'],
+    'Thành phố Nha Trang': [
+      'Phường Lộc Thọ',
+      'Phường Ngọc Hiệp',
+      'Phường Phong Phú',
+      'Phường Phước Hải',
+      'Phường Phước Hòa',
+      'Phường Phước Long',
+      'Phường Phước Tân',
+      'Phường Phước Tiến',
+      'Phường Tân Lập',
+      'Phường Vạn Thắng',
+      'Phường Vạn Thạnh',
+      'Phường Vĩnh Hải',
+      'Phường Vĩnh Hòa',
+      'Phường Vĩnh Nguyên',
+      'Phường Vĩnh Phước',
+      'Phường Vĩnh Thọ',
+      'Phường Vĩnh Trường',
+      'Phường Xương Huân',
+    ],
   },
   'Lâm Đồng': {
-    'Thành phố Đà Lạt': ['Phường 1', 'Phường 2', 'Phường 3', 'Phường 4', 'Phường 5', 'Phường 6', 'Phường 7', 'Phường 8', 'Phường 9', 'Phường 10', 'Phường 11', 'Phường 12', 'Xã Tà Nung', 'Xã Xuân Thọ', 'Xã Xuân Trường'],
+    'Thành phố Đà Lạt': [
+      'Phường 1',
+      'Phường 2',
+      'Phường 3',
+      'Phường 4',
+      'Phường 5',
+      'Phường 6',
+      'Phường 7',
+      'Phường 8',
+      'Phường 9',
+      'Phường 10',
+      'Phường 11',
+      'Phường 12',
+      'Xã Tà Nung',
+      'Xã Xuân Thọ',
+      'Xã Xuân Trường',
+    ],
   },
   'Thừa Thiên Huế': {
-    'Thành phố Huế': ['Phường An Cựu', 'Phường An Đông', 'Phường An Hòa', 'Phường An Tây', 'Phường Đông Ba', 'Phường Gia Hội', 'Phường Hương Long', 'Phường Kim Long', 'Phường Phú Bình', 'Phường Phú Cát', 'Phường Phú Hiệp', 'Phường Phú Hội', 'Phường Phú Nhuận', 'Phường Phú Thuận', 'Phường Phước Vĩnh', 'Phường Tây Lộc', 'Phường Thuận Hòa', 'Phường Thuận Lộc', 'Phường Thuận Thành', 'Phường Trường An', 'Phường Vĩ Dạ', 'Phường Vĩnh Ninh', 'Phường Xuân Phú'],
+    'Thành phố Huế': [
+      'Phường An Cựu',
+      'Phường An Đông',
+      'Phường An Hòa',
+      'Phường An Tây',
+      'Phường Đông Ba',
+      'Phường Gia Hội',
+      'Phường Hương Long',
+      'Phường Kim Long',
+      'Phường Phú Bình',
+      'Phường Phú Cát',
+      'Phường Phú Hiệp',
+      'Phường Phú Hội',
+      'Phường Phú Nhuận',
+      'Phường Phú Thuận',
+      'Phường Phước Vĩnh',
+      'Phường Tây Lộc',
+      'Phường Thuận Hòa',
+      'Phường Thuận Lộc',
+      'Phường Thuận Thành',
+      'Phường Trường An',
+      'Phường Vĩ Dạ',
+      'Phường Vĩnh Ninh',
+      'Phường Xuân Phú',
+    ],
   },
   'Quảng Nam': {
-    'Thành phố Hội An': ['Phường Cẩm An', 'Phường Cẩm Châu', 'Phường Cẩm Nam', 'Phường Cẩm Phô', 'Phường Cẩm Thanh', 'Phường Cửa Đại', 'Phường Minh An', 'Phường Sơn Phong', 'Phường Tân An', 'Phường Thanh Hà'],
-    'Thành phố Tam Kỳ': ['Phường An Mỹ', 'Phường An Sơn', 'Phường An Xuân', 'Phường Hòa Hương', 'Phường Phước Hòa', 'Phường Tân Thạnh', 'Phường Trường Xuân'],
+    'Thành phố Hội An': [
+      'Phường Cẩm An',
+      'Phường Cẩm Châu',
+      'Phường Cẩm Nam',
+      'Phường Cẩm Phô',
+      'Phường Cẩm Thanh',
+      'Phường Cửa Đại',
+      'Phường Minh An',
+      'Phường Sơn Phong',
+      'Phường Tân An',
+      'Phường Thanh Hà',
+    ],
+    'Thành phố Tam Kỳ': [
+      'Phường An Mỹ',
+      'Phường An Sơn',
+      'Phường An Xuân',
+      'Phường Hòa Hương',
+      'Phường Phước Hòa',
+      'Phường Tân Thạnh',
+      'Phường Trường Xuân',
+    ],
   },
 };
 
@@ -437,11 +966,19 @@ export default function ShoppingCartCheckoutPage() {
 
   const inputClass =
     'w-full px-4 py-3 border bg-luxury-white text-sm text-charcoal focus:outline-none focus:border-gold transition-colors placeholder:text-luxury-muted';
-  const labelClass = 'block text-xs font-semibold uppercase tracking-wide text-charcoal-light mb-1.5';
+  const labelClass =
+    'block text-xs font-semibold uppercase tracking-wide text-charcoal-light mb-1.5';
   const errorClass = 'mt-1.5 text-xs text-red-600 flex items-center gap-1';
 
   const handleSubmit = async () => {
-    if (!validateForm()) return;
+    if (!validateForm()) {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+
+      return;
+    }
 
     if (items.length === 0) {
       setError('Giỏ hàng trống.');
@@ -473,7 +1010,9 @@ export default function ShoppingCartCheckoutPage() {
           total_amount: cartTotal,
           shipping_name: formData.fullName,
           shipping_phone: formData.phone,
-          shipping_address: [formData.address, formData.ward, formData.district].filter(Boolean).join(', '),
+          shipping_address: [formData.address, formData.ward, formData.district]
+            .filter(Boolean)
+            .join(', '),
           shipping_city: formData.city,
           notes: formData.notes || null,
         })
@@ -509,6 +1048,10 @@ export default function ShoppingCartCheckoutPage() {
         return;
       }
 
+      // Clear cart and redirect
+      clearCart();
+      router.push(`/order-success?order_id=${orderData.id}`);
+
       // Send Telegram notification (non-blocking)
       fetch('/api/telegram-notify', {
         method: 'POST',
@@ -521,10 +1064,6 @@ export default function ShoppingCartCheckoutPage() {
           order_id: finalOrderNumber,
         }),
       }).catch(() => {});
-
-      // Clear cart and redirect
-      clearCart();
-      router.push(`/order-success?order_id=${orderData.id}`);
     } catch (err) {
       console.error('Checkout error:', err);
       setError('Đã xảy ra lỗi. Vui lòng thử lại.');
@@ -541,16 +1080,22 @@ export default function ShoppingCartCheckoutPage() {
           {/* Page Title */}
           <div className="text-center mb-8 sm:mb-10">
             <Link href="/homepage" className="inline-flex items-center gap-2 mb-3 sm:mb-4">
-              <span className="font-display text-xl sm:text-2xl font-semibold tracking-wide text-charcoal">LuxeJewel</span>
+              <span className="font-display text-xl sm:text-2xl font-semibold tracking-wide text-charcoal">
+                LuxeJewel
+              </span>
             </Link>
-            <h1 className="font-display text-2xl sm:text-3xl font-light text-charcoal">Thanh toán</h1>
+            <h1 className="font-display text-2xl sm:text-3xl font-light text-charcoal">
+              Thanh toán
+            </h1>
           </div>
 
           {items.length === 0 ? (
             <div className="text-center py-16 sm:py-20 border border-luxury-border bg-luxury-warm/30 max-w-md mx-auto">
               <Icon name="ShoppingBagIcon" size={40} className="text-luxury-muted mx-auto mb-4" />
               <p className="font-display text-xl font-light text-charcoal mb-2">Giỏ hàng trống</p>
-              <p className="text-luxury-muted text-sm mb-6">Hãy thêm sản phẩm vào giỏ hàng trước khi thanh toán.</p>
+              <p className="text-luxury-muted text-sm mb-6">
+                Hãy thêm sản phẩm vào giỏ hàng trước khi thanh toán.
+              </p>
               <Link
                 href="/product-listing"
                 className="inline-block px-8 py-3.5 bg-gold text-charcoal text-sm font-semibold hover:bg-gold-light transition-colors min-h-[48px]"
@@ -564,7 +1109,9 @@ export default function ShoppingCartCheckoutPage() {
               <div>
                 {/* Shipping Info */}
                 <section className="mb-7 sm:mb-8">
-                  <h2 className="font-display text-lg sm:text-xl font-light text-charcoal mb-4 sm:mb-5">Thông tin giao hàng</h2>
+                  <h2 className="font-display text-lg sm:text-xl font-light text-charcoal mb-4 sm:mb-5">
+                    Thông tin giao hàng
+                  </h2>
                   <div className="space-y-3 sm:space-y-4">
                     <div>
                       <label className={labelClass}>Họ và tên *</label>
@@ -614,58 +1161,98 @@ export default function ShoppingCartCheckoutPage() {
                         </p>
                       )}
                     </div>
-                    <div>
-                      <label className={labelClass}>Tỉnh / Thành phố *</label>
-                      <div className="relative">
-                        <select
-                          value={formData.city}
-                          onChange={(e) => handleFormChange('city', e.target.value)}
-                          className={`${inputClass} appearance-none pr-8 ${formErrors.city ? 'border-red-400 focus:border-red-400' : 'border-luxury-border'}`}
-                        >
-                          <option value="">Chọn Tỉnh/ thành phố</option>
-                          {Object.keys(VN_LOCATIONS).map((province) => (
-                            <option key={province} value={province}>{province}</option>
-                          ))}
-                        </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
-                          <svg className="w-4 h-4 text-luxury-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className={labelClass}>Tỉnh / Thành phố *</label>
+                        <div className="relative">
+                          <select
+                            value={formData.city}
+                            onChange={(e) => handleFormChange('city', e.target.value)}
+                            className={`${inputClass} appearance-none pr-8 ${formErrors.city ? 'border-red-400 focus:border-red-400' : 'border-luxury-border'}`}
+                          >
+                            <option value="">Chọn Tỉnh/ thành phố</option>
+                            {Object.keys(VN_LOCATIONS).map((province) => (
+                              <option key={province} value={province}>
+                                {province}
+                              </option>
+                            ))}
+                          </select>
+                          <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
+                            <svg
+                              className="w-4 h-4 text-luxury-muted"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M19 9l-7 7-7-7"
+                              />
+                            </svg>
+                          </div>
                         </div>
+                        {formErrors.city && (
+                          <p className={errorClass}>
+                            <Icon
+                              name="ExclamationCircleIcon"
+                              size={12}
+                              className="flex-shrink-0"
+                            />
+                            {formErrors.city}
+                          </p>
+                        )}
                       </div>
-                      {formErrors.city && (
-                        <p className={errorClass}>
-                          <Icon name="ExclamationCircleIcon" size={12} className="flex-shrink-0" />
-                          {formErrors.city}
-                        </p>
-                      )}
-                    </div>
-                    <div className="relative">
-                      <label className={labelClass}>Quận/ Huyện</label>
+
                       <div className="relative">
-                        <select
-                          value={formData.district}
-                          onChange={(e) => handleFormChange('district', e.target.value)}
-                          disabled={!formData.city}
-                          className={`${inputClass} appearance-none pr-8 ${formErrors.district ? 'border-red-400 focus:border-red-400' : 'border-luxury-border'} disabled:opacity-50 disabled:cursor-not-allowed`}
-                        >
-                          <option value="">Chọn Quận/ Huyện</option>
-                          {formData.city && VN_LOCATIONS[formData.city]
-                            ? Object.keys(VN_LOCATIONS[formData.city]).map((district) => (
-                                <option key={district} value={district}>{district}</option>
-                              ))
-                            : null}
-                        </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
-                          <svg className="w-4 h-4 text-luxury-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                        <label className={labelClass}>Quận/ Huyện</label>
+                        <div className="relative">
+                          <select
+                            value={formData.district}
+                            onChange={(e) => handleFormChange('district', e.target.value)}
+                            disabled={!formData.city}
+                            className={`${inputClass} appearance-none pr-8 ${formErrors.district ? 'border-red-400 focus:border-red-400' : 'border-luxury-border'} disabled:opacity-50 disabled:cursor-not-allowed`}
+                          >
+                            <option value="">Chọn Quận/ Huyện</option>
+                            {formData.city && VN_LOCATIONS[formData.city]
+                              ? Object.keys(VN_LOCATIONS[formData.city]).map((district) => (
+                                  <option key={district} value={district}>
+                                    {district}
+                                  </option>
+                                ))
+                              : null}
+                          </select>
+                          <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
+                            <svg
+                              className="w-4 h-4 text-luxury-muted"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M19 9l-7 7-7-7"
+                              />
+                            </svg>
+                          </div>
                         </div>
+                        {formErrors.district && (
+                          <p className={errorClass}>
+                            <Icon
+                              name="ExclamationCircleIcon"
+                              size={12}
+                              className="flex-shrink-0"
+                            />
+                            {formErrors.district}
+                          </p>
+                        )}
                       </div>
-                      {formErrors.district && (
-                        <p className={errorClass}>
-                          <Icon name="ExclamationCircleIcon" size={12} className="flex-shrink-0" />
-                          {formErrors.district}
-                        </p>
-                      )}
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
+
+                    <div className="grid sm:grid-cols-2 gap-3">
                       <div>
                         <label className={labelClass}>Phường/ Xã</label>
                         <div className="relative">
@@ -676,19 +1263,39 @@ export default function ShoppingCartCheckoutPage() {
                             className={`${inputClass} appearance-none pr-8 ${formErrors.ward ? 'border-red-400 focus:border-red-400' : 'border-luxury-border'} disabled:opacity-50 disabled:cursor-not-allowed`}
                           >
                             <option value="">Phường/ Xã</option>
-                            {formData.city && formData.district && VN_LOCATIONS[formData.city]?.[formData.district]
+                            {formData.city &&
+                            formData.district &&
+                            VN_LOCATIONS[formData.city]?.[formData.district]
                               ? VN_LOCATIONS[formData.city][formData.district].map((ward) => (
-                                  <option key={ward} value={ward}>{ward}</option>
+                                  <option key={ward} value={ward}>
+                                    {ward}
+                                  </option>
                                 ))
                               : null}
                           </select>
                           <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center">
-                            <svg className="w-4 h-4 text-luxury-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                            <svg
+                              className="w-4 h-4 text-luxury-muted"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M19 9l-7 7-7-7"
+                              />
+                            </svg>
                           </div>
                         </div>
                         {formErrors.ward && (
                           <p className={errorClass}>
-                            <Icon name="ExclamationCircleIcon" size={12} className="flex-shrink-0" />
+                            <Icon
+                              name="ExclamationCircleIcon"
+                              size={12}
+                              className="flex-shrink-0"
+                            />
                             {formErrors.ward}
                           </p>
                         )}
@@ -720,12 +1327,16 @@ export default function ShoppingCartCheckoutPage() {
 
                 {/* Payment Method */}
                 <section className="mb-7 sm:mb-8">
-                  <h2 className="font-display text-lg sm:text-xl font-light text-charcoal mb-4 sm:mb-5">Phương thức thanh toán</h2>
+                  <h2 className="font-display text-lg sm:text-xl font-light text-charcoal mb-4 sm:mb-5">
+                    Phương thức thanh toán
+                  </h2>
                   <div className="space-y-3">
                     {/* COD */}
                     <label
                       className={`flex items-start gap-4 p-4 border cursor-pointer transition-all duration-200 ${
-                        paymentMethod === 'cod' ?'border-gold bg-gold/5' :'border-luxury-border hover:border-luxury-border-dark'
+                        paymentMethod === 'cod'
+                          ? 'border-gold bg-gold/5'
+                          : 'border-luxury-border hover:border-luxury-border-dark'
                       }`}
                     >
                       <div
@@ -734,12 +1345,16 @@ export default function ShoppingCartCheckoutPage() {
                           paymentMethod === 'cod' ? 'border-gold' : 'border-luxury-border-dark'
                         }`}
                       >
-                        {paymentMethod === 'cod' && <div className="w-2.5 h-2.5 rounded-full bg-gold" />}
+                        {paymentMethod === 'cod' && (
+                          <div className="w-2.5 h-2.5 rounded-full bg-gold" />
+                        )}
                       </div>
                       <div className="flex-1" onClick={() => setPaymentMethod('cod')}>
                         <div className="flex items-center gap-2">
                           <Icon name="TruckIcon" size={16} className="text-charcoal" />
-                          <p className="text-sm font-semibold text-charcoal">Thanh toán khi nhận hàng (COD)</p>
+                          <p className="text-sm font-semibold text-charcoal">
+                            Thanh toán khi nhận hàng (COD)
+                          </p>
                         </div>
                         <p className="text-xs text-luxury-muted mt-1">
                           Bạn chỉ cần thanh toán khi nhận được hàng.
@@ -750,21 +1365,29 @@ export default function ShoppingCartCheckoutPage() {
                     {/* Bank Transfer */}
                     <label
                       className={`flex items-start gap-4 p-4 border cursor-pointer transition-all duration-200 ${
-                        paymentMethod === 'bank_transfer' ?'border-gold bg-gold/5' :'border-luxury-border hover:border-luxury-border-dark'
+                        paymentMethod === 'bank_transfer'
+                          ? 'border-gold bg-gold/5'
+                          : 'border-luxury-border hover:border-luxury-border-dark'
                       }`}
                     >
                       <div
                         onClick={() => setPaymentMethod('bank_transfer')}
                         className={`mt-0.5 w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all ${
-                          paymentMethod === 'bank_transfer' ? 'border-gold' : 'border-luxury-border-dark'
+                          paymentMethod === 'bank_transfer'
+                            ? 'border-gold'
+                            : 'border-luxury-border-dark'
                         }`}
                       >
-                        {paymentMethod === 'bank_transfer' && <div className="w-2.5 h-2.5 rounded-full bg-gold" />}
+                        {paymentMethod === 'bank_transfer' && (
+                          <div className="w-2.5 h-2.5 rounded-full bg-gold" />
+                        )}
                       </div>
                       <div className="flex-1" onClick={() => setPaymentMethod('bank_transfer')}>
                         <div className="flex items-center gap-2">
                           <Icon name="BuildingLibraryIcon" size={16} className="text-charcoal" />
-                          <p className="text-sm font-semibold text-charcoal">Chuyển khoản Ngân hàng</p>
+                          <p className="text-sm font-semibold text-charcoal">
+                            Chuyển khoản Ngân hàng
+                          </p>
                         </div>
                         <p className="text-xs text-luxury-muted mt-1">
                           Chuyển khoản trước, xác nhận qua Zalo.
@@ -782,7 +1405,11 @@ export default function ShoppingCartCheckoutPage() {
                 {/* Error */}
                 {error && (
                   <div className="mb-5 p-4 bg-red-50 border border-red-200 flex items-center gap-3">
-                    <Icon name="ExclamationCircleIcon" size={16} className="text-red-500 flex-shrink-0" />
+                    <Icon
+                      name="ExclamationCircleIcon"
+                      size={16}
+                      className="text-red-500 flex-shrink-0"
+                    />
                     <p className="text-sm text-red-700">{error}</p>
                   </div>
                 )}

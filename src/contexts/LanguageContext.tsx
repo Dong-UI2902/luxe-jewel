@@ -3,8 +3,6 @@
 import React, { createContext, useContext, useCallback, ReactNode } from 'react';
 import vi from '@/locales/vi.json';
 
-type Translations = typeof vi;
-
 interface LanguageContextType {
   t: (key: string) => string;
 }
@@ -24,11 +22,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     return typeof value === 'string' ? value : key;
   }, []);
 
-  return (
-    <LanguageContext.Provider value={{ t }}>
-      {children}
-    </LanguageContext.Provider>
-  );
+  return <LanguageContext.Provider value={{ t }}>{children}</LanguageContext.Provider>;
 };
 
 export const useLanguage = () => useContext(LanguageContext);

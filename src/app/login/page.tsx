@@ -69,7 +69,10 @@ export default function LoginPage() {
         }}
       />
       <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-gold/20 to-transparent animate-pulse" />
-      <div className="absolute top-0 right-1/3 w-px h-full bg-gradient-to-b from-transparent via-gold/10 to-transparent animate-pulse" style={{ animationDelay: '1s' }} />
+      <div
+        className="absolute top-0 right-1/3 w-px h-full bg-gradient-to-b from-transparent via-gold/10 to-transparent animate-pulse"
+        style={{ animationDelay: '1s' }}
+      />
     </div>
   );
 
@@ -93,20 +96,17 @@ export default function LoginPage() {
 
         {/* Card */}
         <div className="bg-charcoal-light/60 backdrop-blur-md border border-gold/20 rounded-2xl p-8 shadow-[0_0_60px_rgba(212,175,55,0.08)]">
-
           {/* ── Login View ── */}
           {view === 'login' && (
             <>
               <h1 className="font-display text-2xl font-semibold text-luxury-white mb-1">
                 {t('login.sign_in')}
               </h1>
-              <p className="text-luxury-muted text-sm mb-8">
-                {t('login.access_account')}
-              </p>
+              <p className="text-luxury-muted text-sm mb-8">{t('login.access_account')}</p>
 
               {error && (
                 <div className="mb-6 px-4 py-3 bg-red-900/30 border border-red-500/30 rounded-lg text-red-300 text-sm">
-                  {error}
+                  {t('login.Invalid login credentials')}
                 </div>
               )}
 
@@ -132,8 +132,12 @@ export default function LoginPage() {
                     </label>
                     <button
                       type="button"
-                      onClick={() => { setForgotEmail(email); setError(''); setView('forgot'); }}
-                      className="text-xs text-gold/70 hover:text-gold transition-colors duration-200"
+                      onClick={() => {
+                        setForgotEmail(email);
+                        setError('');
+                        setView('forgot');
+                      }}
+                      className="text-xs text-white/70 hover:text-gold transition-colors duration-200"
                     >
                       Quên mật khẩu?
                     </button>
@@ -150,7 +154,7 @@ export default function LoginPage() {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-luxury-muted hover:text-gold transition-colors duration-200 text-xs tracking-wide"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-white hover:text-gold transition-colors duration-200 text-xs tracking-wide"
                     >
                       {showPassword ? t('login.hide') : t('login.show')}
                     </button>
@@ -160,7 +164,7 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3.5 bg-gold text-charcoal font-semibold text-sm tracking-widest uppercase rounded-lg hover:bg-gold/90 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed mt-2 relative overflow-hidden group"
+                  className="w-full py-3.5 bg-gold text-white font-semibold text-sm tracking-widest uppercase rounded-lg hover:bg-gold/90 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed mt-2 relative overflow-hidden group"
                 >
                   <span className="relative z-10">
                     {loading ? t('login.signing_in') : t('login.sign_in')}
@@ -177,7 +181,10 @@ export default function LoginPage() {
 
               <p className="text-center text-sm text-luxury-muted">
                 {t('login.new_to')}{' '}
-                <Link href="/register" className="text-gold hover:text-gold/80 font-medium transition-colors duration-200">
+                <Link
+                  href="/register"
+                  className="text-white/70 hover:text-gold/80 font-medium transition-colors duration-200"
+                >
                   {t('login.create_account')}
                 </Link>
               </p>
@@ -218,7 +225,7 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3.5 bg-gold text-charcoal font-semibold text-sm tracking-widest uppercase rounded-lg hover:bg-gold/90 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed relative overflow-hidden group"
+                  className="w-full py-3.5 bg-gold text-white font-semibold text-sm tracking-widest uppercase rounded-lg hover:bg-gold/90 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed relative overflow-hidden group"
                 >
                   <span className="relative z-10">
                     {loading ? 'Đang gửi...' : 'Gửi Liên Kết Đặt Lại'}
@@ -230,7 +237,10 @@ export default function LoginPage() {
               <div className="mt-6 text-center">
                 <button
                   type="button"
-                  onClick={() => { setError(''); setView('login'); }}
+                  onClick={() => {
+                    setError('');
+                    setView('login');
+                  }}
                   className="text-sm text-luxury-muted hover:text-gold transition-colors duration-200"
                 >
                   ← Quay lại đăng nhập
@@ -243,8 +253,18 @@ export default function LoginPage() {
           {view === 'forgot-sent' && (
             <div className="text-center py-4">
               <div className="w-14 h-14 bg-gold/10 border border-gold/20 rounded-full flex items-center justify-center mx-auto mb-5">
-                <svg className="w-7 h-7 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                <svg
+                  className="w-7 h-7 text-gold"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={1.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
+                  />
                 </svg>
               </div>
               <h2 className="font-display text-xl font-semibold text-luxury-white mb-3">
@@ -256,7 +276,10 @@ export default function LoginPage() {
               <p className="text-gold text-sm font-medium mb-8">{forgotEmail}</p>
               <button
                 type="button"
-                onClick={() => { setError(''); setView('login'); }}
+                onClick={() => {
+                  setError('');
+                  setView('login');
+                }}
                 className="text-sm text-luxury-muted hover:text-gold transition-colors duration-200"
               >
                 ← Quay lại đăng nhập

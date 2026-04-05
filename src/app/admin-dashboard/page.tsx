@@ -36,6 +36,7 @@ interface SupabaseOrder {
   shipping_city: string;
   shipping_address: string | null;
   created_at: string;
+  notes: string | null;
 }
 
 interface OrderItem {
@@ -60,6 +61,8 @@ interface DBProduct {
   image_url: string | null;
   category_id: string | null;
   categories: { name: string } | null;
+  is_new: boolean;
+  is_best_seller: boolean;
 }
 
 interface DBCategory {
@@ -97,6 +100,8 @@ interface EditProductForm {
   galleryPreviews: string[];
   tags: string[];
   description: string;
+  isNew: boolean;
+  isBestSeller: boolean;
 }
 
 interface CategoryForm {
@@ -128,6 +133,26 @@ interface KPIData {
   ytdRevenue: number;
   ytdOrders: number;
 }
+
+const PRODUCT_NEW_INITIAL_STATE = {
+  name: '',
+  categoryId: '',
+  price: '',
+  stock: '',
+  material: '',
+  tags: [] as string[],
+  description: '',
+  isNew: false,
+  isBestSeller: false,
+};
+
+const PRODUCT_EDIT_INITIAL_STATE: EditProductForm = {
+  ...PRODUCT_NEW_INITIAL_STATE,
+  imageUrl: '',
+  imagePreview: '',
+  galleryUrls: [],
+  galleryPreviews: [],
+};
 
 type AdminSection = 'overview' | 'products' | 'orders' | 'analytics' | 'customers' | 'categories';
 
@@ -257,34 +282,16 @@ export default function AdminDashboardPage() {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [editingProduct, setEditingProduct] = useState<string | null>(null);
-  const [editProductForm, setEditProductForm] = useState<EditProductForm>({
-    name: '',
-    categoryId: '',
-    price: '',
-    stock: '',
-    material: '',
-    imageUrl: '',
-    imagePreview: '',
-    galleryUrls: [],
-    galleryPreviews: [],
-    tags: [],
-    description: '',
-  });
+  const [editProductForm, setEditProductForm] = useState<EditProductForm>(
+    PRODUCT_EDIT_INITIAL_STATE
+  );
   const [uploadingEditImage, setUploadingEditImage] = useState(false);
   const [uploadingEditGallery, setUploadingEditGallery] = useState(false);
   const [savingEditProduct, setSavingEditProduct] = useState(false);
   const editFileInputRef = useRef<HTMLInputElement>(null);
   const editGalleryInputRef = useRef<HTMLInputElement>(null);
   const [showAddProduct, setShowAddProduct] = useState(false);
-  const [newProduct, setNewProduct] = useState({
-    name: '',
-    categoryId: '',
-    price: '',
-    stock: '',
-    material: '',
-    tags: [] as string[],
-    description: '',
-  });
+  const [newProduct, setNewProduct] = useState(PRODUCT_NEW_INITIAL_STATE);
   const [deleteConfirmProductId, setDeleteConfirmProductId] = useState<string | null>(null);
   const [deletingProduct, setDeletingProduct] = useState(false);
   const pendingEditUploads = useRef<string[]>([]);
@@ -398,7 +405,7 @@ export default function AdminDashboardPage() {
     const { data, error } = await supabase
       .from('orders')
       .select(
-        'id, order_number, status, payment_method, total_amount, shipping_name, shipping_phone, shipping_city, shipping_address, created_at'
+        'id, order_number, status, payment_method, total_amount, notes, shipping_name, shipping_phone, shipping_city, shipping_address, created_at'
       )
       .order('created_at', { ascending: false })
       .limit(200);
@@ -416,7 +423,7 @@ export default function AdminDashboardPage() {
     const { data, error } = await supabase
       .from('products')
       .select(
-        'id, name, sku, price, stock_quantity, is_active, image_url, category_id, categories(name)'
+        'id, name, sku, price, stock_quantity, is_active, is_best_seller, is_new, image_url, category_id, categories(name)'
       )
       .order('created_at', { ascending: false })
       .limit(200);
@@ -705,21 +712,21 @@ export default function AdminDashboardPage() {
     setGalleryPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  // const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0];
+  //   if (!file) return;
 
-    const objectUrl = URL.createObjectURL(file);
-    setEditProductForm((prev) => ({ ...prev, imagePreview: objectUrl }));
+  //   const objectUrl = URL.createObjectURL(file);
+  //   setEditProductForm((prev) => ({ ...prev, imagePreview: objectUrl }));
 
-    const publicUrl = await handleEditImageUpload(file);
-    if (publicUrl) {
-      setEditProductForm((prev) => ({ ...prev, imageUrl: publicUrl, imagePreview: publicUrl }));
-      showToast('✅ Image uploaded successfully!');
-    } else {
-      setEditProductForm((prev) => ({ ...prev, imagePreview: prev.imageUrl }));
-    }
-  };
+  //   const publicUrl = await handleEditImageUpload(file);
+  //   if (publicUrl) {
+  //     setEditProductForm((prev) => ({ ...prev, imageUrl: publicUrl, imagePreview: publicUrl }));
+  //     showToast('✅ Image uploaded successfully!');
+  //   } else {
+  //     setEditProductForm((prev) => ({ ...prev, imagePreview: prev.imageUrl }));
+  //   }
+  // };
 
   const handleAddProductSave = async () => {
     if (!newProduct.name || !newProduct.price) {
@@ -738,6 +745,9 @@ export default function AdminDashboardPage() {
       material: newProduct.material || null,
       tags: newProduct.tags.length > 0 ? newProduct.tags : null,
       slug: slugify(newProduct.name),
+      description: newProduct.description || null,
+      is_new: newProduct.isNew,
+      is_best_seller: newProduct.isBestSeller,
     });
 
     if (error) {
@@ -745,15 +755,7 @@ export default function AdminDashboardPage() {
     } else {
       showToast('✅ Product added successfully!');
       setShowAddProduct(false);
-      setNewProduct({
-        name: '',
-        categoryId: '',
-        price: '',
-        stock: '',
-        material: '',
-        tags: [],
-        description: '',
-      });
+      setNewProduct(PRODUCT_NEW_INITIAL_STATE);
       setNewTagInput('');
       setNewProductImageUrl('');
       setNewProductImagePreview('');
@@ -770,7 +772,7 @@ export default function AdminDashboardPage() {
     const { data } = await supabase
       .from('products')
       .select(
-        'id, name, description, price, stock_quantity, image_url, gallery_urls, material, tags, category_id, categories(name)'
+        'id, name, description, price, stock_quantity, image_url, gallery_urls, material, tags, is_new, is_best_seller, category_id, categories(name)'
       )
       .eq('id', product.id)
       .single();
@@ -789,6 +791,8 @@ export default function AdminDashboardPage() {
       galleryPreviews: fullProduct?.gallery_urls || [],
       tags: fullProduct?.tags || [],
       description: fullProduct?.description || product.description || '',
+      isNew: fullProduct?.is_new || false,
+      isBestSeller: fullProduct?.is_best_seller || false,
     });
     setEditTagInput('');
   };
@@ -925,6 +929,8 @@ export default function AdminDashboardPage() {
         material: editProductForm.material || null,
         tags: editProductForm.tags.length > 0 ? editProductForm.tags : null,
         updated_at: new Date().toISOString(),
+        is_new: editProductForm.isNew,
+        is_best_seller: editProductForm.isBestSeller,
       })
       .eq('id', editingProduct);
 
@@ -943,6 +949,7 @@ export default function AdminDashboardPage() {
     const toDelete = pendingEditUploads.current;
     pendingEditUploads.current = [];
     setEditingProduct(null);
+    setEditProductForm(PRODUCT_EDIT_INITIAL_STATE);
 
     if (toDelete.length > 0) {
       const supabase = createClient();
@@ -1158,7 +1165,7 @@ export default function AdminDashboardPage() {
             }}
             className={`w-full flex items-center gap-3 px-4 py-3 text-[10px] font-semibold uppercase tracking-wide transition-all duration-200 relative ${
               activeSection === item.id
-                ? 'text-gold bg-white/5 border-l-2 border-gold'
+                ? 'text-white bg-white/5 border-l-2 border-gold'
                 : 'text-white/50 hover:text-white/80 hover:bg-white/5 border-l-2 border-transparent'
             } ${collapsed ? 'justify-center' : ''}`}
           >
@@ -1182,7 +1189,7 @@ export default function AdminDashboardPage() {
                   </span>
                 )}
                 {item.badge !== undefined && item.badge > 0 && item.id !== 'orders' && (
-                  <span className="ml-auto w-5 h-5 bg-gold text-charcoal rounded-full flex items-center justify-center">
+                  <span className="ml-auto w-5 h-5 bg-gold text-white rounded-full flex items-center justify-center">
                     {item.badge}
                   </span>
                 )}
@@ -1304,7 +1311,7 @@ export default function AdminDashboardPage() {
         </div>
         {!sidebarCollapsed && (
           <div className="px-4 py-3 border-b border-white/10">
-            <p className="text-[9px] uppercase tracking-[0.3em] text-white/30 font-semibold">
+            <p className="text-[9px] uppercase tracking-[0.3em] text-white font-semibold">
               Admin Panel
             </p>
           </div>
@@ -1319,13 +1326,13 @@ export default function AdminDashboardPage() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setMobileSidebarOpen(true)}
-              className="lg:hidden p-2 text-charcoal hover:text-gold transition-colors -ml-1"
+              className="lg:hidden p-2 text-white hover:text-gold transition-colors -ml-1"
               aria-label="Open menu"
             >
               <Icon name="Bars3Icon" size={22} />
             </button>
             <div>
-              <h1 className="font-display text-lg md:text-xl font-semibold text-charcoal capitalize">
+              <h1 className="font-display text-lg md:text-xl font-semibold text-white capitalize">
                 {activeSection === 'overview'
                   ? 'Tổng Quan'
                   : activeSection === 'products'
@@ -1658,10 +1665,10 @@ export default function AdminDashboardPage() {
                 </p>
                 <button
                   onClick={() => setShowAddProduct(!showAddProduct)}
-                  className="flex items-center gap-2 px-4 py-2 bg-gold text-charcoal text-xs font-semibold hover:bg-gold-light transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 bg-gold text-white text-xs font-semibold hover:bg-gold-light transition-colors"
                 >
                   <Icon name="PlusIcon" size={14} />
-                  Add Product
+                  Thêm Sản Phẩm
                 </button>
               </div>
 
@@ -1977,16 +1984,24 @@ export default function AdminDashboardPage() {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-gray-100 bg-gray-50/50">
-                        {['Product', 'SKU', 'Category', 'Price', 'Stock', 'Status', 'Actions'].map(
-                          (h) => (
-                            <th
-                              key={h}
-                              className="text-left px-4 py-3 text-[10px] font-semibold uppercase tracking-wide text-luxury-muted whitespace-nowrap"
-                            >
-                              {h}
-                            </th>
-                          )
-                        )}
+                        {[
+                          'Sản phẩm',
+                          'SKU',
+                          'Danh mục',
+                          'Giá',
+                          'Số lượng',
+                          'Trạng thái',
+                          'Sản phẩm mới',
+                          'Bán chạy',
+                          'Hành động',
+                        ].map((h) => (
+                          <th
+                            key={h}
+                            className="text-left px-4 py-3 text-[10px] font-semibold uppercase tracking-wide text-luxury-muted whitespace-nowrap"
+                          >
+                            {h}
+                          </th>
+                        ))}
                       </tr>
                     </thead>
                     <tbody>
@@ -2047,6 +2062,12 @@ export default function AdminDashboardPage() {
                             </td>
                             <td className="px-4 py-4">
                               <StatusBadge status={getProductStatus(product)} />
+                            </td>
+                            <td className="px-4 py-4">
+                              <StatusBadge status={product.is_new ? 'active' : 'normal'} />
+                            </td>
+                            <td className="px-4 py-4">
+                              <StatusBadge status={product.is_best_seller ? 'active' : 'normal'} />
                             </td>
                             <td className="px-4 py-4">
                               <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -2169,6 +2190,47 @@ export default function AdminDashboardPage() {
                             className="w-full px-3 py-2 text-sm border border-gray-200 focus:outline-none focus:border-gold transition-colors"
                           />
                         </div>
+
+                        <div>
+                          <label className="block text-[10px] uppercase tracking-wide font-semibold text-luxury-muted">
+                            Sản phẩm mới?
+                          </label>
+                          <label className="text-[10px] block mb-1">
+                            (Bật để hiển thị như một sản phẩm nổi bật)
+                          </label>
+                          <label className="switch block">
+                            <input
+                              type="checkbox"
+                              checked={editProductForm.isNew}
+                              onChange={(e) =>
+                                setEditProductForm((p) => ({ ...p, isNew: e.target.checked }))
+                              }
+                            />
+                            <span className="slider round"></span>
+                          </label>
+                        </div>
+                        <div>
+                          <label className="block text-[10px] uppercase tracking-wide font-semibold text-luxury-muted">
+                            Sản phẩm bán chạy?
+                          </label>
+                          <label className="text-[10px] block mb-1">
+                            (Bật để hiển thị như một sản phẩm bán chạy)
+                          </label>
+                          <label className="switch block">
+                            <input
+                              type="checkbox"
+                              checked={editProductForm.isBestSeller}
+                              onChange={(e) =>
+                                setEditProductForm((p) => ({
+                                  ...p,
+                                  isBestSeller: e.target.checked,
+                                }))
+                              }
+                            />
+                            <span className="slider round"></span>
+                          </label>
+                        </div>
+
                         <div>
                           <label className="block text-[10px] uppercase tracking-wide font-semibold text-luxury-muted mb-1">
                             Danh mục
@@ -2265,7 +2327,7 @@ export default function AdminDashboardPage() {
                           <button
                             type="button"
                             onClick={handleAddEditTag}
-                            className="px-3 py-2 bg-gold text-charcoal text-xs font-semibold hover:bg-gold-light transition-colors"
+                            className="px-3 py-2 bg-gold text-white text-xs font-semibold hover:bg-gold-light transition-colors"
                           >
                             Thêm
                           </button>
@@ -2464,7 +2526,7 @@ export default function AdminDashboardPage() {
                   <div className="bg-white w-full max-w-sm rounded-sm shadow-2xl">
                     <div className="px-6 py-5 border-b border-gray-100">
                       <h3 className="font-display font-semibold text-base text-charcoal">
-                        Delete Product
+                        Xoá sản phẩm
                       </h3>
                     </div>
                     <div className="px-6 py-5">
@@ -2474,11 +2536,10 @@ export default function AdminDashboardPage() {
                         </div>
                         <div>
                           <p className="text-sm text-charcoal font-medium mb-1">
-                            Are you sure you want to delete this product?
+                            Bạn có chắc chắn muốn xoá sản phẩm này?
                           </p>
                           <p className="text-xs text-luxury-muted">
-                            This action cannot be undone. The product will be permanently removed
-                            from the database.
+                            Sản phẩm sẽ bị xoá vĩnh viễn khỏi cửa hàng và không thể khôi phục.
                           </p>
                         </div>
                       </div>
@@ -2489,7 +2550,7 @@ export default function AdminDashboardPage() {
                         disabled={deletingProduct}
                         className="px-4 py-2 text-xs font-semibold text-luxury-muted border border-gray-200 hover:bg-gray-50 transition-colors disabled:opacity-60"
                       >
-                        Cancel
+                        Huỷ
                       </button>
                       <button
                         onClick={handleConfirmDelete}
@@ -2501,7 +2562,7 @@ export default function AdminDashboardPage() {
                         ) : (
                           <Icon name="TrashIcon" size={12} />
                         )}
-                        Delete Product
+                        Xoá sản phẩm
                       </button>
                     </div>
                   </div>
@@ -2529,11 +2590,11 @@ export default function AdminDashboardPage() {
               {/* Add / Edit Category Form — only shown for ADD (not edit) */}
               {showAddCategory && !editingCategory && (
                 <div className="bg-white border border-gray-100 p-4 md:p-6 mb-6 rounded-sm">
-                  <h3 className="font-semibold text-sm text-charcoal mb-4">New Category</h3>
+                  <h3 className="font-semibold text-sm text-charcoal mb-4">Thêm danh mục</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div className="sm:col-span-2">
                       <label className="block text-[10px] uppercase tracking-wide font-semibold text-luxury-muted mb-1">
-                        Category Name *
+                        Tên danh mục
                       </label>
                       <input
                         type="text"
@@ -2545,7 +2606,7 @@ export default function AdminDashboardPage() {
                     </div>
                     <div className="sm:col-span-2">
                       <label className="block text-[10px] uppercase tracking-wide font-semibold text-luxury-muted mb-1">
-                        Description
+                        Mô tả (không bắt buộc)
                       </label>
                       <textarea
                         value={categoryForm.description}
@@ -2559,7 +2620,7 @@ export default function AdminDashboardPage() {
                     </div>
                     <div>
                       <label className="block text-[10px] uppercase tracking-wide font-semibold text-luxury-muted mb-1">
-                        Sort Order
+                        Thứ tự danh mục (không bắt buộc)
                       </label>
                       <input
                         type="number"
@@ -3111,7 +3172,7 @@ export default function AdminDashboardPage() {
                     color: 'bg-amber-50 border-amber-200 text-amber-700',
                   },
                   {
-                    label: 'Pending',
+                    label: 'Đang xử lý',
                     count: orders.filter((o) => o.status === 'pending').length,
                     color: 'bg-blue-50 border-blue-200 text-blue-700',
                   },
@@ -3121,7 +3182,7 @@ export default function AdminDashboardPage() {
                     color: 'bg-green-50 border-green-200 text-green-700',
                   },
                   {
-                    label: 'Cancelled',
+                    label: 'Đã huỷ',
                     count: orders.filter((o) => o.status === 'cancelled').length,
                     color: 'bg-red-50 border-red-200 text-red-700',
                   },
@@ -3137,7 +3198,7 @@ export default function AdminDashboardPage() {
 
               <div className="bg-white border border-gray-100 rounded-sm overflow-hidden">
                 <div className="flex items-center justify-between px-4 md:px-6 py-4 border-b border-gray-100">
-                  <h2 className="font-semibold text-sm text-charcoal">All Orders</h2>
+                  <h2 className="font-semibold text-sm text-charcoal">Tất cả đơn hàng</h2>
                   {ordersLoading && <span className="text-xs text-luxury-muted">Đang tải...</span>}
                 </div>
 
@@ -3268,7 +3329,7 @@ export default function AdminDashboardPage() {
                                       Đang tải...
                                     </div>
                                   ) : (
-                                    <div className="space-y-2">
+                                    <div className="grid grid-cols-2 gap-3">
                                       <div className="bg-gray-50 border border-gray-100 rounded-sm px-3 py-2 space-y-1.5">
                                         <p className="text-[10px] font-semibold uppercase tracking-wide text-luxury-muted">
                                           Thông tin khách hàng
@@ -3305,58 +3366,65 @@ export default function AdminDashboardPage() {
                                               .join(', ') || '—'}
                                           </p>
                                         </div>
+                                        <div className="flex items-start gap-1.5">
+                                          <p className="text-[10px] text-charcoal leading-snug">
+                                            Ghi chú: {order.notes || 'Không có ghi chú'}
+                                          </p>
+                                        </div>
                                       </div>
-                                      {orderItems[order.id] && orderItems[order.id].length > 0 ? (
-                                        orderItems[order.id].map((item) => (
-                                          <div
-                                            key={item.id}
-                                            className="flex items-start gap-2 bg-gray-50 border border-gray-100 p-2 rounded-sm"
-                                          >
-                                            {item.product_image && (
-                                              <div className="w-8 h-10 flex-shrink-0 overflow-hidden bg-luxury-warm">
-                                                <img
-                                                  src={item.product_image}
-                                                  alt={item.product_name}
-                                                  className="w-full h-full object-cover"
-                                                />
+                                      <div>
+                                        {orderItems[order.id] && orderItems[order.id].length > 0 ? (
+                                          orderItems[order.id].map((item) => (
+                                            <div
+                                              key={item.id}
+                                              className="flex items-start gap-2 bg-gray-50 border border-gray-100 p-2 rounded-sm"
+                                            >
+                                              {item.product_image && (
+                                                <div className="w-8 h-10 flex-shrink-0 overflow-hidden bg-luxury-warm">
+                                                  <img
+                                                    src={item.product_image}
+                                                    alt={item.product_name}
+                                                    className="w-full h-full object-cover"
+                                                  />
+                                                </div>
+                                              )}
+                                              <div className="flex-1 min-w-0">
+                                                <p className="text-[10px] font-semibold text-charcoal leading-tight">
+                                                  {item.product_name}
+                                                </p>
+                                                <div className="flex flex-wrap gap-2 mt-0.5">
+                                                  {item.material && (
+                                                    <span className="text-[10px] text-luxury-muted">
+                                                      CL:{' '}
+                                                      <span className="text-charcoal">
+                                                        {item.material}
+                                                      </span>
+                                                    </span>
+                                                  )}
+                                                  {item.size && (
+                                                    <span className="text-[10px] text-luxury-muted">
+                                                      Size:{' '}
+                                                      <span className="text-charcoal">
+                                                        {item.size}
+                                                      </span>
+                                                    </span>
+                                                  )}
+                                                  <span className="text-[10px] text-luxury-muted">
+                                                    ×{item.quantity}
+                                                  </span>
+                                                </div>
                                               </div>
-                                            )}
-                                            <div className="flex-1 min-w-0">
-                                              <p className="text-[10px] font-semibold text-charcoal leading-tight">
-                                                {item.product_name}
+                                              <p className="text-[10px] font-bold text-charcoal">
+                                                {Number(item.total_price).toLocaleString('vi-VN')}đ
                                               </p>
-                                              <div className="flex flex-wrap gap-2 mt-0.5">
-                                                {item.material && (
-                                                  <span className="text-[10px] text-luxury-muted">
-                                                    CL:{' '}
-                                                    <span className="text-charcoal">
-                                                      {item.material}
-                                                    </span>
-                                                  </span>
-                                                )}
-                                                {item.size && (
-                                                  <span className="text-[10px] text-luxury-muted">
-                                                    Size:{' '}
-                                                    <span className="text-charcoal">
-                                                      {item.size}
-                                                    </span>
-                                                  </span>
-                                                )}
-                                                <span className="text-[10px] text-luxury-muted">
-                                                  ×{item.quantity}
-                                                </span>
-                                              </div>
                                             </div>
-                                            <p className="text-[10px] font-bold text-charcoal">
-                                              {Number(item.total_price).toLocaleString('vi-VN')}đ
-                                            </p>
-                                          </div>
-                                        ))
-                                      ) : (
-                                        <p className="text-[10px] text-luxury-muted">
-                                          Không có sản phẩm.
-                                        </p>
-                                      )}
+                                          ))
+                                        ) : (
+                                          <p className="text-[10px] text-luxury-muted">
+                                            Không có sản phẩm.
+                                          </p>
+                                        )}
+                                      </div>
                                     </div>
                                   )}
                                   <div className="pt-1">
@@ -3823,7 +3891,7 @@ export default function AdminDashboardPage() {
                                     </span>
                                   )}
                                 </div>
-                                <p className="text-xs font-semibold text-charcoal max-w-[140px] truncate">
+                                <p className="text-xs font-semibold text-charcoal max-w-[200px] truncate">
                                   {customer.full_name || '—'}
                                 </p>
                               </div>

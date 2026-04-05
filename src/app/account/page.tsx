@@ -92,15 +92,32 @@ function LoginForm({ onSwitch }: { onSwitch: () => void }) {
     return (
       <div className="text-center py-4">
         <div className="w-12 h-12 bg-gold/10 border border-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg className="w-6 h-6 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+          <svg
+            className="w-6 h-6 text-gold"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={1.5}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
+            />
           </svg>
         </div>
         <h3 className="font-display text-lg font-semibold text-charcoal mb-2">Kiểm Tra Email</h3>
         <p className="text-luxury-muted text-sm mb-1">Liên kết đặt lại đã gửi đến</p>
         <p className="text-gold-dark text-sm font-medium mb-6">{forgotEmail}</p>
-        <button type="button" onClick={() => { setForgotView(false); setForgotSent(false); setError(''); }}
-          className="text-sm text-luxury-muted hover:text-gold-dark transition-colors">
+        <button
+          type="button"
+          onClick={() => {
+            setForgotView(false);
+            setForgotSent(false);
+            setError('');
+          }}
+          className="text-sm text-luxury-muted hover:text-gold-dark transition-colors"
+        >
           ← Quay lại đăng nhập
         </button>
       </div>
@@ -112,26 +129,47 @@ function LoginForm({ onSwitch }: { onSwitch: () => void }) {
       <div className="space-y-5">
         <div>
           <h3 className="font-display text-lg font-semibold text-charcoal mb-1">Quên Mật Khẩu</h3>
-          <p className="text-luxury-muted text-sm mb-5">Nhập email để nhận liên kết đặt lại mật khẩu.</p>
+          <p className="text-luxury-muted text-sm mb-5">
+            Nhập email để nhận liên kết đặt lại mật khẩu.
+          </p>
         </div>
         {error && (
-          <div className="px-4 py-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">{error}</div>
+          <div className="px-4 py-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+            {error}
+          </div>
         )}
         <form onSubmit={handleForgotPassword} className="space-y-4">
           <div>
-            <label className="block text-xs font-medium tracking-widest uppercase text-luxury-muted mb-2">Địa Chỉ Email</label>
-            <input type="email" value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)} required placeholder="your@email.com"
-              className="w-full px-4 py-3 bg-luxury-warm border border-luxury-border rounded-lg text-charcoal placeholder-luxury-muted/60 text-sm focus:outline-none focus:border-gold/60 focus:ring-1 focus:ring-gold/20 transition-all duration-300" />
+            <label className="block text-xs font-medium tracking-widest uppercase text-luxury-muted mb-2">
+              Địa Chỉ Email
+            </label>
+            <input
+              type="email"
+              value={forgotEmail}
+              onChange={(e) => setForgotEmail(e.target.value)}
+              required
+              placeholder="your@email.com"
+              className="w-full px-4 py-3 bg-luxury-warm border border-luxury-border rounded-lg text-charcoal placeholder-luxury-muted/60 text-sm focus:outline-none focus:border-gold/60 focus:ring-1 focus:ring-gold/20 transition-all duration-300"
+            />
           </div>
-          <button type="submit" disabled={loading}
-            className="w-full py-3.5 bg-gold text-charcoal font-semibold text-sm tracking-widest uppercase rounded-lg hover:bg-gold/90 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed relative overflow-hidden group">
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3.5 bg-gold text-charcoal font-semibold text-sm tracking-widest uppercase rounded-lg hover:bg-gold/90 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed relative overflow-hidden group"
+          >
             <span className="relative z-10">{loading ? 'Đang gửi...' : 'Gửi Liên Kết'}</span>
             <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12" />
           </button>
         </form>
         <div className="text-center">
-          <button type="button" onClick={() => { setForgotView(false); setError(''); }}
-            className="text-sm text-luxury-muted hover:text-gold-dark transition-colors">
+          <button
+            type="button"
+            onClick={() => {
+              setForgotView(false);
+              setError('');
+            }}
+            className="text-sm text-luxury-muted hover:text-gold-dark transition-colors"
+          >
             ← Quay lại đăng nhập
           </button>
         </div>
@@ -164,8 +202,15 @@ function LoginForm({ onSwitch }: { onSwitch: () => void }) {
           <label className="block text-xs font-medium tracking-widest uppercase text-luxury-muted">
             Mật Khẩu
           </label>
-          <button type="button" onClick={() => { setForgotEmail(email); setForgotView(true); setError(''); }}
-            className="text-xs text-gold-dark hover:text-gold-dark/80 transition-colors">
+          <button
+            type="button"
+            onClick={() => {
+              setForgotEmail(email);
+              setForgotView(true);
+              setError('');
+            }}
+            className="text-xs text-gold-dark hover:text-gold-dark/80 transition-colors"
+          >
             Quên mật khẩu?
           </button>
         </div>
@@ -197,7 +242,11 @@ function LoginForm({ onSwitch }: { onSwitch: () => void }) {
       </button>
       <p className="text-center text-sm text-luxury-muted">
         Chưa có tài khoản?{' '}
-        <button type="button" onClick={onSwitch} className="text-gold-dark hover:text-gold-dark/80 font-medium transition-colors">
+        <button
+          type="button"
+          onClick={onSwitch}
+          className="text-gold-dark hover:text-gold-dark/80 font-medium transition-colors"
+        >
           Tạo tài khoản
         </button>
       </p>
@@ -220,8 +269,14 @@ function RegisterForm({ onSwitch }: { onSwitch: () => void }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    if (password !== confirmPassword) { setError('Mật khẩu không khớp.'); return; }
-    if (password.length < 6) { setError('Mật khẩu phải có ít nhất 6 ký tự.'); return; }
+    if (password !== confirmPassword) {
+      setError('Mật khẩu không khớp.');
+      return;
+    }
+    if (password.length < 6) {
+      setError('Mật khẩu phải có ít nhất 6 ký tự.');
+      return;
+    }
     setLoading(true);
     try {
       await signUp(email, password, { fullName });
@@ -241,39 +296,81 @@ function RegisterForm({ onSwitch }: { onSwitch: () => void }) {
         </div>
       )}
       <div>
-        <label className="block text-xs font-medium tracking-widest uppercase text-luxury-muted mb-2">Họ Và Tên</label>
-        <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} required placeholder="Tên đầy đủ của bạn"
-          className="w-full px-4 py-3 bg-luxury-warm border border-luxury-border rounded-lg text-charcoal placeholder-luxury-muted/60 text-sm focus:outline-none focus:border-gold/60 focus:ring-1 focus:ring-gold/20 transition-all duration-300" />
+        <label className="block text-xs font-medium tracking-widest uppercase text-luxury-muted mb-2">
+          Họ Và Tên
+        </label>
+        <input
+          type="text"
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
+          required
+          placeholder="Tên đầy đủ của bạn"
+          className="w-full px-4 py-3 bg-luxury-warm border border-luxury-border rounded-lg text-charcoal placeholder-luxury-muted/60 text-sm focus:outline-none focus:border-gold/60 focus:ring-1 focus:ring-gold/20 transition-all duration-300"
+        />
       </div>
       <div>
-        <label className="block text-xs font-medium tracking-widest uppercase text-luxury-muted mb-2">Địa Chỉ Email</label>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="your@email.com"
-          className="w-full px-4 py-3 bg-luxury-warm border border-luxury-border rounded-lg text-charcoal placeholder-luxury-muted/60 text-sm focus:outline-none focus:border-gold/60 focus:ring-1 focus:ring-gold/20 transition-all duration-300" />
+        <label className="block text-xs font-medium tracking-widest uppercase text-luxury-muted mb-2">
+          Địa Chỉ Email
+        </label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          placeholder="your@email.com"
+          className="w-full px-4 py-3 bg-luxury-warm border border-luxury-border rounded-lg text-charcoal placeholder-luxury-muted/60 text-sm focus:outline-none focus:border-gold/60 focus:ring-1 focus:ring-gold/20 transition-all duration-300"
+        />
       </div>
       <div>
-        <label className="block text-xs font-medium tracking-widest uppercase text-luxury-muted mb-2">Mật Khẩu</label>
+        <label className="block text-xs font-medium tracking-widest uppercase text-luxury-muted mb-2">
+          Mật Khẩu
+        </label>
         <div className="relative">
-          <input type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="Tối thiểu 6 ký tự"
-            className="w-full px-4 py-3 bg-luxury-warm border border-luxury-border rounded-lg text-charcoal placeholder-luxury-muted/60 text-sm focus:outline-none focus:border-gold/60 focus:ring-1 focus:ring-gold/20 transition-all duration-300 pr-12" />
-          <button type="button" onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-luxury-muted hover:text-gold transition-colors text-xs tracking-wide">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            placeholder="Tối thiểu 6 ký tự"
+            className="w-full px-4 py-3 bg-luxury-warm border border-luxury-border rounded-lg text-charcoal placeholder-luxury-muted/60 text-sm focus:outline-none focus:border-gold/60 focus:ring-1 focus:ring-gold/20 transition-all duration-300 pr-12"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-luxury-muted hover:text-gold transition-colors text-xs tracking-wide"
+          >
             {showPassword ? 'Ẩn' : 'Hiện'}
           </button>
         </div>
       </div>
       <div>
-        <label className="block text-xs font-medium tracking-widest uppercase text-luxury-muted mb-2">Xác Nhận Mật Khẩu</label>
-        <input type={showPassword ? 'text' : 'password'} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required placeholder="Nhập lại mật khẩu"
-          className="w-full px-4 py-3 bg-luxury-warm border border-luxury-border rounded-lg text-charcoal placeholder-luxury-muted/60 text-sm focus:outline-none focus:border-gold/60 focus:ring-1 focus:ring-gold/20 transition-all duration-300" />
+        <label className="block text-xs font-medium tracking-widest uppercase text-luxury-muted mb-2">
+          Xác Nhận Mật Khẩu
+        </label>
+        <input
+          type={showPassword ? 'text' : 'password'}
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          required
+          placeholder="Nhập lại mật khẩu"
+          className="w-full px-4 py-3 bg-luxury-warm border border-luxury-border rounded-lg text-charcoal placeholder-luxury-muted/60 text-sm focus:outline-none focus:border-gold/60 focus:ring-1 focus:ring-gold/20 transition-all duration-300"
+        />
       </div>
-      <button type="submit" disabled={loading}
-        className="w-full py-3.5 bg-gold text-charcoal font-semibold text-sm tracking-widest uppercase rounded-lg hover:bg-gold/90 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed relative overflow-hidden group">
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full py-3.5 bg-gold text-charcoal font-semibold text-sm tracking-widest uppercase rounded-lg hover:bg-gold/90 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed relative overflow-hidden group"
+      >
         <span className="relative z-10">{loading ? 'Đang tạo tài khoản...' : 'Tạo Tài Khoản'}</span>
         <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12" />
       </button>
       <p className="text-center text-sm text-luxury-muted">
         Đã có tài khoản?{' '}
-        <button type="button" onClick={onSwitch} className="text-gold-dark hover:text-gold-dark/80 font-medium transition-colors">
+        <button
+          type="button"
+          onClick={onSwitch}
+          className="text-gold-dark hover:text-gold-dark/80 font-medium transition-colors"
+        >
           Đăng nhập
         </button>
       </p>
@@ -319,10 +416,16 @@ function OrderHistory({ userId }: { userId: string }) {
         <div className="w-16 h-16 bg-luxury-warm rounded-full flex items-center justify-center mx-auto mb-4">
           <Icon name="ShoppingBagIcon" size={28} className="text-luxury-muted" />
         </div>
-        <h3 className="font-display text-lg font-semibold text-charcoal mb-2">Chưa có đơn hàng nào</h3>
-        <p className="text-luxury-muted text-sm mb-6">Khám phá bộ sưu tập của chúng tôi và đặt hàng đầu tiên.</p>
-        <Link href="/product-listing"
-          className="inline-flex items-center gap-2 px-6 py-2.5 bg-gold text-charcoal text-sm font-semibold tracking-wide rounded-lg hover:bg-gold/90 transition-colors">
+        <h3 className="font-display text-lg font-semibold text-charcoal mb-2">
+          Chưa có đơn hàng nào
+        </h3>
+        <p className="text-luxury-muted text-sm mb-6">
+          Khám phá bộ sưu tập của chúng tôi và đặt hàng đầu tiên.
+        </p>
+        <Link
+          href="/product-listing"
+          className="inline-flex items-center gap-2 px-6 py-2.5 bg-gold text-charcoal text-sm font-semibold tracking-wide rounded-lg hover:bg-gold/90 transition-colors"
+        >
           Mua Sắm Ngay
         </Link>
       </div>
@@ -338,15 +441,26 @@ function OrderHistory({ userId }: { userId: string }) {
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-luxury-warm border-b border-luxury-border">
-              <th className="text-left px-5 py-3.5 text-xs font-semibold tracking-widest uppercase text-luxury-muted">Mã Đơn</th>
-              <th className="text-left px-5 py-3.5 text-xs font-semibold tracking-widest uppercase text-luxury-muted">Ngày Đặt</th>
-              <th className="text-left px-5 py-3.5 text-xs font-semibold tracking-widest uppercase text-luxury-muted">Trạng Thái</th>
-              <th className="text-right px-5 py-3.5 text-xs font-semibold tracking-widest uppercase text-luxury-muted">Tổng Tiền</th>
+              <th className="text-left px-5 py-3.5 text-xs font-semibold tracking-widest uppercase text-luxury-muted">
+                Mã Đơn
+              </th>
+              <th className="text-left px-5 py-3.5 text-xs font-semibold tracking-widest uppercase text-luxury-muted">
+                Ngày Đặt
+              </th>
+              <th className="text-left px-5 py-3.5 text-xs font-semibold tracking-widest uppercase text-luxury-muted">
+                Trạng Thái
+              </th>
+              <th className="text-right px-5 py-3.5 text-xs font-semibold tracking-widest uppercase text-luxury-muted">
+                Tổng Tiền
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-luxury-border bg-white">
             {orders.map((order) => {
-              const statusInfo = STATUS_LABELS[order.status] || { label: order.status, color: 'bg-gray-100 text-gray-700 border-gray-200' };
+              const statusInfo = STATUS_LABELS[order.status] || {
+                label: order.status,
+                color: 'bg-gray-100 text-gray-700 border-gray-200',
+              };
               return (
                 <tr key={order.id} className="hover:bg-luxury-warm/50 transition-colors">
                   <td className="px-5 py-4">
@@ -354,11 +468,11 @@ function OrderHistory({ userId }: { userId: string }) {
                       #{order.order_number}
                     </span>
                   </td>
-                  <td className="px-5 py-4 text-charcoal-light">
-                    {formatDate(order.created_at)}
-                  </td>
+                  <td className="px-5 py-4 text-charcoal-light">{formatDate(order.created_at)}</td>
                   <td className="px-5 py-4">
-                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${statusInfo.color}`}>
+                    <span
+                      className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${statusInfo.color}`}
+                    >
                       {statusInfo.label}
                     </span>
                   </td>
@@ -375,20 +489,27 @@ function OrderHistory({ userId }: { userId: string }) {
       {/* Mobile Cards */}
       <div className="md:hidden space-y-3">
         {orders.map((order) => {
-          const statusInfo = STATUS_LABELS[order.status] || { label: order.status, color: 'bg-gray-100 text-gray-700 border-gray-200' };
+          const statusInfo = STATUS_LABELS[order.status] || {
+            label: order.status,
+            color: 'bg-gray-100 text-gray-700 border-gray-200',
+          };
           return (
             <div key={order.id} className="bg-white border border-luxury-border rounded-xl p-4">
               <div className="flex items-start justify-between mb-3">
                 <span className="font-mono font-semibold text-charcoal text-xs tracking-wider">
                   #{order.order_number}
                 </span>
-                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${statusInfo.color}`}>
+                <span
+                  className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${statusInfo.color}`}
+                >
                   {statusInfo.label}
                 </span>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-luxury-muted">{formatDate(order.created_at)}</span>
-                <span className="font-semibold text-charcoal">{formatCurrency(order.total_amount)}</span>
+                <span className="font-semibold text-charcoal">
+                  {formatCurrency(order.total_amount)}
+                </span>
               </div>
             </div>
           );
@@ -517,7 +638,7 @@ function AccountSettings({ userEmail }: { userEmail: string }) {
           <button
             type="submit"
             disabled={emailLoading}
-            className="px-6 py-2.5 bg-gold text-charcoal font-semibold text-sm tracking-wide rounded-lg hover:bg-gold/90 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="px-6 py-2.5 bg-gold text-white font-semibold text-sm tracking-wide rounded-lg hover:bg-gold/90 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {emailLoading ? 'Đang cập nhật...' : 'Cập Nhật Email'}
           </button>
@@ -572,8 +693,11 @@ function AccountSettings({ userEmail }: { userEmail: string }) {
                 placeholder="Tối thiểu 6 ký tự"
                 className="w-full px-4 py-3 bg-luxury-warm border border-luxury-border rounded-lg text-charcoal placeholder-luxury-muted/60 text-sm focus:outline-none focus:border-gold/60 focus:ring-1 focus:ring-gold/20 transition-all duration-300 pr-12"
               />
-              <button type="button" onClick={() => setShowNewPassword(!showNewPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-luxury-muted hover:text-gold transition-colors text-xs tracking-wide">
+              <button
+                type="button"
+                onClick={() => setShowNewPassword(!showNewPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-luxury-muted hover:text-gold transition-colors text-xs tracking-wide"
+              >
                 {showNewPassword ? 'Ẩn' : 'Hiện'}
               </button>
             </div>
@@ -594,7 +718,7 @@ function AccountSettings({ userEmail }: { userEmail: string }) {
           <button
             type="submit"
             disabled={passwordLoading}
-            className="px-6 py-2.5 bg-gold text-charcoal font-semibold text-sm tracking-wide rounded-lg hover:bg-gold/90 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="px-6 py-2.5 bg-gold text-white font-semibold text-sm tracking-wide rounded-lg hover:bg-gold/90 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {passwordLoading ? 'Đang cập nhật...' : 'Đổi Mật Khẩu'}
           </button>
@@ -611,7 +735,9 @@ function AccountPageInner() {
   const searchParams = useSearchParams();
   const initialTab = searchParams?.get('tab') === 'settings' ? 'settings' : 'orders';
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
-  const [loggedInTab, setLoggedInTab] = useState<'orders' | 'settings'>(initialTab as 'orders' | 'settings');
+  const [loggedInTab, setLoggedInTab] = useState<'orders' | 'settings'>(
+    initialTab as 'orders' | 'settings'
+  );
 
   const handleSignOut = async () => {
     try {
@@ -627,10 +753,11 @@ function AccountPageInner() {
       <Header />
       <main className="pt-20 md:pt-24 pb-16">
         <div className="max-w-4xl mx-auto px-4 md:px-6">
-
           {/* Page Header */}
           <div className="text-center mb-10 pt-8">
-            <p className="text-xs font-semibold tracking-[0.2em] uppercase text-gold mb-2">LuxeJewel</p>
+            <p className="text-xs font-semibold tracking-[0.2em] uppercase text-gold mb-2">
+              LuxeJewel
+            </p>
             <h1 className="font-display text-3xl md:text-4xl font-semibold text-charcoal">
               {user ? 'Tài Khoản Của Tôi' : 'Tài Khoản'}
             </h1>
@@ -672,7 +799,9 @@ function AccountPageInner() {
                 <button
                   onClick={() => setLoggedInTab('orders')}
                   className={`flex-1 py-2.5 text-sm font-semibold tracking-wide rounded-lg transition-all duration-200 flex items-center justify-center gap-2 ${
-                    loggedInTab === 'orders' ? 'bg-gold text-charcoal shadow-sm' : 'text-luxury-muted hover:text-charcoal'
+                    loggedInTab === 'orders'
+                      ? 'bg-gold text-white shadow-sm'
+                      : 'text-luxury-muted hover:text-charcoal'
                   }`}
                 >
                   <Icon name="ShoppingBagIcon" size={16} />
@@ -681,7 +810,9 @@ function AccountPageInner() {
                 <button
                   onClick={() => setLoggedInTab('settings')}
                   className={`flex-1 py-2.5 text-sm font-semibold tracking-wide rounded-lg transition-all duration-200 flex items-center justify-center gap-2 ${
-                    loggedInTab === 'settings' ? 'bg-gold text-charcoal shadow-sm' : 'text-luxury-muted hover:text-charcoal'
+                    loggedInTab === 'settings'
+                      ? 'bg-gold text-white shadow-sm'
+                      : 'text-luxury-muted hover:text-charcoal'
                   }`}
                 >
                   <Icon name="Cog6ToothIcon" size={16} />
@@ -706,7 +837,9 @@ function AccountPageInner() {
                 <button
                   onClick={() => setActiveTab('login')}
                   className={`flex-1 py-2.5 text-sm font-semibold tracking-wide rounded-lg transition-all duration-200 ${
-                    activeTab === 'login' ? 'bg-gold text-charcoal shadow-sm' : 'text-luxury-muted hover:text-charcoal'
+                    activeTab === 'login'
+                      ? 'bg-gold text-charcoal shadow-sm'
+                      : 'text-luxury-muted hover:text-charcoal'
                   }`}
                 >
                   Đăng Nhập
@@ -714,7 +847,9 @@ function AccountPageInner() {
                 <button
                   onClick={() => setActiveTab('register')}
                   className={`flex-1 py-2.5 text-sm font-semibold tracking-wide rounded-lg transition-all duration-200 ${
-                    activeTab === 'register' ? 'bg-gold text-charcoal shadow-sm' : 'text-luxury-muted hover:text-charcoal'
+                    activeTab === 'register'
+                      ? 'bg-gold text-charcoal shadow-sm'
+                      : 'text-luxury-muted hover:text-charcoal'
                   }`}
                 >
                   Tạo Tài Khoản
@@ -725,21 +860,32 @@ function AccountPageInner() {
               <div className="bg-white border border-luxury-border rounded-2xl p-8 shadow-sm">
                 {activeTab === 'login' ? (
                   <>
-                    <h2 className="font-display text-xl font-semibold text-charcoal mb-1">Đăng Nhập</h2>
-                    <p className="text-luxury-muted text-sm mb-6">Truy cập tài khoản và lịch sử đơn hàng</p>
+                    <h2 className="font-display text-xl font-semibold text-charcoal mb-1">
+                      Đăng Nhập
+                    </h2>
+                    <p className="text-luxury-muted text-sm mb-6">
+                      Truy cập tài khoản và lịch sử đơn hàng
+                    </p>
                     <LoginForm onSwitch={() => setActiveTab('register')} />
                   </>
                 ) : (
                   <>
-                    <h2 className="font-display text-xl font-semibold text-charcoal mb-1">Tạo Tài Khoản</h2>
-                    <p className="text-luxury-muted text-sm mb-6">Khám phá sản phẩm độc quyền và theo dõi đơn hàng</p>
+                    <h2 className="font-display text-xl font-semibold text-charcoal mb-1">
+                      Tạo Tài Khoản
+                    </h2>
+                    <p className="text-luxury-muted text-sm mb-6">
+                      Khám phá sản phẩm độc quyền và theo dõi đơn hàng
+                    </p>
                     <RegisterForm onSwitch={() => setActiveTab('login')} />
                   </>
                 )}
               </div>
 
               <p className="text-center mt-6">
-                <Link href="/homepage" className="text-luxury-muted text-xs tracking-widest uppercase hover:text-gold transition-colors duration-200">
+                <Link
+                  href="/homepage"
+                  className="text-luxury-muted text-xs tracking-widest uppercase hover:text-gold transition-colors duration-200"
+                >
                   ← Tiếp Tục Mua Sắm
                 </Link>
               </p>
@@ -754,11 +900,13 @@ function AccountPageInner() {
 
 export default function AccountPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-luxury-warm flex items-center justify-center">
-        <div className="w-10 h-10 border-2 border-gold border-t-transparent rounded-full animate-spin" />
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-luxury-warm flex items-center justify-center">
+          <div className="w-10 h-10 border-2 border-gold border-t-transparent rounded-full animate-spin" />
+        </div>
+      }
+    >
       <AccountPageInner />
     </Suspense>
   );

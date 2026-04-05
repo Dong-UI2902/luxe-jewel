@@ -5,18 +5,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Montserrat:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
 
 :root {
-  --gold: #C5A059;
-  --gold-light: #D4B87A;
-  --gold-dark: #7A5C10;
-  --gold-button: #8B6914;
-  --charcoal: #1A1A1A;
-  --charcoal-mid: #2C2C2C;
-  --charcoal-light: #4A4A4A;
-  --luxury-white: #FFFFFF;
-  --warm-white: #FAFAFA;
-  --muted: #767676;
-  --border: #EBEBEB;
-  --border-dark: #D8D8D8;
+  /* Chuyển đổi tông Gold sang Đen & Xám */
+  --gold: rgb(13 13 13 / 0.9); /* Đen chủ đạo */
+  --gold-light: rgb(204 204 204); /* Xám bạc */
+  --gold-dark: #000000;
+  --gold-button: #1a1a1a;
+
+  --charcoal: #0d0d0d;
+  --charcoal-mid: #262626;
+  --charcoal-light: #404040;
+  --luxury-white: #ffffff;
+  --warm-white: #f5f5f5;
+  --muted: #888888;
+  --border: #e5e5e5;
+  --border-dark: #cccccc;
   --radius: 0.25rem;
 }
 
@@ -56,7 +58,7 @@ body {
 
 /* Text gradient gold */
 .text-gold-gradient {
-  background: linear-gradient(135deg, #C5A059 0%, #D4B87A 50%, #A8863D 100%);
+  background: linear-gradient(135deg, #c5a059 0%, #d4b87a 50%, #a8863d 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -64,12 +66,23 @@ body {
 
 /* Shimmer animation */
 @keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
 }
 
 .shimmer {
-  background: linear-gradient(90deg, #C5A059 0%, #D4B87A 25%, #C5A059 50%, #D4B87A 75%, #C5A059 100%);
+  background: linear-gradient(
+    90deg,
+    #c5a059 0%,
+    #d4b87a 25%,
+    #c5a059 50%,
+    #d4b87a 75%,
+    #c5a059 100%
+  );
   background-size: 200% auto;
   animation: shimmer 3s linear infinite;
   -webkit-background-clip: text;
@@ -79,13 +92,21 @@ body {
 
 /* Neon line animations — light mode: very subtle */
 @keyframes neonH {
-  from { transform: translateX(-120%); }
-  to { transform: translateX(120vw); }
+  from {
+    transform: translateX(-120%);
+  }
+  to {
+    transform: translateX(120vw);
+  }
 }
 
 @keyframes neonV {
-  from { transform: translateY(-120%); }
-  to { transform: translateY(120vh); }
+  from {
+    transform: translateY(-120%);
+  }
+  to {
+    transform: translateY(120vh);
+  }
 }
 
 .neon-line-h {
@@ -126,8 +147,12 @@ body {
 
 /* Char reveal */
 @keyframes charReveal {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0%); }
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0%);
+  }
 }
 
 /* Product card hover */
@@ -190,8 +215,12 @@ body {
 
 /* Drawer overlay */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .animate-fade-in {
@@ -277,8 +306,12 @@ input[type='range']::-webkit-slider-thumb {
 
 /* Modal backdrop */
 @keyframes backdropIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modal-backdrop {
@@ -308,12 +341,24 @@ input[type='range']::-webkit-slider-thumb {
 }
 
 /* Stagger animation delays */
-.stagger-1 { animation-delay: 0.1s; }
-.stagger-2 { animation-delay: 0.2s; }
-.stagger-3 { animation-delay: 0.3s; }
-.stagger-4 { animation-delay: 0.4s; }
-.stagger-5 { animation-delay: 0.5s; }
-.stagger-6 { animation-delay: 0.6s; }
+.stagger-1 {
+  animation-delay: 0.1s;
+}
+.stagger-2 {
+  animation-delay: 0.2s;
+}
+.stagger-3 {
+  animation-delay: 0.3s;
+}
+.stagger-4 {
+  animation-delay: 0.4s;
+}
+.stagger-5 {
+  animation-delay: 0.5s;
+}
+.stagger-6 {
+  animation-delay: 0.6s;
+}
 
 /* Opacity 0 initial for stagger */
 .opacity-0-init {
@@ -328,4 +373,67 @@ input[type='range']::-webkit-slider-thumb {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
   pointer-events: none;
   z-index: 1;
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 27px;
+  height: 16px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: '';
+  height: 10px;
+  width: 11px;
+  left: 2px;
+  bottom: 3px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #2196f3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196f3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(12px);
+  -ms-transform: translateX(12px);
+  transform: translateX(12px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
 }
