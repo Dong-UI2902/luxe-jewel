@@ -12,12 +12,11 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
-  title: 'LuxeJewel — Handcrafted Fine Jewelry',
-  description: 'Shop handcrafted fine jewelry in 18K gold, sterling silver, and white gold. Rings, necklaces, bracelets, and earrings for every occasion.',
+  title: 'PAJ Silver — Handcrafted Fine Jewelry',
+  description:
+    'Shop handcrafted fine jewelry in 18K gold, sterling silver, and white gold. Rings, necklaces, bracelets, and earrings for every occasion.',
   icons: {
-    icon: [
-      { url: '/favicon.ico', type: 'image/x-icon' }
-    ],
+    icon: [{ url: '/favicon.ico', type: 'image/x-icon' }],
   },
 };
 
@@ -27,16 +26,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="vi" suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <AuthProvider>
           <LanguageProvider>
-            <CartProvider>
-              {children}
-            </CartProvider>
+            <CartProvider>{children}</CartProvider>
           </LanguageProvider>
         </AuthProvider>
-</body>
+      </body>
     </html>
   );
 }

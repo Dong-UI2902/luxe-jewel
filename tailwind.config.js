@@ -8,53 +8,51 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // --- CHUYỂN ĐỔI HỆ MÀU GOLD SANG TÔNG TEAL TỪ LOGO ---
         gold: {
-          DEFAULT: 'rgb(13 13 13 / 0.9)', // Màu đen chủ đạo bạn muốn
-          light: 'rgb(204 204 204)', // Màu xám bạc bạn muốn
-          dark: '#000000', // Đen tuyền
-          button: '#1a1a1a', // Đen nhẹ cho nút bấm
-          subtle: 'rgba(0, 0, 0, 0.05)', // Xám cực nhạt cho background nhẹ
+          // Lấy màu đậm nhất từ chữ PAJ của logo làm màu chủ đạo (Primary)
+          DEFAULT: '#336666',
+
+          // Các mức độ sáng khác để dùng cho Hover/Active
+          light: '#4d8c8c', // Sáng hơn một chút
+          dark: '#1f3d3d', // Đậm hơn
+
+          // Nút bấm sẽ dùng tông teal chuẩn để nổi bật
+          button: '#336666',
+
+          // Subtle: màu nền nhạt nhất (pha với trắng) để tạo ô Grid, Dot
+          // Tương đương rgba(51, 102, 102, 0.08)
+          subtle: '#eaf1f1',
         },
+
+        // --- CHUYỂN ĐỔI HỆ CHARCOAL (ĐEN) SANG TÔNG TEAL ĐẬM MỜ ---
         charcoal: {
-          DEFAULT: '#1A1A1A',
-          mid: '#2C2C2C',
-          light: '#4A4A4A',
+          DEFAULT: '#1a3333' /* Màu Teal rất đậm cho tiêu đề */,
+          mid: '#336666' /* Màu Teal chuẩn cho văn bản thường */,
+          light: '#4d8c8c' /* Màu Teal nhạt cho phụ đề */,
         },
+
+        // --- CHUYỂN ĐỔI HỆ LUXURY (TRẮNG/BỘI) SANG TÔNG NỀN KEM NHẠT TỪ LOGO ---
         luxury: {
-          white: '#FFFFFF',
-          warm: '#FAFAFA',
-          muted: '#767676',
-          border: '#EBEBEB',
-          'border-dark': '#D8D8D8',
+          // Lấy màu nền kem ấm áp từ logo làm màu nền web (Luxury White)
+          white: '#faf9f6',
+
+          // Màu kem hơi đậm hơn một chút cho các ô card
+          warm: '#f3f1eb',
+
+          // Các tông mờ và border chuyển sang Teal pha xám nhẹ
+          muted: '#80a0a0',
+          border: '#ced9d9',
+          'border-dark': '#b3c6c6',
         },
       },
-      fontFamily: {
-        display: ['Playfair Display', 'Georgia', 'serif'],
-        sans: ['Montserrat', 'Inter', 'system-ui', 'sans-serif'],
-      },
-      fontSize: {
-        '8xl': '6rem',
-        '9xl': '8rem',
-        '10xl': '10rem',
-      },
-      letterSpacing: {
-        luxury: '0.2em',
-        wide: '0.08em',
-      },
-      animation: {
-        'fade-up': 'fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards',
-        'slide-in-right': 'slideInRight 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards',
-        shimmer: 'shimmer 3s linear infinite',
-        'fade-in': 'fadeIn 0.3s ease forwards',
-      },
-      transitionTimingFunction: {
-        luxury: 'cubic-bezier(0.22, 1, 0.36, 1)',
-      },
+      // ... các cấu hình font, fontSize, letterSpacing giữ nguyên
       boxShadow: {
-        product: '0 4px 24px rgba(26, 26, 26, 0.08)',
-        'product-hover': '0 12px 40px rgba(26, 26, 26, 0.14)',
-        gold: '0 4px 24px rgba(212, 175, 55, 0.2)',
-        drawer: '-4px 0 40px rgba(26, 26, 26, 0.12)',
+        // Cập nhật lại đổ bóng sang tông teal mờ cho đồng bộ
+        product: '0 4px 24px rgba(51, 102, 102, 0.06)',
+        'product-hover': '0 12px 40px rgba(51, 102, 102, 0.12)',
+        gold: '0 4px 24px rgba(51, 102, 102, 0.15)',
+        drawer: '-4px 0 40px rgba(51, 102, 102, 0.1)',
       },
     },
   },

@@ -94,8 +94,8 @@ const Header: React.FC<HeaderProps> = ({ transparent = false }) => {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled || !transparent
-            ? 'bg-white/97 backdrop-blur-md border-b border-luxury-border shadow-none'
-            : 'bg-white/90 backdrop-blur-sm border-b border-luxury-border'
+            ? 'bg-white backdrop-blur-md border-b border-luxury-border shadow-none'
+            : 'bg-white backdrop-blur-sm border-b border-luxury-border'
         }`}
       >
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10">
@@ -106,9 +106,9 @@ const Header: React.FC<HeaderProps> = ({ transparent = false }) => {
               className="flex items-center gap-2 group min-h-[44px]"
               onClick={() => setMobileMenuOpen(false)}
             >
-              <AppLogo size={26} />
-              <span className="font-display text-lg sm:text-xl font-semibold tracking-[0.08em] text-charcoal group-hover:text-gold transition-colors duration-300">
-                LuxeJewel
+              {/* <AppLogo size={40} /> */}
+              <span className="tracking-[0.08em] duration-300 w-40">
+                <img src="/assets/images/app_logo_header2.png" />
               </span>
             </Link>
 

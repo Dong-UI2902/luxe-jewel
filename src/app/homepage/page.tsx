@@ -538,247 +538,258 @@ const HeroSection: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
   }, [currentSlide, goToSlide]);
 
   return (
-    <section className="relative min-h-screen bg-white overflow-hidden">
-      {/* Subtle warm tint overlay */}
-      <div className="absolute inset-0 z-0 pointer-events-none bg-gradient-to-br from-[#FAFAFA] via-white to-[#F9F6F1] opacity-60" />
+    // <section className="relative min-h-screen bg-white overflow-hidden">
+    //   {/* Subtle warm tint overlay */}
+    //   <div className="absolute inset-0 z-0 pointer-events-none bg-gradient-to-br from-[#FAFAFA] via-white to-[#F9F6F1] opacity-60" />
 
-      <div
-        className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10 pt-16 sm:pt-20 md:pt-28 pb-10 md:pb-16 min-h-screen flex flex-col"
-        suppressHydrationWarning
-      >
-        <div className="flex-1 grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-center">
-          {/* Left: Brand text — hidden on mobile, shown on md+ */}
-          <div className="hidden md:flex md:col-span-3 flex-col justify-between h-full py-8">
-            <div>
-              <p className="text-[10px] uppercase tracking-[0.3em] text-gold-dark font-semibold mb-6 font-sans">
-                {t('hero.tagline')}
-              </p>
-              <div className="overflow-hidden">
-                <h1
-                  className="font-display text-charcoal-light leading-none"
-                  style={{
-                    fontSize: 'clamp(3rem, 6vw, 5rem)',
-                    fontWeight: 400,
-                    letterSpacing: '0.12em',
-                  }}
-                >
-                  LUXE
-                </h1>
-              </div>
-              <div className="overflow-hidden">
-                <h1
-                  className="font-display text-gold-dark leading-none"
-                  style={{
-                    fontSize: 'clamp(3rem, 6vw, 5rem)',
-                    fontWeight: 600,
-                    letterSpacing: '0.12em',
-                  }}
-                >
-                  JEWEL
-                </h1>
-              </div>
-              <div className="w-12 h-px bg-gold/50 my-6" />
-              <p className="text-charcoal-light text-sm leading-relaxed font-light max-w-[200px] font-sans">
-                {t('hero.brand_desc')}
-              </p>
-            </div>
+    //   <div
+    //     className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10 pt-16 sm:pt-20 md:pt-28 pb-10 md:pb-16 min-h-screen flex flex-col"
+    //     suppressHydrationWarning
+    //   >
+    //     <div className="flex-1 grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-center">
+    //       {/* Left: Brand text — hidden on mobile, shown on md+ */}
+    //       <div className="hidden md:flex md:col-span-3 flex-col justify-between h-full py-8">
+    //         <div>
+    //           <p className="text-[10px] uppercase tracking-[0.3em] text-gold-dark font-semibold mb-6 font-sans">
+    //             {t('hero.tagline')}
+    //           </p>
+    //           <div className="overflow-hidden">
+    //             <h1
+    //               className="font-display text-charcoal-light leading-none"
+    //               style={{
+    //                 fontSize: 'clamp(3rem, 6vw, 5rem)',
+    //                 fontWeight: 400,
+    //                 letterSpacing: '0.12em',
+    //               }}
+    //             >
+    //               LUXE
+    //             </h1>
+    //           </div>
+    //           <div className="overflow-hidden">
+    //             <h1
+    //               className="font-display text-gold-dark leading-none"
+    //               style={{
+    //                 fontSize: 'clamp(3rem, 6vw, 5rem)',
+    //                 fontWeight: 600,
+    //                 letterSpacing: '0.12em',
+    //               }}
+    //             >
+    //               JEWEL
+    //             </h1>
+    //           </div>
+    //           <div className="w-12 h-px bg-gold/50 my-6" />
+    //           <p className="text-charcoal-light text-sm leading-relaxed font-light max-w-[200px] font-sans">
+    //             {t('hero.brand_desc')}
+    //           </p>
+    //         </div>
 
-            <div className="flex flex-col gap-3 mt-8">
-              <div className="group">
-                <p className="text-[9px] uppercase tracking-[0.2em] text-luxury-muted mb-1 font-sans">
-                  {t('hero.collections_label')}
-                </p>
-                <div className="flex flex-col gap-1">
-                  {[t('nav.rings'), t('nav.necklaces'), t('nav.bracelets')].map((item) => (
-                    <Link
-                      key={item}
-                      href="/product-listing"
-                      className="text-sm text-charcoal-light hover:text-gold transition-colors flex items-center gap-2 group/link font-sans"
-                    >
-                      <span className="w-3 h-px bg-gold/40 group-hover/link:w-5 transition-all duration-300" />
-                      {item}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
+    //         <div className="flex flex-col gap-3 mt-8">
+    //           <div className="group">
+    //             <p className="text-[9px] uppercase tracking-[0.2em] text-luxury-muted mb-1 font-sans">
+    //               {t('hero.collections_label')}
+    //             </p>
+    //             <div className="flex flex-col gap-1">
+    //               {[t('nav.rings'), t('nav.necklaces'), t('nav.bracelets')].map((item) => (
+    //                 <Link
+    //                   key={item}
+    //                   href="/product-listing"
+    //                   className="text-sm text-charcoal-light hover:text-gold transition-colors flex items-center gap-2 group/link font-sans"
+    //                 >
+    //                   <span className="w-3 h-px bg-gold/40 group-hover/link:w-5 transition-all duration-300" />
+    //                   {item}
+    //                 </Link>
+    //               ))}
+    //             </div>
+    //           </div>
+    //         </div>
+    //       </div>
 
-          {/* Center: Image slider — full width on mobile */}
-          <div className="md:col-span-6 relative w-full">
-            {/* Mobile brand text overlay */}
-            <div className="md:hidden flex items-center justify-between mb-4 px-1">
-              <div>
-                <p className="text-[10px] uppercase tracking-[0.3em] text-gold-dark font-semibold font-sans">
-                  {t('hero.tagline')}
-                </p>
-                <div className="flex items-baseline gap-2 mt-1">
-                  <span className="font-display text-charcoal-light text-3xl sm:text-4xl font-normal tracking-[0.12em]">
-                    LUXE
-                  </span>
-                  <span className="font-display text-gold-dark text-3xl sm:text-4xl font-semibold tracking-[0.12em]">
-                    JEWEL
-                  </span>
-                </div>
-              </div>
-              <div className="flex gap-3">
-                <div className="border-l-2 border-gold/50 pl-3">
-                  <p className="text-2xl font-display text-charcoal font-light">148+</p>
-                  <p className="text-[10px] text-luxury-muted tracking-wide font-sans">
-                    {t('hero.unique_designs')}
-                  </p>
-                </div>
-              </div>
-            </div>
+    //       {/* Center: Image slider — full width on mobile */}
+    //       <div className="md:col-span-6 relative w-full">
+    //         {/* Mobile brand text overlay */}
+    //         <div className="md:hidden flex items-center justify-between mb-4 px-1">
+    //           <div>
+    //             <p className="text-[10px] uppercase tracking-[0.3em] text-gold-dark font-semibold font-sans">
+    //               {t('hero.tagline')}
+    //             </p>
+    //             <div className="flex items-baseline gap-2 mt-1">
+    //               <span className="font-display text-charcoal-light text-3xl sm:text-4xl font-normal tracking-[0.12em]">
+    //                 LUXE
+    //               </span>
+    //               <span className="font-display text-gold-dark text-3xl sm:text-4xl font-semibold tracking-[0.12em]">
+    //                 JEWEL
+    //               </span>
+    //             </div>
+    //           </div>
+    //           <div className="flex gap-3">
+    //             <div className="border-l-2 border-gold/50 pl-3">
+    //               <p className="text-2xl font-display text-charcoal font-light">148+</p>
+    //               <p className="text-[10px] text-luxury-muted tracking-wide font-sans">
+    //                 {t('hero.unique_designs')}
+    //               </p>
+    //             </div>
+    //           </div>
+    //         </div>
 
-            <div className="relative aspect-[3/4] sm:aspect-[2/3] md:aspect-[3/4] overflow-hidden rounded-sm shadow-[0_8px_40px_rgba(26,26,26,0.12)]">
-              {heroSlides.map((slide, i) => (
-                <div
-                  key={slide.id}
-                  className="absolute inset-0 transition-opacity duration-700"
-                  style={{ opacity: i === currentSlide ? 1 : 0 }}
-                >
-                  <AppImage
-                    src={slide.image}
-                    alt={slide.title}
-                    fill
-                    className="object-cover"
-                    priority={i === 0}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+    //         <div className="relative aspect-[3/4] sm:aspect-[2/3] md:aspect-[3/4] overflow-hidden rounded-sm shadow-[0_8px_40px_rgba(26,26,26,0.12)]">
+    //           {heroSlides.map((slide, i) => (
+    //             <div
+    //               key={slide.id}
+    //               className="absolute inset-0 transition-opacity duration-700"
+    //               style={{ opacity: i === currentSlide ? 1 : 0 }}
+    //             >
+    //               <AppImage
+    //                 src={slide.image}
+    //                 alt={slide.title}
+    //                 fill
+    //                 className="object-cover"
+    //                 priority={i === 0}
+    //               />
+    //               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
 
-                  {/* Slide info overlay */}
-                  <div className="absolute bottom-0 left-0 p-5 sm:p-8">
-                    <div className="flex items-center gap-2 mb-2 sm:mb-3">
-                      <span className="text-[10px] uppercase tracking-[0.2em] font-semibold text-white border border-white/50 px-2.5 py-1 font-sans">
-                        {t(slide.labelKey)}
-                      </span>
-                    </div>
-                    <h3 className="font-display text-white text-xl sm:text-3xl font-light mb-1">
-                      {slide.title}
-                    </h3>
-                    <p className="text-white/80 text-sm font-sans">{slide.subtitle}</p>
-                  </div>
-                </div>
-              ))}
+    //               {/* Slide info overlay */}
+    //               <div className="absolute bottom-0 left-0 p-5 sm:p-8">
+    //                 <div className="flex items-center gap-2 mb-2 sm:mb-3">
+    //                   <span className="text-[10px] uppercase tracking-[0.2em] font-semibold text-white border border-white/50 px-2.5 py-1 font-sans">
+    //                     {t(slide.labelKey)}
+    //                   </span>
+    //                 </div>
+    //                 <h3 className="font-display text-white text-xl sm:text-3xl font-light mb-1">
+    //                   {slide.title}
+    //                 </h3>
+    //                 <p className="text-white/80 text-sm font-sans">{slide.subtitle}</p>
+    //               </div>
+    //             </div>
+    //           ))}
 
-              {/* Navigation */}
-              <div className="absolute bottom-5 right-5 sm:bottom-8 sm:right-8 flex items-center gap-2 z-10">
-                <div className="px-2.5 py-1 bg-white/80 backdrop-blur-md border border-luxury-border text-xs font-mono text-charcoal">
-                  {String(currentSlide + 1).padStart(2, '0')} /{' '}
-                  {String(heroSlides.length).padStart(2, '0')}
-                </div>
-                <button
-                  aria-label="Previous slide"
-                  onClick={() =>
-                    goToSlide((currentSlide - 1 + heroSlides.length) % heroSlides.length)
-                  }
-                  className="w-9 h-9 border border-white/60 bg-white/70 backdrop-blur-md flex items-center justify-center text-charcoal hover:bg-gold hover:text-white hover:border-gold transition-all duration-300 min-w-[44px] min-h-[44px]"
-                >
-                  <Icon name="ChevronLeftIcon" size={16} />
-                </button>
-                <button
-                  aria-label="Next slide"
-                  onClick={() => goToSlide((currentSlide + 1) % heroSlides.length)}
-                  className="w-9 h-9 border border-white/60 bg-white/70 backdrop-blur-md flex items-center justify-center text-charcoal hover:bg-gold hover:text-white hover:border-gold transition-all duration-300 min-w-[44px] min-h-[44px]"
-                >
-                  <Icon name="ChevronRightIcon" size={16} />
-                </button>
-              </div>
-            </div>
+    //           {/* Navigation */}
+    //           <div className="absolute bottom-5 right-5 sm:bottom-8 sm:right-8 flex items-center gap-2 z-10">
+    //             <div className="px-2.5 py-1 bg-white/80 backdrop-blur-md border border-luxury-border text-xs font-mono text-charcoal">
+    //               {String(currentSlide + 1).padStart(2, '0')} /{' '}
+    //               {String(heroSlides.length).padStart(2, '0')}
+    //             </div>
+    //             <button
+    //               aria-label="Previous slide"
+    //               onClick={() =>
+    //                 goToSlide((currentSlide - 1 + heroSlides.length) % heroSlides.length)
+    //               }
+    //               className="w-9 h-9 border border-white/60 bg-white/70 backdrop-blur-md flex items-center justify-center text-charcoal hover:bg-gold hover:text-white hover:border-gold transition-all duration-300 min-w-[44px] min-h-[44px]"
+    //             >
+    //               <Icon name="ChevronLeftIcon" size={16} />
+    //             </button>
+    //             <button
+    //               aria-label="Next slide"
+    //               onClick={() => goToSlide((currentSlide + 1) % heroSlides.length)}
+    //               className="w-9 h-9 border border-white/60 bg-white/70 backdrop-blur-md flex items-center justify-center text-charcoal hover:bg-gold hover:text-white hover:border-gold transition-all duration-300 min-w-[44px] min-h-[44px]"
+    //             >
+    //               <Icon name="ChevronRightIcon" size={16} />
+    //             </button>
+    //           </div>
+    //         </div>
 
-            {/* Slide dots */}
-            <div className="flex gap-1.5 justify-center mt-4">
-              {heroSlides.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => goToSlide(i)}
-                  className={`h-px transition-all duration-300 min-h-[20px] flex items-center ${i === currentSlide ? 'w-8' : 'w-4'}`}
-                  aria-label={`Go to slide ${i + 1}`}
-                >
-                  <span
-                    className={`h-px w-full ${i === currentSlide ? 'bg-gold' : 'bg-luxury-border'}`}
-                  />
-                </button>
-              ))}
-            </div>
+    //         {/* Slide dots */}
+    //         <div className="flex gap-1.5 justify-center mt-4">
+    //           {heroSlides.map((_, i) => (
+    //             <button
+    //               key={i}
+    //               onClick={() => goToSlide(i)}
+    //               className={`h-px transition-all duration-300 min-h-[20px] flex items-center ${i === currentSlide ? 'w-8' : 'w-4'}`}
+    //               aria-label={`Go to slide ${i + 1}`}
+    //             >
+    //               <span
+    //                 className={`h-px w-full ${i === currentSlide ? 'bg-gold' : 'bg-luxury-border'}`}
+    //               />
+    //             </button>
+    //           ))}
+    //         </div>
 
-            {/* Mobile CTA buttons */}
-            <div className="md:hidden flex flex-col sm:flex-row gap-3 mt-5">
-              <Link
-                href="/product-listing"
-                className="flex-1 px-6 py-3.5 bg-gold-button text-white text-sm font-semibold tracking-widest hover:bg-gold-dark transition-colors duration-300 text-center font-sans uppercase"
-              >
-                {t('hero.shop_collection')}
-              </Link>
-              <button
-                onClick={onCartOpen}
-                className="flex-1 px-6 py-3.5 border border-charcoal/20 text-charcoal text-sm font-medium tracking-wide hover:border-gold hover:text-gold transition-colors duration-300 font-sans"
-              >
-                {t('hero.view_lookbook')}
-              </button>
-            </div>
-          </div>
+    //         {/* Mobile CTA buttons */}
+    //         <div className="md:hidden flex flex-col sm:flex-row gap-3 mt-5">
+    //           <Link
+    //             href="/product-listing"
+    //             className="flex-1 px-6 py-3.5 bg-gold-button text-white text-sm font-semibold tracking-widest hover:bg-gold-dark transition-colors duration-300 text-center font-sans uppercase"
+    //           >
+    //             {t('hero.shop_collection')}
+    //           </Link>
+    //           <button
+    //             onClick={onCartOpen}
+    //             className="flex-1 px-6 py-3.5 border border-charcoal/20 text-charcoal text-sm font-medium tracking-wide hover:border-gold hover:text-gold transition-colors duration-300 font-sans"
+    //           >
+    //             {t('hero.view_lookbook')}
+    //           </button>
+    //         </div>
+    //       </div>
 
-          {/* Right: Stats + CTA — desktop only */}
-          <div className="hidden md:flex md:col-span-3 flex-col justify-between h-full py-8">
-            <div className="text-right">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-luxury-muted mb-1 font-sans">
-                Year
-              </p>
-              <span
-                className="font-display text-charcoal-light leading-none select-none"
-                style={{ fontSize: 'clamp(3rem, 5vw, 6rem)', fontWeight: 700 }}
-              >
-                26
-              </span>
-            </div>
+    //       {/* Right: Stats + CTA — desktop only */}
+    //       <div className="hidden md:flex md:col-span-3 flex-col justify-between h-full py-8">
+    //         <div className="text-right">
+    //           <p className="text-[10px] uppercase tracking-[0.2em] text-luxury-muted mb-1 font-sans">
+    //             Year
+    //           </p>
+    //           <span
+    //             className="font-display text-charcoal-light leading-none select-none"
+    //             style={{ fontSize: 'clamp(3rem, 5vw, 6rem)', fontWeight: 700 }}
+    //           >
+    //             26
+    //           </span>
+    //         </div>
 
-            <div className="space-y-6 mt-8">
-              <div className="border-l-2 border-gold/50 pl-4">
-                <p className="text-2xl font-display text-charcoal font-light">148+</p>
-                <p className="text-xs text-luxury-muted tracking-wide mt-0.5 font-sans">
-                  {t('hero.unique_designs')}
-                </p>
-              </div>
-              <div className="border-l-2 border-gold/30 pl-4">
-                <p className="text-2xl font-display text-charcoal font-light">4,200+</p>
-                <p className="text-xs text-luxury-muted tracking-wide mt-0.5 font-sans">
-                  {t('hero.happy_clients')}
-                </p>
-              </div>
-              <div className="border-l-2 border-gold/15 pl-4">
-                <p className="text-2xl font-display text-charcoal font-light">12</p>
-                <p className="text-xs text-luxury-muted tracking-wide mt-0.5 font-sans">
-                  {t('hero.countries_shipped')}
-                </p>
-              </div>
-            </div>
+    //         <div className="space-y-6 mt-8">
+    //           <div className="border-l-2 border-gold/50 pl-4">
+    //             <p className="text-2xl font-display text-charcoal font-light">148+</p>
+    //             <p className="text-xs text-luxury-muted tracking-wide mt-0.5 font-sans">
+    //               {t('hero.unique_designs')}
+    //             </p>
+    //           </div>
+    //           <div className="border-l-2 border-gold/30 pl-4">
+    //             <p className="text-2xl font-display text-charcoal font-light">4,200+</p>
+    //             <p className="text-xs text-luxury-muted tracking-wide mt-0.5 font-sans">
+    //               {t('hero.happy_clients')}
+    //             </p>
+    //           </div>
+    //           <div className="border-l-2 border-gold/15 pl-4">
+    //             <p className="text-2xl font-display text-charcoal font-light">12</p>
+    //             <p className="text-xs text-luxury-muted tracking-wide mt-0.5 font-sans">
+    //               {t('hero.countries_shipped')}
+    //             </p>
+    //           </div>
+    //         </div>
 
-            <div className="mt-8 flex flex-col gap-3">
-              <Link
-                href="/product-listing"
-                className="px-6 py-3 bg-gold text-white text-sm font-semibold tracking-widest hover:bg-gold-dark transition-colors duration-300 text-center font-sans uppercase"
-              >
-                {t('hero.shop_collection')}
-              </Link>
-              <button
-                onClick={onCartOpen}
-                className="px-6 py-3 border border-charcoal/20 text-charcoal text-sm font-medium tracking-wide hover:border-gold hover:text-gold transition-colors duration-300 font-sans"
-              >
-                {t('hero.view_lookbook')}
-              </button>
-            </div>
-          </div>
-        </div>
+    //         <div className="mt-8 flex flex-col gap-3">
+    //           <Link
+    //             href="/product-listing"
+    //             className="px-6 py-3 bg-gold text-white text-sm font-semibold tracking-widest hover:bg-gold-dark transition-colors duration-300 text-center font-sans uppercase"
+    //           >
+    //             {t('hero.shop_collection')}
+    //           </Link>
+    //           <button
+    //             onClick={onCartOpen}
+    //             className="px-6 py-3 border border-charcoal/20 text-charcoal text-sm font-medium tracking-wide hover:border-gold hover:text-gold transition-colors duration-300 font-sans"
+    //           >
+    //             {t('hero.view_lookbook')}
+    //           </button>
+    //         </div>
+    //       </div>
+    //     </div>
 
-        {/* Bottom scroll indicator */}
-        <div className="hidden sm:flex items-center justify-center gap-3 mt-6 md:mt-8 text-luxury-muted">
-          <div className="w-px h-8 bg-luxury-border" />
-          <p className="text-[10px] uppercase tracking-[0.3em] font-sans">
-            {t('hero.scroll_to_explore')}
-          </p>
-          <div className="w-px h-8 bg-luxury-border" />
+    //     {/* Bottom scroll indicator */}
+    //     <div className="hidden sm:flex items-center justify-center gap-3 mt-6 md:mt-8 text-luxury-muted">
+    //       <div className="w-px h-8 bg-luxury-border" />
+    //       <p className="text-[10px] uppercase tracking-[0.3em] font-sans">
+    //         {t('hero.scroll_to_explore')}
+    //       </p>
+    //       <div className="w-px h-8 bg-luxury-border" />
+    //     </div>
+    //   </div>
+    // </section>
+    <section className="relative w-full h-auto flex items-center overflow-hidden pt-11">
+      <div className="relative w-full aspect-[16/10] md:aspect-[21/9] lg:aspect-[25/9] md:min-h-[1000px] min-h-[400px] flex items-center">
+        <div className="absolute inset-0 z-0">
+          <img
+            src="https://pos.nvncdn.com/211f76-106986/bn/20260416_5RDwA8I2.png?v=1776327227"
+            alt="PAJ Silver"
+            className="w-full h-auto block"
+          />
         </div>
       </div>
     </section>
@@ -1081,9 +1092,9 @@ const NewsletterSection: React.FC = () => {
   return (
     <section className="py-14 sm:py-20 md:py-24 bg-white border-t border-luxury-border">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 text-center">
-        <p className="text-[10px] uppercase tracking-[0.3em] text-gold-dark font-semibold mb-3 sm:mb-4 font-sans">
+        {/* <p className="text-[10px] uppercase tracking-[0.3em] text-gold-dark font-semibold mb-3 sm:mb-4 font-sans">
           {t('newsletter.exclusive_access')}
-        </p>
+        </p> */}
         <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-charcoal mb-3 sm:mb-4">
           {t('newsletter.title')}
         </h2>

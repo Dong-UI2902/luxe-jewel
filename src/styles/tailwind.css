@@ -58,7 +58,7 @@ body {
 
 /* Text gradient gold */
 .text-gold-gradient {
-  background: linear-gradient(135deg, #c5a059 0%, #d4b87a 50%, #a8863d 100%);
+  background: linear-gradient(135deg, #1a3333 0%, #336666 50%, #4d8c8c 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -77,14 +77,14 @@ body {
 .shimmer {
   background: linear-gradient(
     90deg,
-    #c5a059 0%,
-    #d4b87a 25%,
-    #c5a059 50%,
-    #d4b87a 75%,
-    #c5a059 100%
+    #1a3333 0%,
+    #b3c6c6 25%,
+    /* Màu Bạc Teal */ #1a3333 50%,
+    #b3c6c6 75%,
+    #1a3333 100%
   );
   background-size: 200% auto;
-  animation: shimmer 3s linear infinite;
+  animation: shimmer 4s linear infinite;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -113,8 +113,8 @@ body {
   position: absolute;
   height: 1px;
   width: 200px;
-  background: linear-gradient(to right, transparent, rgba(197, 160, 89, 0.25), transparent);
-  animation: neonH linear infinite;
+  background: linear-gradient(to right, transparent, rgba(51, 102, 102, 0.1), transparent);
+  animation: neonH 12s linear infinite; /* Giảm tốc độ cho nhẹ nhàng */
   pointer-events: none;
 }
 
