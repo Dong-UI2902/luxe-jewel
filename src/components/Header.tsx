@@ -92,7 +92,7 @@ const Header: React.FC<HeaderProps> = ({ transparent = false }) => {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        className={`sticky top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled || !transparent
             ? 'bg-white backdrop-blur-md border-b border-luxury-border shadow-none'
             : 'bg-white backdrop-blur-sm border-b border-luxury-border'

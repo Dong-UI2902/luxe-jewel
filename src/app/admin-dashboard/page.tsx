@@ -56,6 +56,7 @@ interface DBProduct {
   description: string | null;
   sku: string | null;
   price: number;
+  original_price: number;
   stock_quantity: number;
   is_active: boolean;
   image_url: string | null;
@@ -92,6 +93,7 @@ interface EditProductForm {
   name: string;
   categoryId: string;
   price: string;
+  original_price: string;
   stock: string;
   material: string;
   imageUrl: string;
@@ -138,6 +140,7 @@ const PRODUCT_NEW_INITIAL_STATE = {
   name: '',
   categoryId: '',
   price: '',
+  original_price: '',
   stock: '',
   material: '',
   tags: [] as string[],
@@ -423,7 +426,7 @@ export default function AdminDashboardPage() {
     const { data, error } = await supabase
       .from('products')
       .select(
-        'id, name, sku, price, stock_quantity, is_active, is_best_seller, is_new, image_url, category_id, categories(name)'
+        'id, name, sku, price, original_price, stock_quantity, is_active, is_best_seller, is_new, image_url, category_id, categories(name)'
       )
       .order('created_at', { ascending: false })
       .limit(200);
@@ -738,6 +741,7 @@ export default function AdminDashboardPage() {
       name: newProduct.name,
       category_id: newProduct.categoryId || null,
       price: parseFloat(newProduct.price),
+      original_price: parseFloat(newProduct.original_price),
       stock_quantity: parseInt(newProduct.stock) || 0,
       image_url: newProductImageUrl || null,
       gallery_urls: galleryUrls.length > 0 ? galleryUrls : null,
@@ -772,7 +776,7 @@ export default function AdminDashboardPage() {
     const { data } = await supabase
       .from('products')
       .select(
-        'id, name, description, price, stock_quantity, image_url, gallery_urls, material, tags, is_new, is_best_seller, category_id, categories(name)'
+        'id, name, description, price, original_price, stock_quantity, image_url, gallery_urls, material, tags, is_new, is_best_seller, category_id, categories(name)'
       )
       .eq('id', product.id)
       .single();
@@ -783,6 +787,7 @@ export default function AdminDashboardPage() {
       name: fullProduct?.name || product.name,
       categoryId: fullProduct?.category_id || product.category_id || '',
       price: String(fullProduct?.price ?? product.price),
+      original_price: String(fullProduct?.original_price ?? product.original_price ?? ''),
       stock: String(fullProduct?.stock_quantity ?? product.stock_quantity),
       material: fullProduct?.material || '',
       imageUrl: fullProduct?.image_url || product.image_url || '',
@@ -923,6 +928,7 @@ export default function AdminDashboardPage() {
         description: editProductForm.description || null,
         category_id: editProductForm.categoryId || null,
         price: parseFloat(editProductForm.price),
+        original_price: parseFloat(editProductForm.original_price) || null,
         stock_quantity: parseInt(editProductForm.stock) || 0,
         image_url: editProductForm.imageUrl || null,
         gallery_urls: editProductForm.galleryUrls.length > 0 ? editProductForm.galleryUrls : null,
@@ -1675,7 +1681,7 @@ export default function AdminDashboardPage() {
               {showAddProduct && (
                 <div className="bg-white border border-gray-100 p-4 md:p-6 mb-6 rounded-sm">
                   <h3 className="font-semibold text-sm text-charcoal mb-4">Thêm sản phẩm mới</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 mb-4">
                     <div className="sm:col-span-2">
                       <label className="block text-[10px] uppercase tracking-wide font-semibold text-luxury-muted mb-1">
                         Tên sản phẩm
@@ -1711,12 +1717,26 @@ export default function AdminDashboardPage() {
                     </div>
                     <div>
                       <label className="block text-[10px] uppercase tracking-wide font-semibold text-luxury-muted mb-1">
-                        Giá (đ)
+                        Giá hiện tại (đ)
                       </label>
                       <input
                         type="number"
                         value={newProduct.price}
                         onChange={(e) => setNewProduct((p) => ({ ...p, price: e.target.value }))}
+                        placeholder="0"
+                        className="w-full px-3 py-2 text-sm border border-gray-200 focus:outline-none focus:border-gold transition-colors"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] uppercase tracking-wide font-semibold text-luxury-muted mb-1">
+                        Giá gốc (đ)
+                      </label>
+                      <input
+                        type="number"
+                        value={newProduct.original_price}
+                        onChange={(e) =>
+                          setNewProduct((p) => ({ ...p, original_price: e.target.value }))
+                        }
                         placeholder="0"
                         className="w-full px-3 py-2 text-sm border border-gray-200 focus:outline-none focus:border-gold transition-colors"
                       />
@@ -2252,13 +2272,27 @@ export default function AdminDashboardPage() {
                         </div>
                         <div>
                           <label className="block text-[10px] uppercase tracking-wide font-semibold text-luxury-muted mb-1">
-                            Giá (đ)
+                            Giá hiện tại (đ)
                           </label>
                           <input
                             type="number"
                             value={editProductForm.price}
                             onChange={(e) =>
                               setEditProductForm((p) => ({ ...p, price: e.target.value }))
+                            }
+                            placeholder="0"
+                            className="w-full px-3 py-2 text-sm border border-gray-200 focus:outline-none focus:border-gold transition-colors"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] uppercase tracking-wide font-semibold text-luxury-muted mb-1">
+                            Giá gốc (đ)
+                          </label>
+                          <input
+                            type="number"
+                            value={editProductForm.original_price}
+                            onChange={(e) =>
+                              setEditProductForm((p) => ({ ...p, original_price: e.target.value }))
                             }
                             placeholder="0"
                             className="w-full px-3 py-2 text-sm border border-gray-200 focus:outline-none focus:border-gold transition-colors"

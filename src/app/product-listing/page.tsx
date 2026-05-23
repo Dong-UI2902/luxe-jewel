@@ -11,6 +11,7 @@ import AppImage from '@/components/ui/AppImage';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useCart } from '@/contexts/CartContext';
 import { createClient } from '@/lib/supabase/client';
+import { DynamicProductCard } from '../homepage/page';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -22,11 +23,11 @@ interface Product {
   category: string;
   categorySlug: string;
   price: number;
-  originalPrice?: number;
-  image: string;
+  original_price?: number;
+  image_url: string;
   hoverImage: string;
-  isNew: boolean;
-  inStock: boolean;
+  is_new: boolean;
+  stock_quantity: boolean;
   slug: string;
   gender?: string;
 }
@@ -72,24 +73,25 @@ function mapProduct(p: any): Product {
     category: p.categories?.name || '',
     categorySlug: p.categories?.slug || '',
     price: Number(p.price),
-    originalPrice: p.original_price ? Number(p.original_price) : undefined,
-    image: p.image_url || 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=500&q=85',
+    original_price: p.original_price ? Number(p.original_price) : undefined,
+    image_url:
+      p.image_url || 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=500&q=85',
     hoverImage:
       p.gallery_urls?.[0] ||
       p.image_url ||
       'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&q=85',
-    isNew: p.is_new || false,
-    inStock: (p.stock_quantity || 0) > 0,
+    is_new: p.is_new || false,
+    stock_quantity: (p.stock_quantity || 0) > 0,
     slug: p.slug,
     gender: p.gender || 'Unisex',
   };
 }
 
-const discountPct = (p: Product) => {
-  return p.originalPrice && p.originalPrice > p.price
-    ? Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100)
-    : null;
-};
+// const discountPct = (p: Product) => {
+//   return p.original_price && p.original_price > p.price
+//     ? Math.round(((p.original_price - p.price) / p.original_price) * 100)
+//     : null;
+// };
 
 function ProductListingContent() {
   const { t } = useLanguage();
@@ -396,7 +398,7 @@ function ProductListingContent() {
   // ── Skeletons ──────────────────────────────────────────────────────────────
   const ProductCardSkeleton = () => (
     <div className="animate-pulse">
-      <div className="aspect-[3/4] bg-luxury-warm mb-4" />
+      <div className="aspect-[4/3] bg-luxury-warm mb-4" />
       <div className="h-2.5 bg-luxury-warm rounded w-3/4 mb-2" />
       <div className="h-3.5 bg-luxury-warm rounded w-full mb-2" />
       <div className="flex items-center justify-between">
@@ -424,7 +426,7 @@ function ProductListingContent() {
 
   // ── Shared filter panel content ────────────────────────────────────────────
   const FilterPanelContent = () => (
-    <div className="space-y-7">
+    <div className="space-y-7 ">
       {/* Category filter */}
       <div>
         <h3 className="text-xs uppercase tracking-[0.2em] font-semibold text-charcoal mb-4">
@@ -565,8 +567,8 @@ function ProductListingContent() {
       </div>
 
       <main className="pt-14 sm:pt-16 md:pt-20">
-        <div className="bg-luxury-warm border-b border-luxury-border py-8 sm:py-10 md:py-12 px-4 sm:px-6 md:px-10">
-          <div className="max-w-[1400px] mx-auto">
+        <div className="bg-luxury-warm border-b border-luxury-border py-6 sm:py-8 md:py-10 px-4 sm:px-6 md:px-10">
+          <div className="max-w-[1770px] mx-auto">
             <p className="text-[10px] uppercase tracking-[0.3em] text-gold-dark font-semibold mb-2">
               {t('product_listing.discover')}
             </p>
@@ -591,7 +593,7 @@ function ProductListingContent() {
           </div>
         </div>
 
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10 py-6 sm:py-8 md:py-10 flex gap-8">
+        <div className="max-w-[1770px] mx-auto px-4 sm:px-6 md:px-10 py-6 sm:py-8 md:py-10 flex gap-8">
           {/* Desktop Sidebar */}
           <aside
             className={`hidden md:block ${sidebarOpen ? 'w-64 flex-shrink-0' : 'w-0 overflow-hidden'} transition-all duration-300`}
@@ -690,72 +692,73 @@ function ProductListingContent() {
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
                 {isLoading
                   ? Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)
-                  : products.map((product) => (
-                      <Link
-                        key={product.id}
-                        href={`/product/${product.id}`}
-                        className="group block"
-                        onMouseEnter={() => setHoveredId(product.id)}
-                        onMouseLeave={() => setHoveredId(null)}
-                      >
-                        <div className="relative aspect-[3/4] overflow-hidden bg-luxury-warm mb-3 sm:mb-4">
-                          <AppImage
-                            src={product.image}
-                            alt={product.name}
-                            fill
-                            className={`object-cover transition-all duration-700 ${hoveredId === product.id ? 'opacity-0 scale-105' : 'opacity-100 scale-100'}`}
-                          />
-                          <AppImage
-                            src={product.hoverImage}
-                            alt={`${product.name} alternate view`}
-                            fill
-                            className={`object-cover transition-all duration-700 absolute inset-0 ${hoveredId === product.id ? 'opacity-100 scale-105' : 'opacity-0 scale-100'}`}
-                          />
-                          {product.isNew && (
-                            <span className="absolute top-2 left-2 sm:top-3 sm:left-3 text-[10px] uppercase tracking-[0.15em] font-bold text-white bg-gold px-2 py-0.5 z-10">
-                              {t('product_listing.new_badge')}
-                            </span>
-                          )}
-                          {discountPct(product) && (
-                            <span className="absolute bottom-3 left-3 text-[10px] uppercase tracking-[0.15em] font-semibold text-white bg-red-500 px-2.5 py-1">
-                              -{discountPct(product)}%
-                            </span>
-                          )}
-                          {!product.inStock && (
-                            <div className="absolute inset-0 bg-black/30 flex items-center justify-center z-10">
-                              <span className="text-xs uppercase tracking-widest text-white font-semibold">
-                                {t('product_listing.sold_out')}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                        <div>
-                          {product.material && (
-                            <p className="text-[10px] uppercase tracking-[0.15em] text-luxury-muted mb-1">
-                              {product.material}
-                            </p>
-                          )}
-                          <h3 className="font-display text-charcoal text-sm sm:text-base font-medium mb-1.5 sm:mb-2 group-hover:text-gold transition-colors duration-300 leading-snug">
-                            {product.name}
-                          </h3>
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <p
-                              className="text-charcoal font-semibold text-sm"
-                              suppressHydrationWarning
-                            >
-                              {product.price.toLocaleString('vi-VN')}₫
-                            </p>
-                            {product.originalPrice && product.originalPrice > product.price && (
-                              <p
-                                className="text-luxury-muted text-xs sm:text-sm line-through"
-                                suppressHydrationWarning
-                              >
-                                {product.originalPrice.toLocaleString('vi-VN')}₫
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      </Link>
+                  : products.map((product, index) => (
+                      // <Link
+                      //   key={product.id}
+                      //   href={`/product/${product.id}`}
+                      //   className="group block"
+                      //   onMouseEnter={() => setHoveredId(product.id)}
+                      //   onMouseLeave={() => setHoveredId(null)}
+                      // >
+                      //   <div className="relative aspect-[3/4] overflow-hidden bg-luxury-warm mb-3 sm:mb-4">
+                      //     <AppImage
+                      //       src={product.image}
+                      //       alt={product.name}
+                      //       fill
+                      //       className={`object-cover transition-all duration-700 ${hoveredId === product.id ? 'opacity-0 scale-105' : 'opacity-100 scale-100'}`}
+                      //     />
+                      //     <AppImage
+                      //       src={product.hoverImage}
+                      //       alt={`${product.name} alternate view`}
+                      //       fill
+                      //       className={`object-cover transition-all duration-700 absolute inset-0 ${hoveredId === product.id ? 'opacity-100 scale-105' : 'opacity-0 scale-100'}`}
+                      //     />
+                      //     {product.isNew && (
+                      //       <span className="absolute top-2 left-2 sm:top-3 sm:left-3 text-[10px] uppercase tracking-[0.15em] font-bold text-white bg-gold px-2 py-0.5 z-10">
+                      //         {t('product_listing.new_badge')}
+                      //       </span>
+                      //     )}
+                      //     {discountPct(product) && (
+                      //       <span className="absolute bottom-3 left-3 text-[10px] uppercase tracking-[0.15em] font-semibold text-white bg-red-500 px-2.5 py-1">
+                      //         -{discountPct(product)}%
+                      //       </span>
+                      //     )}
+                      //     {!product.inStock && (
+                      //       <div className="absolute inset-0 bg-black/30 flex items-center justify-center z-10">
+                      //         <span className="text-xs uppercase tracking-widest text-white font-semibold">
+                      //           {t('product_listing.sold_out')}
+                      //         </span>
+                      //       </div>
+                      //     )}
+                      //   </div>
+                      //   <div>
+                      //     {product.material && (
+                      //       <p className="text-[10px] uppercase tracking-[0.15em] text-luxury-muted mb-1">
+                      //         {product.material}
+                      //       </p>
+                      //     )}
+                      //     <h3 className="font-display text-charcoal text-sm sm:text-base font-medium mb-1.5 sm:mb-2 group-hover:text-gold transition-colors duration-300 leading-snug">
+                      //       {product.name}
+                      //     </h3>
+                      //     <div className="flex items-center gap-2 flex-wrap">
+                      //       <p
+                      //         className="text-charcoal font-semibold text-sm"
+                      //         suppressHydrationWarning
+                      //       >
+                      //         {product.price.toLocaleString('vi-VN')}₫
+                      //       </p>
+                      //       {product.originalPrice && product.originalPrice > product.price && (
+                      //         <p
+                      //           className="text-luxury-muted text-xs sm:text-sm line-through"
+                      //           suppressHydrationWarning
+                      //         >
+                      //           {product.originalPrice.toLocaleString('vi-VN')}₫
+                      //         </p>
+                      //       )}
+                      //     </div>
+                      //   </div>
+                      // </Link>
+                      <DynamicProductCard key={product.id} product={product} index={index} />
                     ))}
               </div>
             )}
@@ -773,7 +776,7 @@ function ProductListingContent() {
                       >
                         <div className="relative w-20 sm:w-24 h-28 sm:h-32 flex-shrink-0 overflow-hidden bg-luxury-warm">
                           <AppImage
-                            src={product.image}
+                            src={product.image_url}
                             alt={product.name}
                             fill
                             className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -789,8 +792,8 @@ function ProductListingContent() {
                             <h3 className="font-display text-charcoal text-base sm:text-lg font-medium mb-1 group-hover:text-gold transition-colors leading-snug">
                               {product.name}
                             </h3>
-                            {product.isNew && (
-                              <span className="inline-block text-[10px] uppercase tracking-[0.15em] font-bold text-charcoal bg-gold px-2 py-0.5 mb-2">
+                            {product.is_new && (
+                              <span className="inline-block text-[10px] uppercase tracking-[0.15em] font-bold text-white bg-gold px-2 py-0.5 mb-2">
                                 {t('product_listing.new_badge')}
                               </span>
                             )}
@@ -803,16 +806,16 @@ function ProductListingContent() {
                               >
                                 {product.price.toLocaleString('vi-VN')}₫
                               </p>
-                              {product.originalPrice && product.originalPrice > product.price && (
+                              {product.original_price && product.original_price > product.price && (
                                 <p
                                   className="text-luxury-muted text-sm line-through"
                                   suppressHydrationWarning
                                 >
-                                  {product.originalPrice.toLocaleString('vi-VN')}₫
+                                  {product.original_price.toLocaleString('vi-VN')}₫
                                 </p>
                               )}
                             </div>
-                            {!product.inStock && (
+                            {!product.stock_quantity && (
                               <span className="text-xs uppercase tracking-widest text-luxury-muted font-semibold">
                                 {t('product_listing.sold_out')}
                               </span>

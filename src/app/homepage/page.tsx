@@ -10,6 +10,10 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useCart } from '@/contexts/CartContext';
 import { createClient } from '@/lib/supabase/client';
 import CartDrawer from '@/components/CartDrawer';
+import Skeleton from '../product/[id]/Skeleton';
+import Title from './Title';
+import ButtonSection from './ButtonSection';
+import TopBar from '@/components/TopBar';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -31,7 +35,7 @@ interface Product {
 const heroSlides = [
   {
     id: 1,
-    image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=1200&q=90',
+    image: 'https://pos.nvncdn.com/211f76-106986/bn/20260416_5RDwA8I2.png?v=1776327227&w=1200&q=90',
     labelKey: 'hero.new_arrival',
     title: 'Celestial Ring',
     subtitle: '18K Gold · Diamond Pavé',
@@ -39,7 +43,7 @@ const heroSlides = [
   },
   {
     id: 2,
-    image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=1200&q=90',
+    image: 'https://pos.nvncdn.com/211f76-106986/bn/20260416_5RDwA8I2.png?v=1776327227&w=1200&q=90',
     labelKey: 'hero.bestseller',
     title: 'Lumière Necklace',
     subtitle: 'White Gold · Sapphire',
@@ -47,7 +51,7 @@ const heroSlides = [
   },
   {
     id: 3,
-    image: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=1200&q=90',
+    image: 'https://pos.nvncdn.com/211f76-106986/bn/20260416_5RDwA8I2.png?v=1776327227&w=1200&q=90',
     labelKey: 'hero.limited_edition',
     title: 'Aurora Bracelet',
     subtitle: '18K Gold · Pearl',
@@ -58,34 +62,34 @@ const heroSlides = [
 const categories = [
   {
     id: 1,
-    nameKey: 'categories.rings',
+    nameKey: '',
     slug: 'rings',
     image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600&q=85',
-    span: 'col-span-2 row-span-2',
+    span: 'col-span-1 row-span-2 rounded-md',
     href: '/product-listing',
   },
   {
     id: 2,
-    nameKey: 'categories.necklaces',
+    nameKey: '',
     slug: 'necklaces',
     image: 'https://images.unsplash.com/photo-1701739590682-c79a8d369b05',
-    span: 'col-span-1 row-span-1',
+    span: 'col-span-1 row-span-1 md:row-span-2 rounded-md',
     href: '/product-listing',
   },
   {
     id: 3,
-    nameKey: 'categories.bracelets',
+    nameKey: '',
     slug: 'bracelets',
     image: 'https://images.unsplash.com/photo-1674397719234-bfb44152e27f',
-    span: 'col-span-1 row-span-1',
+    span: 'col-span-1 row-span-1 rounded-md',
     href: '/product-listing',
   },
   {
     id: 4,
-    nameKey: 'categories.earrings',
+    nameKey: '',
     slug: 'earrings',
     image: 'https://images.unsplash.com/photo-1682822801057-d05f74a07a2f',
-    span: 'col-span-2 row-span-1',
+    span: 'col-span-2 md:col-span-1 row-span-1 rounded-md',
     href: '/product-listing',
   },
 ];
@@ -124,10 +128,11 @@ const testimonials = [
 
 // ─── Dynamic Product Card ────────────────────────────────────────────────────
 
-const DynamicProductCard: React.FC<{
+export const DynamicProductCard: React.FC<{
   product: Product;
   index: number;
-}> = ({ product, index }) => {
+  styles?: string;
+}> = ({ product, index, styles }) => {
   const [hovered, setHovered] = useState(false);
   const { t } = useLanguage();
   const discountPct =
@@ -143,7 +148,9 @@ const DynamicProductCard: React.FC<{
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <div className="relative aspect-[3/4] overflow-hidden bg-luxury-warm border border-luxury-border mb-4 shadow-product">
+      <div
+        className={`relative aspect-[1/1] overflow-hidden border border-luxury-border mb-4 shadow-product ${styles} rounded-md`}
+      >
         <AppImage
           src={
             product.image_url ||
@@ -151,6 +158,7 @@ const DynamicProductCard: React.FC<{
           }
           alt={product.name}
           fill
+          // sizes="(max-width: 400px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className={`object-cover transition-all duration-700 ${hovered && product.hover_image_url ? 'opacity-0' : hovered ? 'scale-105' : 'opacity-100 scale-100'}`}
         />
 
@@ -175,11 +183,11 @@ const DynamicProductCard: React.FC<{
       </div>
       <div className="px-1">
         {product.material && (
-          <p className="text-[10px] uppercase tracking-[0.15em] text-luxury-muted mb-1 font-sans">
+          <p className="text-[10px] uppercase tracking-[0.15em] text-luxury-muted mb-1 font-paj">
             {product.material}
           </p>
         )}
-        <h3 className="font-display text-charcoal text-base font-medium mb-2 group-hover:text-gold transition-colors duration-300 leading-snug">
+        <h3 className="font-paj text-charcoal text-base font-medium mb-2 group-hover:text-gold transition-colors duration-300 leading-snug">
           {product.name}
         </h3>
         <div className="flex items-center gap-2">
@@ -197,6 +205,100 @@ const DynamicProductCard: React.FC<{
         </div>
       </div>
     </Link>
+  );
+};
+
+// ─── All Product Card ───────────────────────────────────────────────────────────
+const AllProductsSection: React.FC = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { t } = useLanguage();
+
+  useEffect(() => {
+    const fetchNewArrivals = async () => {
+      try {
+        const supabase = createClient();
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          // .eq('is_new', true)
+          .order('created_at', { ascending: false })
+          .limit(6);
+        if (!error && data) setProducts(data);
+      } catch {
+        // silently fail
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchNewArrivals();
+  }, []);
+
+  if (!loading && products.length === 0) return null;
+
+  return (
+    <section className="py-14 sm:py-20 md:py-10 bg-white">
+      <div className="w-fullmax-w-[1950px] mx-auto px-4 sm:px-6 md:px-10">
+        <div className="text-center mb-8 sm:mb-12 md:mb-14">
+          <Title>
+            <span className="font-display"> Tất Cả Sản Phẩm</span>
+          </Title>
+          {/* <Link
+            href="/product-listing?filter=new"
+            className="hidden md:flex items-center gap-2 text-sm font-medium text-charcoal-light hover:text-gold transition-colors gold-underline font-sans"
+          >
+            {t('new_arrivals.view_all')}
+            <Icon name="ArrowRightIcon" size={14} />
+          </Link> */}
+        </div>
+
+        {loading ? (
+          <Skeleton styles="grid grid-cols-2 md:grid-cols-6 gap-4 sm:gap-6 md:gap-8" length={6} />
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-4 sm:gap-6 md:gap-8">
+            {products.map((product, i) => (
+              <DynamicProductCard key={product.id} product={product} index={i} />
+            ))}
+          </div>
+        )}
+
+        <div className="hidden md:flex justify-center mt-10 mb-16">
+          <Link
+            href="/product-listing"
+            className="group relative px-12 py-4 bg-gold text-white transition-all duration-500 hover:bg-charcoal hover:shadow-lg flex items-center justify-center min-w-[280px]"
+          >
+            <span className="font-paj text-sm tracking-[0.3em] uppercase font-medium">
+              Xem tất cả sản phẩm
+            </span>
+
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 ml-2 transform transition-transform duration-300 group-hover:translate-x-2"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
+                d="M17 8l4 4m0 0l-4 4m4-4H3"
+              />
+            </svg>
+          </Link>
+        </div>
+
+        <div className="flex justify-center mt-8 md:hidden">
+          <Link
+            href="/product-listing?filter=new"
+            className="flex items-center gap-2 text-sm font-medium text-charcoal-light hover:text-gold transition-colors gold-underline font-sans"
+          >
+            {t('new_arrivals.view_all')}
+            <Icon name="ArrowRightIcon" size={14} />
+          </Link>
+        </div>
+      </div>
+    </section>
   );
 };
 
@@ -230,44 +332,36 @@ const NewArrivalsSection: React.FC = () => {
   if (!loading && products.length === 0) return null;
 
   return (
-    <section className="py-14 sm:py-20 md:py-24 bg-white">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10">
-        <div className="flex items-end justify-between mb-8 sm:mb-12 md:mb-14">
+    <section className="py-14 sm:py-20 md:py-10 bg-white">
+      <div className="max-w-[1700px] mx-auto pl-4 sm:px-6 md:px-10 md:pr-4">
+        <div className="text-center mb-8 sm:mb-12 md:mb-14">
           <div>
-            <p className="text-[10px] uppercase tracking-[0.3em] text-gold-dark font-semibold mb-2 sm:mb-3 font-sans">
-              {t('new_arrivals.label')}
-            </p>
-            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-charcoal uppercase tracking-wide">
-              {t('new_arrivals.title')}
-            </h2>
+            <Title>
+              <span className="uppercase text-2xl font-medium"> {t('new_arrivals.title')}</span>
+            </Title>
           </div>
-          <Link
+          {/* <Link
             href="/product-listing?filter=new"
             className="hidden md:flex items-center gap-2 text-sm font-medium text-charcoal-light hover:text-gold transition-colors gold-underline font-sans"
           >
             {t('new_arrivals.view_all')}
             <Icon name="ArrowRightIcon" size={14} />
-          </Link>
+          </Link> */}
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="animate-pulse">
-                <div className="aspect-[3/4] bg-luxury-border mb-4" />
-                <div className="h-3 bg-luxury-border rounded mb-2 w-2/3" />
-                <div className="h-4 bg-luxury-border rounded mb-2" />
-                <div className="h-4 bg-luxury-border rounded w-1/3" />
-              </div>
-            ))}
-          </div>
+          <Skeleton styles="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-6" length={4} />
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-6 ">
             {products.map((product, i) => (
               <DynamicProductCard key={product.id} product={product} index={i} />
             ))}
           </div>
         )}
+
+        <ButtonSection url="/product-listing?filter=bestseller">
+          {t('best_sellers.view_all')}
+        </ButtonSection>
 
         <div className="flex justify-center mt-8 md:hidden">
           <Link
@@ -312,51 +406,46 @@ const BestSellersSection: React.FC = () => {
   if (!loading && products.length === 0) return null;
 
   return (
-    <section className="py-14 sm:py-20 md:py-24 bg-luxury-warm">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10">
-        <div className="flex items-end justify-between mb-8 sm:mb-12 md:mb-14">
+    <section className="py-14 sm:py-20 md:py-10 bg-white">
+      <div className="max-w-[1700px] mx-auto pr-4 sm:px-6 md:px-10 md:pl-4">
+        <div className="text-center mb-8 sm:mb-12 md:mb-14">
           <div>
-            <p className="text-[10px] uppercase tracking-[0.3em] text-gold-dark font-semibold mb-2 sm:mb-3 font-sans">
-              {t('best_sellers.label')}
-            </p>
-            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-charcoal uppercase tracking-wide">
-              {t('best_sellers.title')}
-            </h2>
+            <Title>
+              <span className="uppercase text-2xl font-medium"> {t('best_sellers.title')}</span>
+            </Title>
           </div>
-          <Link
-            href="/product-listing?filter=bestseller"
+          {/* <Link
+            href="/product-listing?filter=new"
             className="hidden md:flex items-center gap-2 text-sm font-medium text-charcoal-light hover:text-gold transition-colors gold-underline font-sans"
           >
-            {t('best_sellers.view_all')}
+            {t('new_arrivals.view_all')}
             <Icon name="ArrowRightIcon" size={14} />
-          </Link>
+          </Link> */}
         </div>
-
         {loading ? (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="animate-pulse">
-                <div className="aspect-[3/4] bg-luxury-border mb-4" />
-                <div className="h-3 bg-luxury-border rounded mb-2 w-2/3" />
-                <div className="h-4 bg-luxury-border rounded mb-2" />
-                <div className="h-4 bg-luxury-border rounded w-1/3" />
-              </div>
-            ))}
-          </div>
+          <Skeleton styles="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-6" length={4} />
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-6">
             {products.map((product, i) => (
-              <DynamicProductCard key={product.id} product={product} index={i} />
+              <DynamicProductCard
+                key={product.id}
+                product={product}
+                styles="rounded-t-[50%]"
+                index={i}
+              />
             ))}
           </div>
         )}
+        <ButtonSection url="/product-listing?filter=bestseller">
+          {t('best_sellers.view_all')}
+        </ButtonSection>
 
         <div className="flex justify-center mt-8 md:hidden">
           <Link
-            href="/product-listing?filter=bestseller"
+            href="/product-listing?filter=new"
             className="flex items-center gap-2 text-sm font-medium text-charcoal-light hover:text-gold transition-colors gold-underline font-sans"
           >
-            {t('best_sellers.view_all')}
+            {t('new_arrivals.view_all')}
             <Icon name="ArrowRightIcon" size={14} />
           </Link>
         </div>
@@ -364,6 +453,74 @@ const BestSellersSection: React.FC = () => {
     </section>
   );
 };
+
+// ─── Best Sellers Section ────────────────────────────────────────────────────
+
+// const BestSellersSection: React.FC = () => {
+//   const [products, setProducts] = useState<Product[]>([]);
+//   const [loading, setLoading] = useState(true);
+//   const { t } = useLanguage();
+
+//   useEffect(() => {
+//     const fetchBestSellers = async () => {
+//       try {
+//         const supabase = createClient();
+//         const { data, error } = await supabase
+//           .from('products')
+//           .select('*')
+//           .eq('is_best_seller', true)
+//           .limit(4);
+//         if (!error && data) setProducts(data);
+//       } catch {
+//         // silently fail
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+//     fetchBestSellers();
+//   }, []);
+
+//   if (!loading && products.length === 0) return null;
+
+//   return (
+//     <section className="py-14 sm:py-20 md:py-24 bg-luxury-warm">
+//       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10">
+//         <div className="flex items-end justify-between mb-8 sm:mb-12 md:mb-14">
+//           <div>
+//             <Title>{t('best_sellers.title')}</Title>
+//           </div>
+//           <Link
+//             href="/product-listing?filter=bestseller"
+//             className="hidden md:flex items-center gap-2 text-sm font-medium text-charcoal-light hover:text-gold transition-colors gold-underline font-sans"
+//           >
+//             {t('best_sellers.view_all')}
+//             <Icon name="ArrowRightIcon" size={14} />
+//           </Link>
+//         </div>
+
+//         {loading ? (
+//           <Skeleton styles="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8" length={4} />
+//         ) : (
+//           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
+//             {products.map((product, i) => (
+//               <DynamicProductCard key={product.id} product={product} index={i} />
+//             ))}
+//           </div>
+//         )}
+
+//         <div className="flex justify-center mt-8 md:hidden">
+//           <Link
+//             href="/product-listing?filter=bestseller"
+//             className="flex items-center gap-2 text-sm font-medium text-charcoal-light hover:text-gold transition-colors gold-underline font-sans"
+//           >
+//             {t('best_sellers.view_all')}
+//             <Icon name="ArrowRightIcon" size={14} />
+//           </Link>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
 
 // ─── Gift Boxes Section ──────────────────────────────────────────────────────
 
@@ -538,317 +695,337 @@ const HeroSection: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
   }, [currentSlide, goToSlide]);
 
   return (
-    // <section className="relative min-h-screen bg-white overflow-hidden">
-    //   {/* Subtle warm tint overlay */}
-    //   <div className="absolute inset-0 z-0 pointer-events-none bg-gradient-to-br from-[#FAFAFA] via-white to-[#F9F6F1] opacity-60" />
+    <section className="relative w-full h-auto flex items-center overflow-hidden">
+      {/* Subtle warm tint overlay */}
+      {/* <div className="absolute inset-0 z-0 pointer-events-none bg-gradient-to-br from-[#FAFAFA] via-white to-[#F9F6F1] opacity-60" /> */}
 
-    //   <div
-    //     className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10 pt-16 sm:pt-20 md:pt-28 pb-10 md:pb-16 min-h-screen flex flex-col"
-    //     suppressHydrationWarning
-    //   >
-    //     <div className="flex-1 grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-center">
-    //       {/* Left: Brand text — hidden on mobile, shown on md+ */}
-    //       <div className="hidden md:flex md:col-span-3 flex-col justify-between h-full py-8">
-    //         <div>
-    //           <p className="text-[10px] uppercase tracking-[0.3em] text-gold-dark font-semibold mb-6 font-sans">
-    //             {t('hero.tagline')}
-    //           </p>
-    //           <div className="overflow-hidden">
-    //             <h1
-    //               className="font-display text-charcoal-light leading-none"
-    //               style={{
-    //                 fontSize: 'clamp(3rem, 6vw, 5rem)',
-    //                 fontWeight: 400,
-    //                 letterSpacing: '0.12em',
-    //               }}
-    //             >
-    //               LUXE
-    //             </h1>
-    //           </div>
-    //           <div className="overflow-hidden">
-    //             <h1
-    //               className="font-display text-gold-dark leading-none"
-    //               style={{
-    //                 fontSize: 'clamp(3rem, 6vw, 5rem)',
-    //                 fontWeight: 600,
-    //                 letterSpacing: '0.12em',
-    //               }}
-    //             >
-    //               JEWEL
-    //             </h1>
-    //           </div>
-    //           <div className="w-12 h-px bg-gold/50 my-6" />
-    //           <p className="text-charcoal-light text-sm leading-relaxed font-light max-w-[200px] font-sans">
-    //             {t('hero.brand_desc')}
-    //           </p>
-    //         </div>
+      {/* <div
+        className="relative w-full h-auto flex items-center overflow-hidden"
+        suppressHydrationWarning
+      > */}
+      {/* <div className="flex-1 grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-center"> */}
+      {/* Left: Brand text — hidden on mobile, shown on md+ */}
+      {/* <div className="hidden md:flex md:col-span-3 flex-col justify-between h-full py-8">
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.3em] text-gold-dark font-semibold mb-6 font-sans">
+                {t('hero.tagline')}
+              </p>
+              <div className="overflow-hidden">
+                <h1
+                  className="font-display text-charcoal-light leading-none"
+                  style={{
+                    fontSize: 'clamp(3rem, 6vw, 5rem)',
+                    fontWeight: 400,
+                    letterSpacing: '0.12em',
+                  }}
+                >
+                  LUXE
+                </h1>
+              </div>
+              <div className="overflow-hidden">
+                <h1
+                  className="font-display text-gold-dark leading-none"
+                  style={{
+                    fontSize: 'clamp(3rem, 6vw, 5rem)',
+                    fontWeight: 600,
+                    letterSpacing: '0.12em',
+                  }}
+                >
+                  JEWEL
+                </h1>
+              </div>
+              <div className="w-12 h-px bg-gold/50 my-6" />
+              <p className="text-charcoal-light text-sm leading-relaxed font-light max-w-[200px] font-sans">
+                {t('hero.brand_desc')}
+              </p>
+            </div>
 
-    //         <div className="flex flex-col gap-3 mt-8">
-    //           <div className="group">
-    //             <p className="text-[9px] uppercase tracking-[0.2em] text-luxury-muted mb-1 font-sans">
-    //               {t('hero.collections_label')}
-    //             </p>
-    //             <div className="flex flex-col gap-1">
-    //               {[t('nav.rings'), t('nav.necklaces'), t('nav.bracelets')].map((item) => (
-    //                 <Link
-    //                   key={item}
-    //                   href="/product-listing"
-    //                   className="text-sm text-charcoal-light hover:text-gold transition-colors flex items-center gap-2 group/link font-sans"
-    //                 >
-    //                   <span className="w-3 h-px bg-gold/40 group-hover/link:w-5 transition-all duration-300" />
-    //                   {item}
-    //                 </Link>
-    //               ))}
-    //             </div>
-    //           </div>
-    //         </div>
-    //       </div>
+            <div className="flex flex-col gap-3 mt-8">
+              <div className="group">
+                <p className="text-[9px] uppercase tracking-[0.2em] text-luxury-muted mb-1 font-sans">
+                  {t('hero.collections_label')}
+                </p>
+                <div className="flex flex-col gap-1">
+                  {[t('nav.rings'), t('nav.necklaces'), t('nav.bracelets')].map((item) => (
+                    <Link
+                      key={item}
+                      href="/product-listing"
+                      className="text-sm text-charcoal-light hover:text-gold transition-colors flex items-center gap-2 group/link font-sans"
+                    >
+                      <span className="w-3 h-px bg-gold/40 group-hover/link:w-5 transition-all duration-300" />
+                      {item}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div> */}
 
-    //       {/* Center: Image slider — full width on mobile */}
-    //       <div className="md:col-span-6 relative w-full">
-    //         {/* Mobile brand text overlay */}
-    //         <div className="md:hidden flex items-center justify-between mb-4 px-1">
-    //           <div>
-    //             <p className="text-[10px] uppercase tracking-[0.3em] text-gold-dark font-semibold font-sans">
-    //               {t('hero.tagline')}
-    //             </p>
-    //             <div className="flex items-baseline gap-2 mt-1">
-    //               <span className="font-display text-charcoal-light text-3xl sm:text-4xl font-normal tracking-[0.12em]">
-    //                 LUXE
-    //               </span>
-    //               <span className="font-display text-gold-dark text-3xl sm:text-4xl font-semibold tracking-[0.12em]">
-    //                 JEWEL
-    //               </span>
-    //             </div>
-    //           </div>
-    //           <div className="flex gap-3">
-    //             <div className="border-l-2 border-gold/50 pl-3">
-    //               <p className="text-2xl font-display text-charcoal font-light">148+</p>
-    //               <p className="text-[10px] text-luxury-muted tracking-wide font-sans">
-    //                 {t('hero.unique_designs')}
-    //               </p>
-    //             </div>
-    //           </div>
-    //         </div>
+      {/* Center: Image slider — full width on mobile */}
+      <div className="relative w-full">
+        {/* Mobile brand text overlay */}
+        {/* <div className="md:hidden flex items-center justify-between mb-4 px-1">
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.3em] text-gold-dark font-semibold font-sans">
+                {t('hero.tagline')}
+              </p>
+              <div className="flex items-baseline gap-2 mt-1">
+                <span className="font-display text-charcoal-light text-3xl sm:text-4xl font-normal tracking-[0.12em]">
+                  LUXE
+                </span>
+                <span className="font-display text-gold-dark text-3xl sm:text-4xl font-semibold tracking-[0.12em]">
+                  JEWEL
+                </span>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <div className="border-l-2 border-gold/50 pl-3">
+                <p className="text-2xl font-display text-charcoal font-light">148+</p>
+                <p className="text-[10px] text-luxury-muted tracking-wide font-sans">
+                  {t('hero.unique_designs')}
+                </p>
+              </div>
+            </div>
+          </div> */}
 
-    //         <div className="relative aspect-[3/4] sm:aspect-[2/3] md:aspect-[3/4] overflow-hidden rounded-sm shadow-[0_8px_40px_rgba(26,26,26,0.12)]">
-    //           {heroSlides.map((slide, i) => (
-    //             <div
-    //               key={slide.id}
-    //               className="absolute inset-0 transition-opacity duration-700"
-    //               style={{ opacity: i === currentSlide ? 1 : 0 }}
-    //             >
-    //               <AppImage
-    //                 src={slide.image}
-    //                 alt={slide.title}
-    //                 fill
-    //                 className="object-cover"
-    //                 priority={i === 0}
-    //               />
-    //               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+        <div className="relative w-full aspect-[16/10] md:aspect-[21/9] lg:aspect-[25/9] md:min-h-[900px] min-h-[400px] flex items-center">
+          {heroSlides.map((slide, i) => (
+            <div
+              key={slide.id}
+              className="absolute inset-0 transition-opacity duration-700"
+              style={{ opacity: i === currentSlide ? 1 : 0 }}
+            >
+              <AppImage
+                src={slide.image}
+                alt={slide.title}
+                fill
+                className="object-cover"
+                priority={i === 0}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
 
-    //               {/* Slide info overlay */}
-    //               <div className="absolute bottom-0 left-0 p-5 sm:p-8">
-    //                 <div className="flex items-center gap-2 mb-2 sm:mb-3">
-    //                   <span className="text-[10px] uppercase tracking-[0.2em] font-semibold text-white border border-white/50 px-2.5 py-1 font-sans">
-    //                     {t(slide.labelKey)}
-    //                   </span>
-    //                 </div>
-    //                 <h3 className="font-display text-white text-xl sm:text-3xl font-light mb-1">
-    //                   {slide.title}
-    //                 </h3>
-    //                 <p className="text-white/80 text-sm font-sans">{slide.subtitle}</p>
-    //               </div>
-    //             </div>
-    //           ))}
+              {/* Slide info overlay */}
+              {/* <div className="absolute bottom-8 left-0 p-5 sm:p-8 md:bottom-0">
+                  <div className="flex items-center gap-2 mb-2 sm:mb-3">
+                    <span className="text-[10px] uppercase tracking-[0.2em] font-semibold text-white border border-white/50 px-2.5 py-1 font-sans">
+                      {t(slide.labelKey)}
+                    </span>
+                  </div>
+                  <h3 className="font-display text-white text-xl sm:text-3xl font-light mb-1">
+                    {slide.title}
+                  </h3>
+                  <p className="text-white/80 text-sm font-sans">{slide.subtitle}</p>
+                </div> */}
+            </div>
+          ))}
 
-    //           {/* Navigation */}
-    //           <div className="absolute bottom-5 right-5 sm:bottom-8 sm:right-8 flex items-center gap-2 z-10">
-    //             <div className="px-2.5 py-1 bg-white/80 backdrop-blur-md border border-luxury-border text-xs font-mono text-charcoal">
-    //               {String(currentSlide + 1).padStart(2, '0')} /{' '}
-    //               {String(heroSlides.length).padStart(2, '0')}
-    //             </div>
-    //             <button
-    //               aria-label="Previous slide"
-    //               onClick={() =>
-    //                 goToSlide((currentSlide - 1 + heroSlides.length) % heroSlides.length)
-    //               }
-    //               className="w-9 h-9 border border-white/60 bg-white/70 backdrop-blur-md flex items-center justify-center text-charcoal hover:bg-gold hover:text-white hover:border-gold transition-all duration-300 min-w-[44px] min-h-[44px]"
-    //             >
-    //               <Icon name="ChevronLeftIcon" size={16} />
-    //             </button>
-    //             <button
-    //               aria-label="Next slide"
-    //               onClick={() => goToSlide((currentSlide + 1) % heroSlides.length)}
-    //               className="w-9 h-9 border border-white/60 bg-white/70 backdrop-blur-md flex items-center justify-center text-charcoal hover:bg-gold hover:text-white hover:border-gold transition-all duration-300 min-w-[44px] min-h-[44px]"
-    //             >
-    //               <Icon name="ChevronRightIcon" size={16} />
-    //             </button>
-    //           </div>
-    //         </div>
+          {/* Navigation */}
+          {/* <div className="absolute bottom-5 right-5 hidden md:flex items-center gap-2 z-10">
+            <div className="px-2.5 py-1 bg-white/80 backdrop-blur-md border border-luxury-border text-xs font-mono text-charcoal">
+              {String(currentSlide + 1).padStart(2, '0')} /{' '}
+              {String(heroSlides.length).padStart(2, '0')}
+            </div>
+            <button
+              aria-label="Previous slide"
+              onClick={() => goToSlide((currentSlide - 1 + heroSlides.length) % heroSlides.length)}
+              className="w-9 h-9 border border-white/60 bg-white/70 backdrop-blur-md flex items-center justify-center text-charcoal hover:bg-gold hover:text-white hover:border-gold transition-all duration-300 min-w-[44px] min-h-[44px]"
+            >
+              <Icon name="ChevronLeftIcon" size={16} />
+            </button>
+            <button
+              aria-label="Next slide"
+              onClick={() => goToSlide((currentSlide + 1) % heroSlides.length)}
+              className="w-9 h-9 border border-white/60 bg-white/70 backdrop-blur-md flex items-center justify-center text-charcoal hover:bg-gold hover:text-white hover:border-gold transition-all duration-300 min-w-[44px] min-h-[44px]"
+            >
+              <Icon name="ChevronRightIcon" size={16} />
+            </button>
+          </div> */}
+        </div>
 
-    //         {/* Slide dots */}
-    //         <div className="flex gap-1.5 justify-center mt-4">
-    //           {heroSlides.map((_, i) => (
-    //             <button
-    //               key={i}
-    //               onClick={() => goToSlide(i)}
-    //               className={`h-px transition-all duration-300 min-h-[20px] flex items-center ${i === currentSlide ? 'w-8' : 'w-4'}`}
-    //               aria-label={`Go to slide ${i + 1}`}
-    //             >
-    //               <span
-    //                 className={`h-px w-full ${i === currentSlide ? 'bg-gold' : 'bg-luxury-border'}`}
-    //               />
-    //             </button>
-    //           ))}
-    //         </div>
+        {/* Slide dots */}
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10">
+          <div className="flex gap-1 justify-center items-center">
+            {heroSlides.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => goToSlide(i)}
+                // padding rộng giúp user dễ bấm trúng trên điện thoại mà không làm ảnh hưởng đến kích thước thực tế của dot bên trong
+                className="p-1.5 flex items-center justify-center transition-all duration-300 active:scale-95"
+                aria-label={`Go to slide ${i + 1}`}
+              >
+                <span
+                  className={`
+            /* Cấu hình hiệu ứng chuyển động mượt mà giữa các trạng thái */
+            transition-all duration-300 ease-in-out block
+            
+            /* Tạo hình tròn và bo góc tối đa */
+            rounded-full 
+            
+            /* Trạng thái hoạt động (Active Pill) và không hoạt động */
+            ${
+              i === currentSlide
+                ? 'w-6 h-2 bg-white' // Khi Active: hình viên thuốc dài 24px, cao 8px, màu trắng
+                : 'w-2 h-2 bg-transparent border border-white/80' // Khi không active: hình tròn nhỏ 8x8px, viền trắng mờ, trong suốt
+            }
+          `}
+                />
+              </button>
+            ))}
+          </div>
+        </div>
 
-    //         {/* Mobile CTA buttons */}
-    //         <div className="md:hidden flex flex-col sm:flex-row gap-3 mt-5">
-    //           <Link
-    //             href="/product-listing"
-    //             className="flex-1 px-6 py-3.5 bg-gold-button text-white text-sm font-semibold tracking-widest hover:bg-gold-dark transition-colors duration-300 text-center font-sans uppercase"
-    //           >
-    //             {t('hero.shop_collection')}
-    //           </Link>
-    //           <button
-    //             onClick={onCartOpen}
-    //             className="flex-1 px-6 py-3.5 border border-charcoal/20 text-charcoal text-sm font-medium tracking-wide hover:border-gold hover:text-gold transition-colors duration-300 font-sans"
-    //           >
-    //             {t('hero.view_lookbook')}
-    //           </button>
-    //         </div>
-    //       </div>
+        {/* Mobile CTA buttons */}
+        {/* <div className="md:hidden flex flex-col sm:flex-row gap-3 mt-5">
+            <Link
+              href="/product-listing"
+              className="flex-1 px-6 py-3.5 bg-gold-button text-white text-sm font-semibold tracking-widest hover:bg-gold-dark transition-colors duration-300 text-center font-sans uppercase"
+            >
+              {t('hero.shop_collection')}
+            </Link>
+            <button
+              onClick={onCartOpen}
+              className="flex-1 px-6 py-3.5 border border-charcoal/20 text-charcoal text-sm font-medium tracking-wide hover:border-gold hover:text-gold transition-colors duration-300 font-sans"
+            >
+              {t('hero.view_lookbook')}
+            </button>
+          </div> */}
+      </div>
 
-    //       {/* Right: Stats + CTA — desktop only */}
-    //       <div className="hidden md:flex md:col-span-3 flex-col justify-between h-full py-8">
-    //         <div className="text-right">
-    //           <p className="text-[10px] uppercase tracking-[0.2em] text-luxury-muted mb-1 font-sans">
-    //             Year
-    //           </p>
-    //           <span
-    //             className="font-display text-charcoal-light leading-none select-none"
-    //             style={{ fontSize: 'clamp(3rem, 5vw, 6rem)', fontWeight: 700 }}
-    //           >
-    //             26
-    //           </span>
-    //         </div>
+      {/* Right: Stats + CTA — desktop only */}
+      {/* <div className="hidden md:flex md:col-span-3 flex-col justify-between h-full py-8">
+            <div className="text-right">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-luxury-muted mb-1 font-sans">
+                Year
+              </p>
+              <span
+                className="font-display text-charcoal-light leading-none select-none"
+                style={{ fontSize: 'clamp(3rem, 5vw, 6rem)', fontWeight: 700 }}
+              >
+                26
+              </span>
+            </div>
 
-    //         <div className="space-y-6 mt-8">
-    //           <div className="border-l-2 border-gold/50 pl-4">
-    //             <p className="text-2xl font-display text-charcoal font-light">148+</p>
-    //             <p className="text-xs text-luxury-muted tracking-wide mt-0.5 font-sans">
-    //               {t('hero.unique_designs')}
-    //             </p>
-    //           </div>
-    //           <div className="border-l-2 border-gold/30 pl-4">
-    //             <p className="text-2xl font-display text-charcoal font-light">4,200+</p>
-    //             <p className="text-xs text-luxury-muted tracking-wide mt-0.5 font-sans">
-    //               {t('hero.happy_clients')}
-    //             </p>
-    //           </div>
-    //           <div className="border-l-2 border-gold/15 pl-4">
-    //             <p className="text-2xl font-display text-charcoal font-light">12</p>
-    //             <p className="text-xs text-luxury-muted tracking-wide mt-0.5 font-sans">
-    //               {t('hero.countries_shipped')}
-    //             </p>
-    //           </div>
-    //         </div>
+            <div className="space-y-6 mt-8">
+              <div className="border-l-2 border-gold/50 pl-4">
+                <p className="text-2xl font-display text-charcoal font-light">148+</p>
+                <p className="text-xs text-luxury-muted tracking-wide mt-0.5 font-sans">
+                  {t('hero.unique_designs')}
+                </p>
+              </div>
+              <div className="border-l-2 border-gold/30 pl-4">
+                <p className="text-2xl font-display text-charcoal font-light">4,200+</p>
+                <p className="text-xs text-luxury-muted tracking-wide mt-0.5 font-sans">
+                  {t('hero.happy_clients')}
+                </p>
+              </div>
+              <div className="border-l-2 border-gold/15 pl-4">
+                <p className="text-2xl font-display text-charcoal font-light">12</p>
+                <p className="text-xs text-luxury-muted tracking-wide mt-0.5 font-sans">
+                  {t('hero.countries_shipped')}
+                </p>
+              </div>
+            </div>
 
-    //         <div className="mt-8 flex flex-col gap-3">
-    //           <Link
-    //             href="/product-listing"
-    //             className="px-6 py-3 bg-gold text-white text-sm font-semibold tracking-widest hover:bg-gold-dark transition-colors duration-300 text-center font-sans uppercase"
-    //           >
-    //             {t('hero.shop_collection')}
-    //           </Link>
-    //           <button
-    //             onClick={onCartOpen}
-    //             className="px-6 py-3 border border-charcoal/20 text-charcoal text-sm font-medium tracking-wide hover:border-gold hover:text-gold transition-colors duration-300 font-sans"
-    //           >
-    //             {t('hero.view_lookbook')}
-    //           </button>
-    //         </div>
-    //       </div>
-    //     </div>
+            <div className="mt-8 flex flex-col gap-3">
+              <Link
+                href="/product-listing"
+                className="px-6 py-3 bg-gold text-white text-sm font-semibold tracking-widest hover:bg-gold-dark transition-colors duration-300 text-center font-sans uppercase"
+              >
+                {t('hero.shop_collection')}
+              </Link>
+              <button
+                onClick={onCartOpen}
+                className="px-6 py-3 border border-charcoal/20 text-charcoal text-sm font-medium tracking-wide hover:border-gold hover:text-gold transition-colors duration-300 font-sans"
+              >
+                {t('hero.view_lookbook')}
+              </button>
+            </div>
+          </div> */}
+      {/* </div> */}
 
-    //     {/* Bottom scroll indicator */}
-    //     <div className="hidden sm:flex items-center justify-center gap-3 mt-6 md:mt-8 text-luxury-muted">
-    //       <div className="w-px h-8 bg-luxury-border" />
-    //       <p className="text-[10px] uppercase tracking-[0.3em] font-sans">
-    //         {t('hero.scroll_to_explore')}
-    //       </p>
-    //       <div className="w-px h-8 bg-luxury-border" />
+      {/* Bottom scroll indicator */}
+      {/* <div className="hidden sm:flex items-center justify-center gap-3 mt-6 md:mt-8 text-luxury-muted">
+          <div className="w-px h-8 bg-luxury-border" />
+          <p className="text-[10px] uppercase tracking-[0.3em] font-sans">
+            {t('hero.scroll_to_explore')}
+          </p>
+          <div className="w-px h-8 bg-luxury-border" />
+        </div> */}
+      {/* </div> */}
+    </section>
+    // <section className="relative w-full h-auto flex items-center overflow-hidden">
+    //   <div className="relative w-full aspect-[16/10] md:aspect-[21/9] lg:aspect-[25/9] md:min-h-[1000px] min-h-[400px] flex items-center">
+    //     <div className="absolute inset-0 z-0">
+    //       <img
+    //         src="https://pos.nvncdn.com/211f76-106986/bn/20260416_5RDwA8I2.png?v=1776327227"
+    //         alt="PAJ Silver"
+    //         className="w-full h-auto block"
+    //       />
     //     </div>
     //   </div>
     // </section>
-    <section className="relative w-full h-auto flex items-center overflow-hidden pt-11">
-      <div className="relative w-full aspect-[16/10] md:aspect-[21/9] lg:aspect-[25/9] md:min-h-[1000px] min-h-[400px] flex items-center">
-        <div className="absolute inset-0 z-0">
-          <img
-            src="https://pos.nvncdn.com/211f76-106986/bn/20260416_5RDwA8I2.png?v=1776327227"
-            alt="PAJ Silver"
-            className="w-full h-auto block"
-          />
-        </div>
-      </div>
-    </section>
   );
 };
 
 const CategoriesSection: React.FC = () => {
   const { t } = useLanguage();
-  const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({});
-  const [countsLoading, setCountsLoading] = useState(true);
+  // const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({});
+  // const [countsLoading, setCountsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchCounts = async () => {
-      try {
-        const supabase = createClient();
-        const { data, error } = await supabase
-          .from('products')
-          .select('category_id, categories!inner(slug)');
-        if (!error && data) {
-          const counts: Record<string, number> = {};
-          data.forEach((row: any) => {
-            const slug = row.categories?.slug;
-            if (slug) {
-              counts[slug] = (counts[slug] || 0) + 1;
-            }
-          });
-          setCategoryCounts(counts);
-        }
-      } catch {
-        // silently fail
-      } finally {
-        setCountsLoading(false);
-      }
-    };
-    fetchCounts();
-  }, []);
+  // useEffect(() => {
+  //   const fetchCounts = async () => {
+  //     try {
+  //       const supabase = createClient();
+  //       const { data, error } = await supabase
+  //         .from('products')
+  //         .select('category_id, categories!inner(slug)');
+  //       if (!error && data) {
+  //         const counts: Record<string, number> = {};
+  //         data.forEach((row: any) => {
+  //           const slug = row.categories?.slug;
+  //           if (slug) {
+  //             counts[slug] = (counts[slug] || 0) + 1;
+  //           }
+  //         });
+  //         setCategoryCounts(counts);
+  //       }
+  //     } catch {
+  //       // silently fail
+  //     } finally {
+  //       setCountsLoading(false);
+  //     }
+  //   };
+  //   fetchCounts();
+  // }, []);
 
   return (
-    <section className="py-14 sm:py-20 md:py-24 px-4 sm:px-6 md:px-10 max-w-[1400px] mx-auto">
-      <div className="flex items-end justify-between mb-8 sm:mb-12 md:mb-14">
-        <div>
-          <p className="text-[10px] uppercase tracking-[0.3em] text-gold-dark font-semibold mb-2 sm:mb-3 font-sans">
-            {t('categories.browse_by')}
-          </p>
-          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-charcoal">
-            {t('categories.our_collections')}
-          </h2>
+    <section className="py-14 sm:py-20 md:py-24 px-4 sm:px-6 md:px-10 max-w-[1950px] mx-auto">
+      <div className="text-center mb-8 sm:mb-12 md:mb-14">
+        <Title>
+          <span className="font-display">{t('categories.our_collections')}</span>
+        </Title>
+        <div className="relative flex items-center justify-center w-40 h-4 mt-2 justify-self-center">
+          <div className="flex-1 h-[1px] bg-[gold]"></div>
+
+          <div className="px-2 text-[gold]">
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+          </div>
+
+          <div className="flex-1 h-[1px] bg-[gold]"></div>
         </div>
-        <Link
+        {/* <Link
           href="/product-listing"
           className="hidden md:flex items-center gap-2 text-sm font-medium text-charcoal-light hover:text-gold transition-colors gold-underline font-sans"
         >
           {t('categories.view_all')}
           <Icon name="ArrowRightIcon" size={14} />
-        </Link>
+        </Link> */}
       </div>
 
       {/* Asymmetric bento grid — simplified on mobile */}
-      <div className="grid grid-cols-2 md:grid-cols-4 grid-rows-3 gap-2 sm:gap-3 h-[400px] sm:h-[480px] md:h-[520px]">
+      <div className="grid grid-cols-2 md:grid-cols-3 grid-rows-3 md:grid-rows-2 gap-2 sm:gap-3 h-[400px] sm:h-[450px] ">
         {categories.map((cat) => (
           <Link
             key={cat.id}
@@ -861,23 +1038,23 @@ const CategoriesSection: React.FC = () => {
               fill
               className="object-cover transition-transform duration-700 group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-charcoal/60 via-charcoal/10 to-transparent transition-opacity duration-300 group-hover:from-charcoal/75" />
+            {/* <div className="absolute inset-0 bg-gradient-to-t from-charcoal/60 via-charcoal/10 to-transparent transition-opacity duration-300 group-hover:from-charcoal/75" /> */}
 
             {/* Content */}
-            <div className="absolute bottom-0 left-0 p-3 sm:p-5 transform translate-y-1 group-hover:translate-y-0 transition-transform duration-300">
+            {/* <div className="absolute bottom-0 left-0 p-3 sm:p-5 transform translate-y-1 group-hover:translate-y-0 transition-transform duration-300">
               <h3 className="font-display text-white text-base sm:text-xl md:text-2xl font-light mb-1">
                 {t(cat.nameKey)}
               </h3>
               <p className="text-white text-xs tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-sans">
                 {countsLoading ? '...' : `${categoryCounts[cat.slug] ?? 0} sản phẩm`} →
               </p>
-            </div>
+            </div> */}
 
             {/* Gold corner accent */}
-            <div className="absolute top-3 right-3 w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            {/* <div className="absolute top-3 right-3 w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <div className="w-full h-px bg-gold" />
               <div className="w-px h-full bg-gold ml-auto" />
-            </div>
+            </div> */}
           </Link>
         ))}
       </div>
@@ -899,17 +1076,17 @@ const CategoriesSection: React.FC = () => {
 const CraftsmanshipSection: React.FC = () => {
   const { t } = useLanguage();
   return (
-    <section className="py-14 sm:py-20 md:py-24 overflow-hidden bg-white">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10">
+    <section className="w-full max-w-[1950px] mx-auto px-4 py-4 sm:px-6 md:px-10 overflow-hidden bg-luxury-white">
+      <div className=" mx-auto px-4 sm:px-6 md:px-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 md:gap-20 items-center">
           {/* Image */}
           <div className="relative">
-            <div className="aspect-[4/5] overflow-hidden">
+            <div className="aspect-[16/9] overflow-hidden">
               <AppImage
                 src="https://images.unsplash.com/photo-1654076847645-b72b3b66d576"
                 alt="Master jeweler crafting a piece"
                 fill
-                className="object-cover"
+                className="object-cover rounded-md"
               />
             </div>
             {/* Floating stat card */}
@@ -923,7 +1100,7 @@ const CraftsmanshipSection: React.FC = () => {
           </div>
 
           {/* Text */}
-          <div className="md:pl-8 mt-6 sm:mt-8 md:mt-0">
+          <div className="md:pl-8 mt-6 sm:mt-8 md:mt-0 max-w-[750px]">
             <p className="text-[10px] uppercase tracking-[0.3em] text-gold-dark font-semibold mb-4 sm:mb-6 font-sans">
               {t('craftsmanship.our_story')}
             </p>
@@ -975,20 +1152,20 @@ const TestimonialsSection: React.FC = () => {
   const { t } = useLanguage();
 
   return (
-    <section className="py-14 sm:py-20 md:py-24 bg-luxury-warm relative overflow-hidden">
+    <section className="py-14 sm:py-16 md:py-18 bg-[#1a3333] relative overflow-hidden">
       {/* Subtle top/bottom borders */}
       <div className="absolute top-0 left-0 right-0 h-px bg-luxury-border" />
       <div className="absolute bottom-0 left-0 right-0 h-px bg-luxury-border" />
 
       <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10">
-        <div className="text-center mb-10 sm:mb-14 md:mb-16">
+        {/* <div className="text-center mb-10 sm:mb-14 md:mb-16">
           <p className="text-[10px] uppercase tracking-[0.3em] text-gold-dark font-semibold mb-3 sm:mb-4 font-sans">
             {t('testimonials.what_clients_say')}
           </p>
           <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-light text-charcoal">
             {t('testimonials.stories_of_joy')}
           </h2>
-        </div>
+        </div> */}
 
         {/* Mobile: single card with dots; tablet+: grid */}
         <div className="md:hidden">
@@ -1040,23 +1217,25 @@ const TestimonialsSection: React.FC = () => {
           {testimonials.map((testimonial, i) => (
             <div
               key={testimonial.id}
-              className={`p-8 border bg-white transition-all duration-500 cursor-pointer shadow-product ${
-                activeIdx === i
-                  ? 'border-gold/40 shadow-product-hover'
-                  : 'border-luxury-border hover:border-gold/20'
-              }`}
+              className={`p-8 transition-all duration-500 cursor-pointer shadow-product`}
               onClick={() => setActiveIdx(i)}
             >
               {/* Stars */}
               <div className="flex gap-1 mb-6">
                 {Array.from({ length: testimonial.rating }).map((_, si) => (
-                  <Icon key={si} name="StarIcon" size={14} className="text-gold" variant="solid" />
+                  <Icon
+                    key={si}
+                    name="StarIcon"
+                    size={14}
+                    className="text-[gold]"
+                    variant="solid"
+                  />
                 ))}
               </div>
-              <blockquote className="font-display text-charcoal text-base font-light leading-relaxed mb-8 italic">
+              <blockquote className="font-paj text-white text-base font-light leading-relaxed mb-8 italic">
                 &ldquo;{testimonial.quote}&rdquo;
               </blockquote>
-              <div className="flex items-center gap-4 pt-6 border-t border-luxury-border">
+              <div className="flex items-center gap-4">
                 <AppImage
                   src={testimonial.avatar}
                   alt={testimonial.name}
@@ -1065,9 +1244,7 @@ const TestimonialsSection: React.FC = () => {
                   className="rounded-full object-cover"
                 />
                 <div>
-                  <p className="text-charcoal font-semibold text-sm font-sans">
-                    {testimonial.name}
-                  </p>
+                  <p className="text-white font-semibold text-sm font-sans">{testimonial.name}</p>
                   <p className="text-luxury-muted text-xs mt-0.5 font-sans">{testimonial.title}</p>
                 </div>
               </div>
@@ -1140,20 +1317,25 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-white" suppressHydrationWarning>
+      <TopBar />
       <Header transparent={true} />
       <CartDrawer />
 
       <main suppressHydrationWarning>
         <HeroSection onCartOpen={openCart} />
-        <CategoriesSection />
-        <NewArrivalsSection />
-        <BestSellersSection />
-        <GiftBoxesSection />
+        <div className="max-w-[1770px] mx-auto">
+          <CategoriesSection />
+          <AllProductsSection />
+          <div className="grid grid-cols-1 md:grid-cols-2 ">
+            <NewArrivalsSection />
+            <BestSellersSection />
+          </div>
+          <GiftBoxesSection />
+        </div>
         <CraftsmanshipSection />
         <TestimonialsSection />
         <NewsletterSection />
       </main>
-
       <Footer />
     </div>
   );

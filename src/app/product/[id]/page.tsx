@@ -11,6 +11,7 @@ import Icon from '@/components/ui/AppIcon';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useCart } from '@/contexts/CartContext';
 import { createClient } from '@/lib/supabase/client';
+import { DynamicProductCard } from '@/app/homepage/page';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -36,6 +37,8 @@ interface RelatedProduct {
   id: string;
   name: string;
   price: number;
+  original_price?: number;
+  is_new?: boolean;
   image_url?: string;
   material?: string;
   slug: string;
@@ -146,6 +149,7 @@ export default function ProductPage() {
   const [addedToCart, setAddedToCart] = useState(false);
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomPos, setZoomPos] = useState({ x: 0, y: 0 });
+  const [isOpenMobileModal, setIsOpenMobileModal] = useState(false);
 
   const productId = params?.id as string;
   console.log(selectedImage);
@@ -177,7 +181,7 @@ export default function ProductPage() {
         if (data.category_id) {
           const { data: related } = await supabase
             .from('products')
-            .select('id, name, price, image_url, material, slug')
+            .select('id, name, price, original_price, is_new, image_url, material, slug')
             .eq('category_id', data.category_id)
             .eq('is_active', true)
             .neq('id', productId)
@@ -330,6 +334,7 @@ export default function ProductPage() {
                       alt={`${product.name} view ${i + 1}`}
                       fill
                       className="object-cover"
+                      unoptimized={true}
                     />
                   </button>
                 ))}
@@ -337,11 +342,17 @@ export default function ProductPage() {
 
               {/* Main image with zoom */}
               <div className="flex-1 flex flex-col gap-3">
+                {/* Khung chứa ảnh lớn */}
                 <div
                   className="relative aspect-[3/4] overflow-hidden bg-luxury-warm cursor-crosshair"
                   onMouseMove={handleMouseMove}
                   onMouseEnter={() => setIsZoomed(true)}
                   onMouseLeave={() => setIsZoomed(false)}
+                  onClick={() => {
+                    if (window.innerWidth < 640) {
+                      setIsOpenMobileModal(true);
+                    }
+                  }}
                 >
                   <AppImage
                     src={allImages[selectedImage] || allImages[0]}
@@ -359,31 +370,61 @@ export default function ProductPage() {
                           }
                         : { transition: 'transform 0.3s ease' }
                     }
+                    unoptimized={true}
                   />
+
                   {product.is_new && (
                     <span className="absolute top-3 left-3 text-[10px] uppercase tracking-[0.15em] font-bold text-charcoal bg-gold px-2 py-0.5 z-10">
                       {t('product_detail.new_badge')}
                     </span>
                   )}
+
                   {discountPct && (
                     <span className="absolute top-3 right-3 text-[10px] uppercase tracking-[0.15em] font-bold text-white bg-red-600 px-2 py-0.5 z-10">
                       -{discountPct}%
                     </span>
                   )}
-                  <button
-                    onClick={() =>
-                      setSelectedImage((selectedImage - 1 + allImages.length) % allImages.length)
-                    }
-                    className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-luxury-white/80 backdrop-blur-sm flex items-center justify-center hover:bg-luxury-white transition-colors z-10 min-w-[44px] min-h-[44px]"
-                  >
-                    <Icon name="ChevronLeftIcon" size={14} />
-                  </button>
-                  <button
-                    onClick={() => setSelectedImage((selectedImage + 1) % allImages.length)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-luxury-white/80 backdrop-blur-sm flex items-center justify-center hover:bg-luxury-white transition-colors z-10 min-w-[44px] min-h-[44px]"
-                  >
-                    <Icon name="ChevronRightIcon" size={14} />
-                  </button>
+
+                  <div className="hidden md:block">
+                    {/* Nút Mũi tên trái */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedImage((selectedImage - 1 + allImages.length) % allImages.length);
+                      }}
+                      onMouseEnter={(e) => {
+                        e.stopPropagation(); // Chặn lan truyền sự kiện
+                        setIsZoomed(false); // Ép ảnh trả về kích thước bình thường
+                      }}
+                      onMouseLeave={(e) => {
+                        e.stopPropagation();
+                        setIsZoomed(true); // Khi chuột rời nút bấm và về lại vùng ảnh thì bật zoom lại
+                      }}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-luxury-white/80 backdrop-blur-sm flex items-center justify-center hover:bg-luxury-white transition-colors z-10 min-w-[44px] min-h-[44px]"
+                    >
+                      <Icon name="ChevronLeftIcon" size={14} />
+                    </button>
+
+                    {/* Nút Mũi tên phải */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedImage((selectedImage + 1) % allImages.length);
+                      }}
+                      onMouseEnter={(e) => {
+                        e.stopPropagation(); // Chặn lan truyền sự kiện
+                        setIsZoomed(false); // Ép ảnh trả về kích thước bình thường
+                      }}
+                      onMouseLeave={(e) => {
+                        e.stopPropagation();
+                        setIsZoomed(true);
+                      }}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-luxury-white/80 backdrop-blur-sm flex items-center justify-center hover:bg-luxury-white transition-colors z-10 min-w-[44px] min-h-[44px]"
+                    >
+                      <Icon name="ChevronRightIcon" size={14} />
+                    </button>
+                  </div>
+
                   <p className="absolute bottom-3 right-3 text-[10px] text-luxury-muted bg-luxury-white/80 px-2 py-1 z-10 hidden sm:block">
                     Hover to zoom
                   </p>
@@ -408,6 +449,83 @@ export default function ProductPage() {
                         />
                       </button>
                     ))}
+                  </div>
+                )}
+
+                {/* MOBILE MODAL TAB IMAGE */}
+                {isOpenMobileModal && (
+                  <div className="fixed inset-0 z-[100] flex flex-col items-center justify-between bg-white px-4 py-6 sm:hidden animate-fade-in">
+                    <div className="w-full flex justify-end">
+                      <button
+                        onClick={() => setIsOpenMobileModal(false)}
+                        className="p-2 text-charcoal active:opacity-50"
+                        aria-label="Đóng"
+                      >
+                        <svg
+                          width="28"
+                          height="28"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                      </button>
+                    </div>
+
+                    <div className="relative flex-1 flex items-center justify-center w-full max-h-[75vh]">
+                      <AppImage
+                        src={allImages[selectedImage] || allImages[0]}
+                        alt={product.name}
+                        className="max-w-full max-h-full object-contain select-none"
+                        unoptimized={true}
+                      />
+                    </div>
+
+                    <div className="w-full flex justify-center gap-20 pb-4">
+                      <button
+                        onClick={() =>
+                          setSelectedImage(
+                            (selectedImage - 1 + allImages.length) % allImages.length
+                          )
+                        }
+                        className="p-3 text-charcoal active:opacity-40"
+                      >
+                        <svg
+                          width="32"
+                          height="32"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="15 18 9 12 15 6" />
+                        </svg>
+                      </button>
+                      <button
+                        onClick={() => setSelectedImage((selectedImage + 1) % allImages.length)}
+                        className="p-3 text-charcoal active:opacity-40"
+                      >
+                        <svg
+                          width="32"
+                          height="32"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="9 18 15 12 9 6" />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -704,31 +822,32 @@ export default function ProductPage() {
                 </Link>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
-                {relatedProducts.map((rp) => (
-                  <Link key={rp.id} href={`/product/${rp.id}`} className="product-card group">
-                    <div className="relative aspect-[3/4] overflow-hidden bg-luxury-warm mb-3">
-                      <AppImage
-                        src={
-                          rp.image_url ||
-                          'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&q=85'
-                        }
-                        alt={rp.name}
-                        fill
-                        className="object-cover product-card-img"
-                      />
-                    </div>
-                    {rp.material && (
-                      <p className="text-[10px] uppercase tracking-[0.15em] text-luxury-muted mb-1">
-                        {rp.material}
-                      </p>
-                    )}
-                    <h3 className="font-display text-sm font-medium text-charcoal mb-1 group-hover:text-gold transition-colors leading-snug">
-                      {rp.name}
-                    </h3>
-                    <p className="text-sm font-semibold text-charcoal" suppressHydrationWarning>
-                      {Number(rp.price).toLocaleString('vi-VN')}₫
-                    </p>
-                  </Link>
+                {relatedProducts.map((rp, i) => (
+                  // <Link key={rp.id} href={`/product/${rp.id}`} className="product-card group">
+                  //   <div className="relative aspect-[3/4] overflow-hidden bg-luxury-warm mb-3">
+                  //     <AppImage
+                  //       src={
+                  //         rp.image_url ||
+                  //         'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&q=85'
+                  //       }
+                  //       alt={rp.name}
+                  //       fill
+                  //       className="object-cover product-card-img"
+                  //     />
+                  //   </div>
+                  //   {rp.material && (
+                  //     <p className="text-[10px] uppercase tracking-[0.15em] text-luxury-muted mb-1">
+                  //       {rp.material}
+                  //     </p>
+                  //   )}
+                  //   <h3 className="font-display text-sm font-medium text-charcoal mb-1 group-hover:text-gold transition-colors leading-snug">
+                  //     {rp.name}
+                  //   </h3>
+                  //   <p className="text-sm font-semibold text-charcoal" suppressHydrationWarning>
+                  //     {Number(rp.price).toLocaleString('vi-VN')}₫
+                  //   </p>
+                  // </Link>
+                  <DynamicProductCard key={rp.id} product={rp} index={i} />
                 ))}
               </div>
             </div>
