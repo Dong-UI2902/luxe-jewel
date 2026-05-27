@@ -238,9 +238,9 @@ export default function ProductPage() {
         <Header cartCount={cartCount} onCartOpen={openCart} />
         <main className="pt-20">
           <div className="max-w-[1400px] mx-auto px-6 md:px-10 py-16">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 animate-pulse">
-              <div className="aspect-[3/4] bg-luxury-warm" />
-              <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-12 animate-pulse">
+              <div className="aspect-[1/1] bg-luxury-warm col-span-3" />
+              <div className="space-y-4 col-span-2">
                 <div className="h-4 bg-luxury-warm rounded w-1/3" />
                 <div className="h-8 bg-luxury-warm rounded w-3/4" />
                 <div className="h-6 bg-luxury-warm rounded w-1/4" />
