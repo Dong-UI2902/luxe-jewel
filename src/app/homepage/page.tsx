@@ -35,28 +35,28 @@ interface Product {
 const heroSlides = [
   {
     id: 1,
-    image: 'https://pos.nvncdn.com/211f76-106986/bn/20260416_5RDwA8I2.png?v=1776327227&w=1200&q=90',
+    image: '/assets/images/header.jpg?v=1776327227&w=1200&q=90',
     labelKey: 'hero.new_arrival',
     title: 'Celestial Ring',
     subtitle: '18K Gold · Diamond Pavé',
     tag: 'Rings',
   },
-  {
-    id: 2,
-    image: 'https://pos.nvncdn.com/211f76-106986/bn/20260416_5RDwA8I2.png?v=1776327227&w=1200&q=90',
-    labelKey: 'hero.bestseller',
-    title: 'Lumière Necklace',
-    subtitle: 'White Gold · Sapphire',
-    tag: 'Necklaces',
-  },
-  {
-    id: 3,
-    image: 'https://pos.nvncdn.com/211f76-106986/bn/20260416_5RDwA8I2.png?v=1776327227&w=1200&q=90',
-    labelKey: 'hero.limited_edition',
-    title: 'Aurora Bracelet',
-    subtitle: '18K Gold · Pearl',
-    tag: 'Bracelets',
-  },
+  // {
+  //   id: 2,
+  //   image: 'https://pos.nvncdn.com/211f76-106986/bn/20260416_5RDwA8I2.png?v=1776327227&w=1200&q=90',
+  //   labelKey: 'hero.bestseller',
+  //   title: 'Lumière Necklace',
+  //   subtitle: 'White Gold · Sapphire',
+  //   tag: 'Necklaces',
+  // },
+  // {
+  //   id: 3,
+  //   image: 'https://pos.nvncdn.com/211f76-106986/bn/20260416_5RDwA8I2.png?v=1776327227&w=1200&q=90',
+  //   labelKey: 'hero.limited_edition',
+  //   title: 'Aurora Bracelet',
+  //   subtitle: '18K Gold · Pearl',
+  //   tag: 'Bracelets',
+  // },
 ];
 
 const categories = [
