@@ -314,9 +314,9 @@ export default function ProductPage() {
 
         {/* Product Detail */}
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10 pb-12 sm:pb-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10 md:gap-12 lg:gap-20">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-8 sm:gap-8 md:gap-10 lg:gap-18">
             {/* Left: Gallery */}
-            <div className="flex gap-3 sm:gap-4">
+            <div className="flex gap-3 sm:gap-4 md:col-span-3">
               {/* Thumbnails — hidden on mobile, shown on sm+ */}
               <div className="hidden sm:flex flex-col gap-3 flex-shrink-0">
                 {allImages.map((img, i) => (
@@ -344,7 +344,7 @@ export default function ProductPage() {
               <div className="flex-1 flex flex-col gap-3">
                 {/* Khung chứa ảnh lớn */}
                 <div
-                  className="relative aspect-[3/4] overflow-hidden bg-luxury-warm cursor-crosshair"
+                  className="relative aspect-[1/1] overflow-hidden bg-luxury-warm cursor-crosshair"
                   onMouseMove={handleMouseMove}
                   onMouseEnter={() => setIsZoomed(true)}
                   onMouseLeave={() => setIsZoomed(false)}
@@ -532,7 +532,7 @@ export default function ProductPage() {
             </div>
 
             {/* Right: Product Info */}
-            <div className="flex flex-col">
+            <div className="flex flex-col md:col-span-2">
               {categoryName && (
                 <p className="text-[10px] uppercase tracking-[0.3em] text-gold-dark font-semibold mb-2">
                   {categoryName}
@@ -563,7 +563,7 @@ export default function ProductPage() {
                     )}
                 </div>
                 <p className="text-xs text-luxury-muted mt-1">
-                  Miễn phí vận chuyển cho đơn hàng trên 5.000.000₫ · Đổi trả trong 30 ngày
+                  Miễn phí vận chuyển toàn quốc · Đổi trả trong 30 ngày
                 </p>
               </div>
 
@@ -706,7 +706,7 @@ export default function ProductPage() {
               {/* Trust badges */}
               <div className="grid grid-cols-3 gap-2 sm:gap-3 py-5 sm:py-6 border-t border-luxury-border">
                 {[
-                  { icon: 'ShieldCheckIcon', label: 'Chứng nhận GIA' },
+                  { icon: 'ShieldCheckIcon', label: 'Đóng gói cẩn thận' },
                   { icon: 'TruckIcon', label: 'Miễn phí ship' },
                   { icon: 'ArrowPathIcon', label: 'Đổi trả 30 ngày' },
                 ].map((badge) => (
@@ -754,7 +754,7 @@ export default function ProductPage() {
                     },
                     {
                       title: 'Bảo quản',
-                      desc: 'Bảo quản từng món riêng biệt trong túi LuxeJewel để tránh trầy xước.',
+                      desc: 'Bảo quản từng món riêng biệt trong hộp PAJ Silver để tránh trầy xước.',
                     },
                     {
                       title: 'Đeo trang sức',
@@ -777,7 +777,7 @@ export default function ProductPage() {
                     {
                       icon: 'TruckIcon',
                       title: 'Miễn phí vận chuyển',
-                      desc: 'Miễn phí cho đơn hàng trên 5.000.000₫. Giao hàng trong 3-5 ngày làm việc.',
+                      desc: 'Miễn phí toàn quốc cho tất cả các đơn hàng. Giao hàng trong 3-5 ngày làm việc.',
                     },
                     {
                       icon: 'BoltIcon',

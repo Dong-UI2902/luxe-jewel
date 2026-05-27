@@ -13,9 +13,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: 'Telegram not configured' }, { status: 200 });
     }
 
-    const adminUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/admin-dashboard`;
+    // const adminUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/admin-dashboard`;
 
-    const message = `🛍️ ĐƠN HÀNG MỚI!\n\nPhương thức: ${payment_method === 'bank_transfer' ? 'Chuyển khoản Ngân hàng' : 'Thanh toán khi nhận hàng (COD)'}\nKhách hàng: ${customer_name}\nSố điện thoại: ${phone}\nTổng tiền: ${Number(total_amount).toLocaleString('vi-VN')}đ\nMã đơn: ${order_id}\n\n🔗 Xem đơn hàng: ${adminUrl}`;
+    // const message = `🛍️ ĐƠN HÀNG MỚI!\n\nPhương thức: ${payment_method === 'bank_transfer' ? 'Chuyển khoản Ngân hàng' : 'Thanh toán khi nhận hàng (COD)'}\nKhách hàng: ${customer_name}\nSố điện thoại: ${phone}\nTổng tiền: ${Number(total_amount).toLocaleString('vi-VN')}đ\nMã đơn: ${order_id}\n\n🔗 Xem đơn hàng: ${adminUrl}`;
+    // const message = `🛍️ ĐƠN HÀNG MỚI!\n\nPhương thức: ${payment_method === 'bank_transfer' ? 'Chuyển khoản Ngân hàng' : 'Thanh toán khi nhận hàng (COD)'}\nKhách hàng: ${customer_name}\nSố điện thoại: ${phone}\nTổng tiền: ${Number(total_amount).toLocaleString('vi-VN')}đ\nMã đơn: ${order_id}`;
+    const message = `
+🛍️ *CÓ ĐƠN HÀNG MỚI \\- PAJ SILVER*
+━━━━━━━━━━━━━━━━━━
+🆔 *Mã đơn hàng:* \`${order_id}\`
+👤 *Khách hàng:* ${customer_name}
+📞 *Số điện thoại:* ${phone}
+💰 *Tổng thanh toán:* ${Number(total_amount).toLocaleString('vi-VN')}đ
+💳 *Phương thức:* ${payment_method === 'bank_transfer' ? 'Chuyển khoản Ngân hàng' : 'Thanh toán khi nhận hàng \\(COD\\)'}
+    `.trim();
 
     const telegramRes = await fetch(
       `https://api.telegram.org/bot${botToken}/sendMessage`,

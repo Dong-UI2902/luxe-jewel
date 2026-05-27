@@ -1110,13 +1110,18 @@ const CraftsmanshipSection: React.FC = () => {
               <em className="font-medium not-italic">{t('craftsmanship.title_line2')}</em>
             </h2>
             <p className="text-charcoal-light leading-relaxed mb-4 sm:mb-6 text-sm md:text-base font-sans">
-              {t('craftsmanship.desc1')}
+              Tại PAJ Silver, mỗi món trang sức không chỉ được tạo ra để làm đẹp, mà còn để lưu giữ
+              một câu chuyện. Từ những đường nét đầu tiên đến khi hoàn thiện, từng chi tiết đều được
+              chăm chút tỉ mỉ bằng sự chỉn chu, kiên nhẫn và tình yêu với nghề bạc.
             </p>
             <p className="text-charcoal-light leading-relaxed mb-6 sm:mb-8 text-sm md:text-base font-sans">
-              {t('craftsmanship.desc2')}
+              Chúng tôi tin rằng một chiếc nhẫn, một sợi dây chuyền hay một món quà nhỏ đều có thể
+              trở thành kỷ niệm theo bạn thật lâu. Vì vậy, PAJ Silver luôn đặt tâm huyết vào từng
+              sản phẩm, để khi đến tay khách hàng, mỗi món trang sức đều mang theo sự tinh tế, chân
+              thành và một dấu ấn riêng.
             </p>
 
-            <div className="grid grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8 pt-6 sm:pt-8 border-t border-luxury-border">
+            {/* <div className="grid grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8 pt-6 sm:pt-8 border-t border-luxury-border">
               {[
                 { value: '18K', labelKey: 'craftsmanship.gold_alloy' },
                 { value: 'GIA', labelKey: 'craftsmanship.certified_stones' },
@@ -1131,7 +1136,7 @@ const CraftsmanshipSection: React.FC = () => {
                   </p>
                 </div>
               ))}
-            </div>
+            </div> */}
 
             <Link
               href="/product-listing"

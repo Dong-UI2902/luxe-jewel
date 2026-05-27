@@ -6,7 +6,7 @@ const TopBar: React.FC = () => {
     <div className="w-full font-sans text-[#1a3333]">
       {/* 1. Dải màu xanh rêu (Announcement Bar) */}
       <div className="w-full bg-[#1a3333] text-white text-[11px] font-medium tracking-[0.15em] py-2 px-4 text-center uppercase">
-        Miễn phí giao hàng cho đơn từ 1.000.000đ
+        Miễn phí giao hàng toàn quốc.
       </div>
 
       {/* 2. Dải thông tin nền kem nhạt (Top Info Bar) - Ẩn trên mobile, hiện từ md */}
@@ -31,7 +31,7 @@ const TopBar: React.FC = () => {
                 <circle cx="5.5" cy="18.5" r="2.5" />
                 <circle cx="18.5" cy="18.5" r="2.5" />
               </svg>
-              <span>Miễn phí giao hàng cho đơn từ 1.000.000đ</span>
+              <span>Miễn phí giao hàng toàn quốc</span>
             </div>
 
             <div className="flex items-center gap-2">
