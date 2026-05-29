@@ -479,6 +479,7 @@ export default function ProductPage() {
 
                     <div className="relative flex-1 flex items-center justify-center w-full max-h-[75vh]">
                       <AppImage
+                        key={`modal-main-img-${selectedImage}`}
                         src={allImages[selectedImage] || allImages[0]}
                         alt={product.name}
                         className="max-w-full max-h-full object-contain select-none"
