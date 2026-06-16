@@ -35,7 +35,8 @@ interface Product {
 const heroSlides = [
   {
     id: 1,
-    image: '/assets/images/header.jpg?v=1776327227&w=1200&q=90',
+    image: '/assets/images/header-background.png',
+    mobileImage: '/assets/images/header-background-mobile.png',
     labelKey: 'hero.new_arrival',
     title: 'Celestial Ring',
     subtitle: '18K Gold · Diamond Pavé',
@@ -795,13 +796,27 @@ const HeroSection: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
               className="absolute inset-0 transition-opacity duration-700"
               style={{ opacity: i === currentSlide ? 1 : 0 }}
             >
-              <AppImage
-                src={slide.image}
-                alt={slide.title}
-                fill
-                className="object-cover"
-                priority={i === 0}
-              />
+              {/*1. ẢNH DÀNH CHO PC: Mặc định ẩn trên Mobile (hidden), hiện từ màn hình md trở lên (md:block) */}
+              <div className="hidden md:block w-full h-full relative">
+                <AppImage
+                  src={slide.image}
+                  alt={slide.title}
+                  fill
+                  className="object-cover"
+                  priority={i === 0}
+                />
+              </div>
+
+              {/*2. ẢNH DÀNH CHO MOBILE: Mặc định hiện (block), ẩn từ màn hình md trở lên (md:hidden) */}
+              <div className="block md:hidden w-full h-full relative">
+                <AppImage
+                  src={slide.mobileImage || slide.image} // Nếu slide nào quên không cài ảnh mobile thì tự lấy ảnh PC làm fallback
+                  alt={slide.title}
+                  fill
+                  className="object-cover"
+                  priority={i === 0}
+                />
+              </div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
 
               {/* Slide info overlay */}
