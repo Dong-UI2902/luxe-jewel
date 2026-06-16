@@ -804,6 +804,7 @@ const HeroSection: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
                   fill
                   className="object-cover"
                   priority={i === 0}
+                  sizes="(min-width: 768px) 100vw, 33vw"
                 />
               </div>
 
