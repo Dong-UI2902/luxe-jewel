@@ -408,7 +408,7 @@ const BestSellersSection: React.FC = () => {
 
   return (
     <section className="py-14 sm:py-20 md:py-10 bg-white">
-      <div className="max-w-[1700px] mx-auto pr-4 sm:px-6 md:px-10 md:pl-4">
+      <div className="max-w-[1700px] mx-auto pr-4 px-4 md:px-10 md:pl-4">
         <div className="text-center mb-8 sm:mb-12 md:mb-14">
           <div>
             <Title>
