@@ -75,10 +75,10 @@ const Header: React.FC<HeaderProps> = ({ transparent = false }) => {
   };
 
   const navLinks = [
+    { label: 'Nhẫn cặp', href: '/product-listing?category=couple-rings' },
     { label: t('nav.rings'), href: '/product-listing?category=rings' },
     { label: t('nav.necklaces'), href: '/product-listing?category=necklaces' },
     { label: t('nav.bracelets'), href: '/product-listing?category=bracelets' },
-    { label: t('nav.earrings'), href: '/product-listing?category=earrings' },
     { label: t('nav.gift_boxes'), href: '/product-listing?category=gift-boxes' },
   ];
 
