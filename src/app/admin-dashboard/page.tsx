@@ -22,6 +22,7 @@ import {
   Area,
 } from 'recharts';
 import TiptapEditor from '@/components/TiptapEditor';
+import { AdminCleanupButton } from './AdminCleanupButton';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -64,6 +65,7 @@ interface DBProduct {
   categories: { name: string } | null;
   is_new: boolean;
   is_best_seller: boolean;
+  gender?: string | null;
 }
 
 interface DBCategory {
@@ -96,6 +98,7 @@ interface EditProductForm {
   original_price: string;
   stock: string;
   material: string;
+  gender: string;
   imageUrl: string;
   imagePreview: string;
   galleryUrls: string[];
@@ -143,6 +146,7 @@ const PRODUCT_NEW_INITIAL_STATE = {
   original_price: '',
   stock: '',
   material: '',
+  gender: 'unisex',
   tags: [] as string[],
   description: '',
   isNew: false,
@@ -426,7 +430,7 @@ export default function AdminDashboardPage() {
     const { data, error } = await supabase
       .from('products')
       .select(
-        'id, name, sku, price, original_price, stock_quantity, is_active, is_best_seller, is_new, image_url, category_id, categories(name)'
+        'id, name, sku, price, original_price, stock_quantity, is_active, is_best_seller, is_new, gender, image_url, category_id, categories(name)'
       )
       .order('created_at', { ascending: false })
       .limit(200);
@@ -715,22 +719,6 @@ export default function AdminDashboardPage() {
     setGalleryPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = e.target.files?.[0];
-  //   if (!file) return;
-
-  //   const objectUrl = URL.createObjectURL(file);
-  //   setEditProductForm((prev) => ({ ...prev, imagePreview: objectUrl }));
-
-  //   const publicUrl = await handleEditImageUpload(file);
-  //   if (publicUrl) {
-  //     setEditProductForm((prev) => ({ ...prev, imageUrl: publicUrl, imagePreview: publicUrl }));
-  //     showToast('✅ Image uploaded successfully!');
-  //   } else {
-  //     setEditProductForm((prev) => ({ ...prev, imagePreview: prev.imageUrl }));
-  //   }
-  // };
-
   const handleAddProductSave = async () => {
     if (!newProduct.name || !newProduct.price) {
       showToast('Please fill in product name and price.');
@@ -747,6 +735,7 @@ export default function AdminDashboardPage() {
       gallery_urls: galleryUrls.length > 0 ? galleryUrls : null,
       is_active: true,
       material: newProduct.material || null,
+      gender: newProduct.gender || 'unisex',
       tags: newProduct.tags.length > 0 ? newProduct.tags : null,
       slug: slugify(newProduct.name),
       description: newProduct.description || null,
@@ -776,7 +765,7 @@ export default function AdminDashboardPage() {
     const { data } = await supabase
       .from('products')
       .select(
-        'id, name, description, price, original_price, stock_quantity, image_url, gallery_urls, material, tags, is_new, is_best_seller, category_id, categories(name)'
+        'id, name, description, price, original_price, stock_quantity, image_url, gallery_urls, material, gender, tags, is_new, is_best_seller, category_id, categories(name)'
       )
       .eq('id', product.id)
       .single();
@@ -790,6 +779,7 @@ export default function AdminDashboardPage() {
       original_price: String(fullProduct?.original_price ?? product.original_price ?? ''),
       stock: String(fullProduct?.stock_quantity ?? product.stock_quantity),
       material: fullProduct?.material || '',
+      gender: fullProduct?.gender || 'unisex',
       imageUrl: fullProduct?.image_url || product.image_url || '',
       imagePreview: fullProduct?.image_url || product.image_url || '',
       galleryUrls: fullProduct?.gallery_urls || [],
@@ -933,6 +923,7 @@ export default function AdminDashboardPage() {
         image_url: editProductForm.imageUrl || null,
         gallery_urls: editProductForm.galleryUrls.length > 0 ? editProductForm.galleryUrls : null,
         material: editProductForm.material || null,
+        gender: editProductForm.gender || 'unisex',
         tags: editProductForm.tags.length > 0 ? editProductForm.tags : null,
         updated_at: new Date().toISOString(),
         is_new: editProductForm.isNew,
@@ -981,15 +972,44 @@ export default function AdminDashboardPage() {
     if (!deleteConfirmProductId) return;
     setDeletingProduct(true);
     const supabase = createClient();
-    const { error } = await supabase.from('products').delete().eq('id', deleteConfirmProductId);
-    if (error) {
-      showToast('Error: ' + error.message);
-    } else {
+
+    try {
+      // 1. Tìm sản phẩm chuẩn bị xóa
+      const targetProduct = products.find((p) => p.id === deleteConfirmProductId);
+
+      // 2. Xóa ảnh trong Storage nếu có
+      if (targetProduct && targetProduct.image_url) {
+        const fileName = targetProduct.image_url.split('/product-images/')[1];
+
+        if (fileName) {
+          const { error: storageError } = await supabase.storage
+            .from('product-images')
+            .remove([fileName]);
+
+          if (storageError) {
+            console.error('Không thể xóa ảnh trong Storage:', storageError.message);
+          }
+        }
+      }
+
+      // 3. Xóa record sản phẩm trong Database
+      const { error: dbError } = await supabase
+        .from('products')
+        .delete()
+        .eq('id', deleteConfirmProductId);
+
+      if (dbError) throw dbError;
+
+      // 4. Cập nhật UI
       setProducts((prev) => prev.filter((p) => p.id !== deleteConfirmProductId));
       showToast('✅ Product deleted.');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+      showToast('Error: ' + errorMessage);
+    } finally {
+      setDeletingProduct(false);
+      setDeleteConfirmProductId(null);
     }
-    setDeletingProduct(false);
-    setDeleteConfirmProductId(null);
   };
 
   // ── Category CRUD handlers ──
@@ -1669,6 +1689,7 @@ export default function AdminDashboardPage() {
                 <p className="text-sm text-luxury-muted">
                   {productsLoading ? 'Loading...' : `${filteredProducts.length} products`}
                 </p>
+                {/* <AdminCleanupButton /> */}
                 <button
                   onClick={() => setShowAddProduct(!showAddProduct)}
                   className="flex items-center gap-2 px-4 py-2 bg-gold text-white text-xs font-semibold hover:bg-gold-light transition-colors"
@@ -1742,7 +1763,7 @@ export default function AdminDashboardPage() {
                       />
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
                     <div>
                       <label className="block text-[10px] uppercase tracking-wide font-semibold text-luxury-muted mb-1">
                         Số lượng
@@ -1766,6 +1787,20 @@ export default function AdminDashboardPage() {
                         placeholder="e.g. 18K Gold, Sterling Silver"
                         className="w-full px-3 py-2 text-sm border border-gray-200 focus:outline-none focus:border-gold transition-colors"
                       />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] uppercase tracking-wide font-semibold text-luxury-muted mb-1">
+                        Giới tính
+                      </label>
+                      <select
+                        value={newProduct.gender}
+                        onChange={(e) => setNewProduct((p) => ({ ...p, gender: e.target.value }))}
+                        className="w-full px-3 py-2 text-sm border border-gray-200 focus:outline-none focus:border-gold transition-colors bg-white"
+                      >
+                        <option value="Unisex">Unisex</option>
+                        <option value="Nữ">Nữ</option>
+                        <option value="Nam">Nam</option>
+                      </select>
                     </div>
                   </div>
 
@@ -2325,6 +2360,22 @@ export default function AdminDashboardPage() {
                             placeholder="e.g. 18K Gold, Sterling Silver"
                             className="w-full px-3 py-2 text-sm border border-gray-200 focus:outline-none focus:border-gold transition-colors"
                           />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] uppercase tracking-wide font-semibold text-luxury-muted mb-1">
+                            Giới tính
+                          </label>
+                          <select
+                            value={editProductForm.gender}
+                            onChange={(e) =>
+                              setEditProductForm((p) => ({ ...p, gender: e.target.value }))
+                            }
+                            className="w-full px-3 py-2 text-sm border border-gray-200 focus:outline-none focus:border-gold transition-colors bg-white"
+                          >
+                            <option value="Unisex">Unisex</option>
+                            <option value="Nữ">Nữ</option>
+                            <option value="Nam">Nam</option>
+                          </select>
                         </div>
                       </div>
 
@@ -3050,986 +3101,10 @@ export default function AdminDashboardPage() {
                           </label>
                         </div>
                       </div>
-
-                      {/* Category Image */}
-                      <div>
-                        <label className="block text-[10px] uppercase tracking-wide font-semibold text-luxury-muted mb-2">
-                          Category Image
-                        </label>
-                        <div className="flex items-start gap-4">
-                          <div className="w-20 h-20 flex-shrink-0 bg-luxury-warm border border-gray-200 overflow-hidden flex items-center justify-center rounded-sm">
-                            {categoryForm.imagePreview ? (
-                              <img
-                                src={categoryForm.imagePreview}
-                                alt="Category preview"
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <Icon name="PhotoIcon" size={24} className="text-gray-300" />
-                            )}
-                          </div>
-                          <div className="flex-1">
-                            <input
-                              ref={categoryImageInputRef}
-                              type="file"
-                              accept="image/jpeg,image/jpg,image/png,image/webp"
-                              onChange={handleCategoryImageChange}
-                              className="hidden"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => categoryImageInputRef.current?.click()}
-                              disabled={uploadingCategoryImage}
-                              className="flex items-center gap-2 px-4 py-2 border border-gray-200 text-charcoal-light text-xs font-semibold hover:border-gold hover:text-gold transition-colors disabled:opacity-60"
-                            >
-                              {uploadingCategoryImage ? (
-                                <>
-                                  <div className="w-3 h-3 border border-gold/30 border-t-gold rounded-full animate-spin" />
-                                  Uploading...
-                                </>
-                              ) : (
-                                <>
-                                  <Icon name="ArrowUpTrayIcon" size={14} />
-                                  {categoryForm.imagePreview ? 'Change Image' : 'Upload Image'}
-                                </>
-                              )}
-                            </button>
-                            <p className="text-[10px] text-luxury-muted mt-1.5">
-                              JPEG, PNG or WebP · Max 5MB
-                            </p>
-                            {categoryForm.imageUrl && (
-                              <p className="text-[10px] text-green-600 mt-1 flex items-center gap-1">
-                                <Icon name="CheckCircleIcon" size={11} />
-                                Image saved to storage
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Modal Footer */}
-                    <div className="flex items-center gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50/50">
-                      <button
-                        onClick={handleSaveCategory}
-                        disabled={savingCategory}
-                        className="flex items-center gap-2 px-6 py-2 bg-charcoal text-white text-xs font-semibold hover:bg-charcoal-mid transition-colors disabled:opacity-60"
-                      >
-                        {savingCategory ? (
-                          <>
-                            <div className="w-3 h-3 border border-white/30 border-t-white rounded-full animate-spin" />
-                            Saving...
-                          </>
-                        ) : (
-                          <>
-                            <Icon name="CheckIcon" size={14} />
-                            Update Category
-                          </>
-                        )}
-                      </button>
-                      <button
-                        onClick={() => {
-                          setEditingCategory(null);
-                          setShowAddCategory(false);
-                          resetCategoryForm();
-                        }}
-                        className="px-6 py-2 border border-gray-200 text-charcoal-light text-xs font-semibold hover:border-gray-300 transition-colors"
-                      >
-                        Cancel
-                      </button>
                     </div>
                   </div>
                 </div>
               )}
-
-              {/* Delete Category Confirmation Modal */}
-              {deleteConfirmCategoryId && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-                  <div className="bg-white w-full max-w-sm rounded-sm shadow-2xl">
-                    <div className="px-6 py-5 border-b border-gray-100">
-                      <h3 className="font-display font-semibold text-base text-charcoal">
-                        Delete Category
-                      </h3>
-                    </div>
-                    <div className="px-6 py-5">
-                      <div className="flex items-start gap-3">
-                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-red-50 flex items-center justify-center">
-                          <Icon name="TrashIcon" size={18} className="text-red-500" />
-                        </div>
-                        <div>
-                          <p className="text-sm text-charcoal font-medium mb-1">
-                            Delete this category?
-                          </p>
-                          <p className="text-xs text-luxury-muted">
-                            Products linked to this category will have their category set to none.
-                            This cannot be undone.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50/50">
-                      <button
-                        onClick={() => setDeleteConfirmCategoryId(null)}
-                        disabled={deletingCategory}
-                        className="px-4 py-2 text-xs font-semibold text-luxury-muted border border-gray-200 hover:bg-gray-50 transition-colors disabled:opacity-60"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        onClick={handleConfirmDeleteCategory}
-                        disabled={deletingCategory}
-                        className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold transition-colors disabled:opacity-60"
-                      >
-                        {deletingCategory ? (
-                          <div className="w-3 h-3 border border-white/30 border-t-white rounded-full animate-spin" />
-                        ) : (
-                          <Icon name="TrashIcon" size={12} />
-                        )}
-                        Delete Category
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* ── ORDERS ── */}
-          {activeSection === 'orders' && (
-            <div>
-              {/* Order stats */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                {[
-                  {
-                    label: 'Chờ xác nhận',
-                    count: orders.filter((o) => o.status === 'awaiting_confirmation').length,
-                    color: 'bg-amber-50 border-amber-200 text-amber-700',
-                  },
-                  {
-                    label: 'Đang xử lý',
-                    count: orders.filter((o) => o.status === 'pending').length,
-                    color: 'bg-blue-50 border-blue-200 text-blue-700',
-                  },
-                  {
-                    label: 'Đã thanh toán',
-                    count: orders.filter((o) => o.status === 'paid').length,
-                    color: 'bg-green-50 border-green-200 text-green-700',
-                  },
-                  {
-                    label: 'Đã huỷ',
-                    count: orders.filter((o) => o.status === 'cancelled').length,
-                    color: 'bg-red-50 border-red-200 text-red-700',
-                  },
-                ].map((stat) => (
-                  <div key={stat.label} className={`border p-4 rounded-sm ${stat.color}`}>
-                    <p className="text-2xl font-bold font-display">{stat.count}</p>
-                    <p className="text-xs font-semibold uppercase tracking-wide mt-1 opacity-70">
-                      {stat.label}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              <div className="bg-white border border-gray-100 rounded-sm overflow-hidden">
-                <div className="flex items-center justify-between px-4 md:px-6 py-4 border-b border-gray-100">
-                  <h2 className="font-semibold text-sm text-charcoal">Tất cả đơn hàng</h2>
-                  {ordersLoading && <span className="text-xs text-luxury-muted">Đang tải...</span>}
-                </div>
-
-                {/* Desktop table */}
-                <div className="hidden sm:block overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-gray-50 bg-gray-50/30">
-                        {[
-                          'Order ID',
-                          'Customer',
-                          'Phone',
-                          'Total',
-                          'Method',
-                          'Status',
-                          'Actions',
-                        ].map((h) => (
-                          <th
-                            key={h}
-                            className="text-left px-4 py-3 text-[10px] font-semibold uppercase tracking-wide text-luxury-muted whitespace-nowrap"
-                          >
-                            {h}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredOrders.map((order) => (
-                        <React.Fragment key={order.id}>
-                          <tr className="border-b border-gray-50 hover:bg-gray-50/30 transition-colors">
-                            <td className="px-4 py-4 text-[10px] font-mono text-charcoal font-semibold">
-                              {order.order_number}
-                            </td>
-                            <td className="px-4 py-4">
-                              <p className="text-xs font-semibold text-charcoal">
-                                {order.shipping_name}
-                              </p>
-                              <p className="text-[10px] text-luxury-muted">
-                                {order.shipping_phone}
-                              </p>
-                            </td>
-                            <td className="px-4 py-4 text-xs text-luxury-muted">
-                              {order.shipping_phone}
-                            </td>
-                            <td className="px-4 py-4 text-xs font-bold text-charcoal">
-                              {Number(order.total_amount).toLocaleString('vi-VN')}đ
-                            </td>
-                            <td className="px-4 py-4 text-xs text-charcoal-light">
-                              {order.payment_method === 'bank_transfer' ? (
-                                <span className="flex items-center gap-1">
-                                  <Icon
-                                    name="BuildingLibraryIcon"
-                                    size={12}
-                                    className="text-amber-600"
-                                  />
-                                  Chuyển khoản
-                                </span>
-                              ) : (
-                                <span className="flex items-center gap-1">
-                                  <Icon name="TruckIcon" size={12} className="text-blue-600" />
-                                  COD
-                                </span>
-                              )}
-                            </td>
-                            <td className="px-4 py-4">
-                              <StatusBadge status={order.status} />
-                            </td>
-                            <td className="px-4 py-4">
-                              <div className="flex items-center gap-2">
-                                <button
-                                  onClick={() => handleToggleOrderItems(order.id)}
-                                  className="flex items-center gap-1 px-2 py-1.5 border border-gray-200 text-charcoal-light text-[10px] font-semibold hover:border-gold hover:text-gold transition-colors"
-                                  title="Xem chi tiết đơn hàng"
-                                >
-                                  <Icon
-                                    name={
-                                      selectedOrderId === order.id
-                                        ? 'ChevronUpIcon'
-                                        : 'ChevronDownIcon'
-                                    }
-                                    size={11}
-                                  />
-                                  Detail
-                                </button>
-                                {order.payment_method === 'bank_transfer' &&
-                                  order.status === 'awaiting_confirmation' && (
-                                    <button
-                                      onClick={() => handleConfirmPayment(order.id)}
-                                      disabled={confirmingOrderId === order.id}
-                                      className="flex items-center gap-1 px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-[10px] font-semibold transition-colors disabled:opacity-60 whitespace-nowrap"
-                                    >
-                                      {confirmingOrderId === order.id ? (
-                                        <div className="w-3 h-3 border border-white/30 border-t-white rounded-full animate-spin" />
-                                      ) : (
-                                        <Icon name="CheckIcon" size={11} />
-                                      )}
-                                      Confirm Payment
-                                    </button>
-                                  )}
-                                {!(
-                                  order.payment_method === 'bank_transfer' &&
-                                  order.status === 'awaiting_confirmation'
-                                ) && (
-                                  <select
-                                    value={order.status}
-                                    onChange={(e) => handleUpdateStatus(order.id, e.target.value)}
-                                    className="text-[10px] border border-gray-200 px-2 py-1.5 text-charcoal focus:outline-none focus:border-gold transition-colors bg-white rounded-sm"
-                                  >
-                                    <option value="pending">Pending</option>
-                                    <option value="awaiting_confirmation">Chờ xác nhận</option>
-                                    <option value="paid">Đã thanh toán</option>
-                                    <option value="processing">Processing</option>
-                                    <option value="shipped">Shipped</option>
-                                    <option value="delivered">Delivered</option>
-                                    <option value="cancelled">Cancelled</option>
-                                  </select>
-                                )}
-                              </div>
-                            </td>
-                          </tr>
-                          {selectedOrderId === order.id && (
-                            <tr>
-                              <td colSpan={7} className="px-4 pb-4 bg-gray-50/30">
-                                <div className="pt-1 space-y-2">
-                                  {loadingItems === order.id ? (
-                                    <div className="flex items-center gap-2 text-xs text-luxury-muted py-2">
-                                      <div className="w-3 h-3 border border-gold/30 border-t-gold rounded-full animate-spin" />
-                                      Đang tải...
-                                    </div>
-                                  ) : (
-                                    <div className="grid grid-cols-2 gap-3">
-                                      <div className="bg-gray-50 border border-gray-100 rounded-sm px-3 py-2 space-y-1.5">
-                                        <p className="text-[10px] font-semibold uppercase tracking-wide text-luxury-muted">
-                                          Thông tin khách hàng
-                                        </p>
-                                        <div className="flex items-start gap-1.5">
-                                          <Icon
-                                            name="UserIcon"
-                                            size={11}
-                                            className="text-luxury-muted mt-0.5 flex-shrink-0"
-                                          />
-                                          <p className="text-[10px] text-charcoal font-semibold">
-                                            {order.shipping_name}
-                                          </p>
-                                        </div>
-                                        <div className="flex items-start gap-1.5">
-                                          <Icon
-                                            name="PhoneIcon"
-                                            size={11}
-                                            className="text-luxury-muted mt-0.5 flex-shrink-0"
-                                          />
-                                          <p className="text-[10px] text-charcoal">
-                                            {order.shipping_phone}
-                                          </p>
-                                        </div>
-                                        <div className="flex items-start gap-1.5">
-                                          <Icon
-                                            name="MapPinIcon"
-                                            size={11}
-                                            className="text-luxury-muted mt-0.5 flex-shrink-0"
-                                          />
-                                          <p className="text-[10px] text-charcoal leading-snug">
-                                            {[order.shipping_address, order.shipping_city]
-                                              .filter(Boolean)
-                                              .join(', ') || '—'}
-                                          </p>
-                                        </div>
-                                        <div className="flex items-start gap-1.5">
-                                          <p className="text-[10px] text-charcoal leading-snug">
-                                            Ghi chú: {order.notes || 'Không có ghi chú'}
-                                          </p>
-                                        </div>
-                                      </div>
-                                      <div>
-                                        {orderItems[order.id] && orderItems[order.id].length > 0 ? (
-                                          orderItems[order.id].map((item) => (
-                                            <div
-                                              key={item.id}
-                                              className="flex items-start gap-2 bg-gray-50 border border-gray-100 p-2 rounded-sm"
-                                            >
-                                              {item.product_image && (
-                                                <div className="w-8 h-10 flex-shrink-0 overflow-hidden bg-luxury-warm">
-                                                  <img
-                                                    src={item.product_image}
-                                                    alt={item.product_name}
-                                                    className="w-full h-full object-cover"
-                                                  />
-                                                </div>
-                                              )}
-                                              <div className="flex-1 min-w-0">
-                                                <p className="text-[10px] font-semibold text-charcoal leading-tight">
-                                                  {item.product_name}
-                                                </p>
-                                                <div className="flex flex-wrap gap-2 mt-0.5">
-                                                  {item.material && (
-                                                    <span className="text-[10px] text-luxury-muted">
-                                                      CL:{' '}
-                                                      <span className="text-charcoal">
-                                                        {item.material}
-                                                      </span>
-                                                    </span>
-                                                  )}
-                                                  {item.size && (
-                                                    <span className="text-[10px] text-luxury-muted">
-                                                      Size:{' '}
-                                                      <span className="text-charcoal">
-                                                        {item.size}
-                                                      </span>
-                                                    </span>
-                                                  )}
-                                                  <span className="text-[10px] text-luxury-muted">
-                                                    ×{item.quantity}
-                                                  </span>
-                                                </div>
-                                              </div>
-                                              <p className="text-[10px] font-bold text-charcoal">
-                                                {Number(item.total_price).toLocaleString('vi-VN')}đ
-                                              </p>
-                                            </div>
-                                          ))
-                                        ) : (
-                                          <p className="text-[10px] text-luxury-muted">
-                                            Không có sản phẩm.
-                                          </p>
-                                        )}
-                                      </div>
-                                    </div>
-                                  )}
-                                  <div className="pt-1">
-                                    {order.payment_method === 'bank_transfer' &&
-                                    order.status === 'awaiting_confirmation' ? (
-                                      <button
-                                        onClick={() => handleConfirmPayment(order.id)}
-                                        disabled={confirmingOrderId === order.id}
-                                        className="w-full flex items-center justify-center gap-1 px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold transition-colors disabled:opacity-60"
-                                      >
-                                        {confirmingOrderId === order.id ? (
-                                          <div className="w-3 h-3 border border-white/30 border-t-white rounded-full animate-spin" />
-                                        ) : (
-                                          <Icon name="CheckIcon" size={12} />
-                                        )}
-                                        Confirm Payment
-                                      </button>
-                                    ) : (
-                                      <select
-                                        value={order.status}
-                                        onChange={(e) =>
-                                          handleUpdateStatus(order.id, e.target.value)
-                                        }
-                                        className="w-full text-xs border border-gray-200 px-3 py-2 text-charcoal focus:outline-none focus:border-gold transition-colors bg-white rounded-sm"
-                                      >
-                                        <option value="pending">Pending</option>
-                                        <option value="awaiting_confirmation">Chờ xác nhận</option>
-                                        <option value="paid">Đã thanh toán</option>
-                                        <option value="processing">Processing</option>
-                                        <option value="shipped">Shipped</option>
-                                        <option value="delivered">Delivered</option>
-                                        <option value="cancelled">Cancelled</option>
-                                      </select>
-                                    )}
-                                  </div>
-                                </div>
-                              </td>
-                            </tr>
-                          )}
-                        </React.Fragment>
-                      ))}
-                      {!ordersLoading && filteredOrders.length === 0 && (
-                        <tr>
-                          <td
-                            colSpan={7}
-                            className="px-6 py-12 text-center text-xs text-luxury-muted"
-                          >
-                            Chưa có đơn hàng nào.
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Mobile order cards */}
-                <div className="sm:hidden divide-y divide-gray-50">
-                  {ordersLoading ? (
-                    <div className="px-4 py-8 text-center text-xs text-luxury-muted">
-                      Đang tải...
-                    </div>
-                  ) : (
-                    filteredOrders.map((order) => (
-                      <div key={order.id} className="px-4 py-4 space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-mono font-semibold text-charcoal">
-                            {order.order_number}
-                          </span>
-                          <StatusBadge status={order.status} />
-                        </div>
-                        <div>
-                          <p className="text-xs font-semibold text-charcoal">
-                            {order.shipping_name}
-                          </p>
-                          <p className="text-[10px] text-luxury-muted">
-                            {order.shipping_phone} · {order.shipping_city}
-                          </p>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-[10px] text-charcoal-light">
-                            {order.payment_method === 'bank_transfer' ? 'Chuyển khoản' : 'COD'}
-                          </span>
-                          <span className="text-xs font-bold text-charcoal">
-                            {Number(order.total_amount).toLocaleString('vi-VN')}đ
-                          </span>
-                        </div>
-                        <button
-                          onClick={() => handleToggleOrderItems(order.id)}
-                          className="w-full flex items-center justify-center gap-1 px-3 py-1.5 border border-gray-200 text-charcoal-light text-xs font-semibold transition-colors"
-                        >
-                          <Icon
-                            name={
-                              selectedOrderId === order.id ? 'ChevronUpIcon' : 'ChevronDownIcon'
-                            }
-                            size={12}
-                          />
-                          {selectedOrderId === order.id ? 'Ẩn chi tiết' : 'Detail'}
-                        </button>
-                        {selectedOrderId === order.id && (
-                          <div className="pt-1 space-y-2">
-                            {loadingItems === order.id ? (
-                              <div className="flex items-center gap-2 text-xs text-luxury-muted py-2">
-                                <div className="w-3 h-3 border border-gold/30 border-t-gold rounded-full animate-spin" />
-                                Đang tải...
-                              </div>
-                            ) : (
-                              <div className="space-y-2">
-                                <div className="bg-gray-50 border border-gray-100 rounded-sm px-3 py-2 space-y-1.5">
-                                  <p className="text-[10px] font-semibold uppercase tracking-wide text-luxury-muted">
-                                    Thông tin khách hàng
-                                  </p>
-                                  <div className="flex items-start gap-1.5">
-                                    <Icon
-                                      name="UserIcon"
-                                      size={11}
-                                      className="text-luxury-muted mt-0.5 flex-shrink-0"
-                                    />
-                                    <p className="text-[10px] text-charcoal font-semibold">
-                                      {order.shipping_name}
-                                    </p>
-                                  </div>
-                                  <div className="flex items-start gap-1.5">
-                                    <Icon
-                                      name="PhoneIcon"
-                                      size={11}
-                                      className="text-luxury-muted mt-0.5 flex-shrink-0"
-                                    />
-                                    <p className="text-[10px] text-charcoal">
-                                      {order.shipping_phone}
-                                    </p>
-                                  </div>
-                                  <div className="flex items-start gap-1.5">
-                                    <Icon
-                                      name="MapPinIcon"
-                                      size={11}
-                                      className="text-luxury-muted mt-0.5 flex-shrink-0"
-                                    />
-                                    <p className="text-[10px] text-charcoal leading-snug">
-                                      {[order.shipping_address, order.shipping_city]
-                                        .filter(Boolean)
-                                        .join(', ') || '—'}
-                                    </p>
-                                  </div>
-                                </div>
-                                {orderItems[order.id] && orderItems[order.id].length > 0 ? (
-                                  orderItems[order.id].map((item) => (
-                                    <div
-                                      key={item.id}
-                                      className="flex items-start gap-2 bg-gray-50 border border-gray-100 p-2 rounded-sm"
-                                    >
-                                      {item.product_image && (
-                                        <div className="w-8 h-10 flex-shrink-0 overflow-hidden bg-luxury-warm">
-                                          <img
-                                            src={item.product_image}
-                                            alt={item.product_name}
-                                            className="w-full h-full object-cover"
-                                          />
-                                        </div>
-                                      )}
-                                      <div className="flex-1 min-w-0">
-                                        <p className="text-[10px] font-semibold text-charcoal leading-tight">
-                                          {item.product_name}
-                                        </p>
-                                        <div className="flex flex-wrap gap-2 mt-0.5">
-                                          {item.material && (
-                                            <span className="text-[10px] text-luxury-muted">
-                                              CL:{' '}
-                                              <span className="text-charcoal">{item.material}</span>
-                                            </span>
-                                          )}
-                                          {item.size && (
-                                            <span className="text-[10px] text-luxury-muted">
-                                              Size:{' '}
-                                              <span className="text-charcoal">{item.size}</span>
-                                            </span>
-                                          )}
-                                          <span className="text-[10px] text-luxury-muted">
-                                            ×{item.quantity}
-                                          </span>
-                                        </div>
-                                      </div>
-                                      <p className="text-[10px] font-bold text-charcoal">
-                                        {Number(item.total_price).toLocaleString('vi-VN')}đ
-                                      </p>
-                                    </div>
-                                  ))
-                                ) : (
-                                  <p className="text-[10px] text-luxury-muted">
-                                    Không có sản phẩm.
-                                  </p>
-                                )}
-                              </div>
-                            )}
-                            <div className="pt-1">
-                              {order.payment_method === 'bank_transfer' &&
-                              order.status === 'awaiting_confirmation' ? (
-                                <button
-                                  onClick={() => handleConfirmPayment(order.id)}
-                                  disabled={confirmingOrderId === order.id}
-                                  className="w-full flex items-center justify-center gap-1 px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold transition-colors disabled:opacity-60"
-                                >
-                                  {confirmingOrderId === order.id ? (
-                                    <div className="w-3 h-3 border border-white/30 border-t-white rounded-full animate-spin" />
-                                  ) : (
-                                    <Icon name="CheckIcon" size={12} />
-                                  )}
-                                  Confirm Payment
-                                </button>
-                              ) : (
-                                <select
-                                  value={order.status}
-                                  onChange={(e) => handleUpdateStatus(order.id, e.target.value)}
-                                  className="w-full text-xs border border-gray-200 px-3 py-2 text-charcoal focus:outline-none focus:border-gold transition-colors bg-white rounded-sm"
-                                >
-                                  <option value="pending">Pending</option>
-                                  <option value="awaiting_confirmation">Chờ xác nhận</option>
-                                  <option value="paid">Đã thanh toán</option>
-                                  <option value="processing">Processing</option>
-                                  <option value="shipped">Shipped</option>
-                                  <option value="delivered">Delivered</option>
-                                  <option value="cancelled">Cancelled</option>
-                                </select>
-                              )}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    ))
-                  )}
-                  {!ordersLoading && filteredOrders.length === 0 && (
-                    <div className="px-4 py-8 text-center text-xs text-luxury-muted">
-                      Chưa có đơn hàng nào.
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ── ANALYTICS ── */}
-          {activeSection === 'analytics' && (
-            <div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <KPICard
-                  title="TỔNG DOANH THU (Năm nay)"
-                  value={
-                    analyticsLoading ? '...' : `${kpiData.ytdRevenue.toLocaleString('vi-VN')}đ`
-                  }
-                  change="Tính từ đầu năm"
-                  positive={true}
-                  icon="BanknotesIcon"
-                  loading={analyticsLoading}
-                />
-                <KPICard
-                  title="TỔNG ĐƠN HÀNG (Năm nay)"
-                  value={analyticsLoading ? '...' : String(kpiData.ytdOrders)}
-                  change="Tính từ đầu năm"
-                  positive={true}
-                  icon="ShoppingBagIcon"
-                  loading={analyticsLoading}
-                />
-                <KPICard
-                  title="TỔNG SẢN PHẨM"
-                  value={analyticsLoading ? '...' : String(products.length)}
-                  change={`${products.filter((p) => p.is_active).length} đang kinh doanh`}
-                  positive={true}
-                  icon="SquaresPlusIcon"
-                  loading={analyticsLoading}
-                />
-                <KPICard
-                  title="SẢN PHẨM SẮP HẾT HÀNG"
-                  value={analyticsLoading ? '...' : String(lowStockCount)}
-                  change="≤3 sản phẩm"
-                  positive={lowStockCount === 0}
-                  icon="ExclamationTriangleIcon"
-                  loading={analyticsLoading}
-                />
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <div className="bg-white border border-gray-100 p-4 md:p-6 rounded-sm">
-                  <h2 className="font-semibold text-sm text-charcoal mb-1">Doanh Thu Theo Tháng</h2>
-                  <p className="text-xs text-luxury-muted mb-6">6 tháng gần nhất</p>
-                  {analyticsLoading ? (
-                    <div className="h-[220px] flex items-center justify-center">
-                      <div className="w-6 h-6 border-2 border-gold border-t-transparent rounded-full animate-spin" />
-                    </div>
-                  ) : (
-                    <ResponsiveContainer width="100%" height={220}>
-                      <BarChart data={salesData} barSize={28}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#F0EEE8" vertical={false} />
-                        <XAxis
-                          dataKey="month"
-                          tick={{ fontSize: 11, fill: '#8A8A8A' }}
-                          axisLine={false}
-                          tickLine={false}
-                        />
-                        <YAxis
-                          tick={{ fontSize: 11, fill: '#8A8A8A' }}
-                          axisLine={false}
-                          tickLine={false}
-                          tickFormatter={(v) => `${(v / 1000000).toFixed(0)} Tr`}
-                        />
-                        <Tooltip content={<CustomTooltip />} />
-                        <Bar dataKey="revenue" fill="#D4AF37" radius={[2, 2, 0, 0]} />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  )}
-                </div>
-
-                <div className="bg-white border border-gray-100 p-4 md:p-6 rounded-sm">
-                  <h2 className="font-semibold text-sm text-charcoal mb-1">Lượng Đơn Hàng</h2>
-                  <p className="text-xs text-luxury-muted mb-6">6 tháng gần nhất</p>
-                  {analyticsLoading ? (
-                    <div className="h-[220px] flex items-center justify-center">
-                      <div className="w-6 h-6 border-2 border-gold border-t-transparent rounded-full animate-spin" />
-                    </div>
-                  ) : (
-                    <ResponsiveContainer width="100%" height={220}>
-                      <LineChart data={salesData}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#F0EEE8" />
-                        <XAxis
-                          dataKey="month"
-                          tick={{ fontSize: 11, fill: '#8A8A8A' }}
-                          axisLine={false}
-                          tickLine={false}
-                        />
-                        <YAxis
-                          tick={{ fontSize: 11, fill: '#8A8A8A' }}
-                          axisLine={false}
-                          tickLine={false}
-                        />
-                        <Tooltip content={<CustomTooltip />} />
-                        <Line
-                          type="monotone"
-                          dataKey="orders"
-                          stroke="#1A1A1A"
-                          strokeWidth={2}
-                          dot={{ fill: '#D4AF37', r: 4 }}
-                          activeDot={{ r: 6, fill: '#D4AF37' }}
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ── CUSTOMERS ── */}
-          {activeSection === 'customers' && (
-            <div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                <div className="bg-white border border-gray-100 p-5 rounded-sm">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="w-9 h-9 bg-gold/10 rounded-sm flex items-center justify-center">
-                      <Icon name="UsersIcon" size={16} className="text-gold" />
-                    </div>
-                    <p className="text-[10px] uppercase tracking-wide font-semibold text-luxury-muted">
-                      Tổng Khách Hàng
-                    </p>
-                  </div>
-                  <p className="text-2xl font-bold text-charcoal font-display">
-                    {customersLoading ? '...' : customers.length}
-                  </p>
-                </div>
-                <div className="bg-white border border-gray-100 p-5 rounded-sm">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="w-9 h-9 bg-gold/10 rounded-sm flex items-center justify-center">
-                      <Icon name="ShoppingBagIcon" size={16} className="text-gold" />
-                    </div>
-                    <p className="text-[10px] uppercase tracking-wide font-semibold text-luxury-muted">
-                      Đã Đặt Hàng
-                    </p>
-                  </div>
-                  <p className="text-2xl font-bold text-charcoal font-display">
-                    {customersLoading ? '...' : customers.filter((c) => c.orderCount > 0).length}
-                  </p>
-                </div>
-                <div className="bg-white border border-gray-100 p-5 rounded-sm">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="w-9 h-9 bg-gold/10 rounded-sm flex items-center justify-center">
-                      <Icon name="BanknotesIcon" size={16} className="text-gold" />
-                    </div>
-                    <p className="text-[10px] uppercase tracking-wide font-semibold text-luxury-muted">
-                      Tổng Chi Tiêu
-                    </p>
-                  </div>
-                  <p className="text-2xl font-bold text-charcoal font-display">
-                    {customersLoading
-                      ? '...'
-                      : `${customers.reduce((s, c) => s + c.totalSpend, 0).toLocaleString('vi-VN')}đ`}
-                  </p>
-                </div>
-              </div>
-
-              <div className="hidden sm:block bg-white border border-gray-100 rounded-sm overflow-hidden">
-                <div className="flex items-center justify-between px-4 md:px-6 py-4 border-b border-gray-100">
-                  <h2 className="font-semibold text-sm text-charcoal">
-                    {customersLoading ? 'Đang tải...' : `${filteredCustomers.length} khách hàng`}
-                  </h2>
-                </div>
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-gray-100 bg-gray-50/50">
-                        {[
-                          'Khách Hàng',
-                          'Email',
-                          'Điện Thoại',
-                          'Đơn Hàng',
-                          'Tổng Chi Tiêu',
-                          'Đơn Gần Nhất',
-                          'Ngày Đăng Ký',
-                        ].map((h) => (
-                          <th
-                            key={h}
-                            className="text-left px-4 py-3 text-[10px] font-semibold uppercase tracking-wide text-luxury-muted whitespace-nowrap"
-                          >
-                            {h}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {customersLoading ? (
-                        <tr>
-                          <td
-                            colSpan={7}
-                            className="px-4 py-10 text-center text-xs text-luxury-muted"
-                          >
-                            Đang tải khách hàng...
-                          </td>
-                        </tr>
-                      ) : filteredCustomers.length === 0 ? (
-                        <tr>
-                          <td
-                            colSpan={7}
-                            className="px-4 py-10 text-center text-xs text-luxury-muted"
-                          >
-                            Không có khách hàng.
-                          </td>
-                        </tr>
-                      ) : (
-                        filteredCustomers.map((customer) => (
-                          <tr
-                            key={customer.id}
-                            className="border-b border-gray-50 hover:bg-gray-50/30 transition-colors"
-                          >
-                            <td className="px-4 py-4">
-                              <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full bg-gold/10 flex items-center justify-center flex-shrink-0 overflow-hidden">
-                                  {customer.avatar_url ? (
-                                    <img
-                                      src={customer.avatar_url}
-                                      alt={customer.full_name}
-                                      className="w-full h-full object-cover rounded-full"
-                                    />
-                                  ) : (
-                                    <span className="text-xs font-bold text-gold">
-                                      {(customer.full_name || customer.email || '?')
-                                        .charAt(0)
-                                        .toUpperCase()}
-                                    </span>
-                                  )}
-                                </div>
-                                <p className="text-xs font-semibold text-charcoal max-w-[200px] truncate">
-                                  {customer.full_name || '—'}
-                                </p>
-                              </div>
-                            </td>
-                            <td className="px-4 py-4 text-xs text-charcoal-light max-w-[180px] truncate">
-                              {customer.email || '—'}
-                            </td>
-                            <td className="px-4 py-4 text-xs text-charcoal-light">
-                              {customer.phone || '—'}
-                            </td>
-                            <td className="px-4 py-4">
-                              <span
-                                className={`inline-flex items-center px-2 py-0.5 text-[10px] font-semibold rounded-sm border ${customer.orderCount > 0 ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-50 text-gray-500 border-gray-200'}`}
-                              >
-                                {customer.orderCount} đơn
-                              </span>
-                            </td>
-                            <td className="px-4 py-4 text-xs font-bold text-charcoal">
-                              {customer.totalSpend > 0
-                                ? `${customer.totalSpend.toLocaleString('vi-VN')}đ`
-                                : '—'}
-                            </td>
-                            <td className="px-4 py-4 text-xs text-luxury-muted">
-                              {customer.lastOrderAt
-                                ? new Date(customer.lastOrderAt).toLocaleDateString('vi-VN')
-                                : '—'}
-                            </td>
-                            <td className="px-4 py-4 text-xs text-luxury-muted">
-                              {new Date(customer.created_at).toLocaleDateString('vi-VN')}
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              <div className="sm:hidden space-y-3">
-                {customersLoading ? (
-                  <div className="py-8 text-center text-xs text-luxury-muted">
-                    Đang tải khách hàng...
-                  </div>
-                ) : filteredCustomers.length === 0 ? (
-                  <div className="py-8 text-center text-xs text-luxury-muted">
-                    Không có khách hàng.
-                  </div>
-                ) : (
-                  filteredCustomers.map((customer) => (
-                    <div
-                      key={customer.id}
-                      className="bg-white border border-gray-100 rounded-sm p-4"
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center flex-shrink-0 overflow-hidden">
-                          {customer.avatar_url ? (
-                            <img
-                              src={customer.avatar_url}
-                              alt={customer.full_name}
-                              className="w-full h-full object-cover rounded-full"
-                            />
-                          ) : (
-                            <span className="text-sm font-bold text-gold">
-                              {(customer.full_name || customer.email || '?')
-                                .charAt(0)
-                                .toUpperCase()}
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs font-semibold text-charcoal truncate">
-                            {customer.full_name || '—'}
-                          </p>
-                          <p className="text-[10px] text-luxury-muted truncate">{customer.email}</p>
-                          {customer.phone && (
-                            <p className="text-[10px] text-luxury-muted">{customer.phone}</p>
-                          )}
-                        </div>
-                        <span
-                          className={`inline-flex items-center px-2 py-0.5 text-[10px] font-semibold rounded-sm border flex-shrink-0 ${customer.orderCount > 0 ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-50 text-gray-500 border-gray-200'}`}
-                        >
-                          {customer.orderCount} đơn
-                        </span>
-                      </div>
-                      <div className="mt-3 flex items-center justify-between border-t border-gray-50 pt-2">
-                        <div>
-                          <p className="text-[10px] text-luxury-muted">Tổng chi tiêu</p>
-                          <p className="text-xs font-bold text-charcoal">
-                            {customer.totalSpend > 0
-                              ? `${customer.totalSpend.toLocaleString('vi-VN')}đ`
-                              : '—'}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-[10px] text-luxury-muted">Đăng ký</p>
-                          <p className="text-xs text-charcoal-light">
-                            {new Date(customer.created_at).toLocaleDateString('vi-VN')}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
             </div>
           )}
         </main>

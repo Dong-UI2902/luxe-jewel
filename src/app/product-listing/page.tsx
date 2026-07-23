@@ -35,12 +35,21 @@ interface Product {
 const ITEMS_PER_PAGE = 20;
 
 const metalTypes = ['Vàng 18K', 'Vàng Trắng', 'Bạc', 'Mạ Vàng 18K', 'Bạch kim'];
-const categoryTypes = ['All', 'Rings', 'Necklaces', 'Bracelets', 'Earrings', 'Gift-Boxes'];
+const categoryTypes = [
+  'All',
+  'Rings',
+  'Couple-Rings',
+  'Necklaces',
+  'Bracelets',
+  'Earrings',
+  'Gift-Boxes',
+];
 const genderTypes = ['Nam', 'Nữ', 'Unisex'];
 
 const categoryLabels: Record<string, string> = {
   All: 'Tất cả',
   Rings: 'Nhẫn',
+  'Couple-Rings': 'Nhẫn cặp',
   Necklaces: 'Dây chuyền',
   Bracelets: 'Lắc tay',
   Earrings: 'Bông tai',
@@ -50,6 +59,7 @@ const categoryLabels: Record<string, string> = {
 // ─── Category slug → DB slug mapping ─────────────────────────────────────────
 const categorySlugMap: Record<string, string> = {
   Rings: 'rings',
+  'Couple-Rings': 'couple-rings',
   Necklaces: 'necklaces',
   Bracelets: 'bracelets',
   Earrings: 'earrings',
@@ -127,6 +137,7 @@ function ProductListingContent() {
   // Derive selectedCategory directly from URL — no separate state needed
   const catMap: Record<string, string> = {
     rings: 'Rings',
+    'couple-rings': 'Couple-Rings',
     necklaces: 'Necklaces',
     bracelets: 'Bracelets',
     earrings: 'Earrings',
