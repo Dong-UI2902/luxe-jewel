@@ -1020,7 +1020,7 @@ const CategoriesSection: React.FC = () => {
         <Title>
           <span className="font-display">{t('categories.our_collections')}</span>
         </Title>
-        <div className="relative flex items-center justify-center w-40 h-4 mt-2 justify-self-center">
+        <div className="relative flex items-center justify-center w-40 h-4 mt-2 mx-auto">
           <div className="flex-1 h-[1px] bg-[gold]"></div>
 
           <div className="px-2 text-[gold]">
