@@ -104,7 +104,7 @@ const Footer: React.FC = () => {
             <div className="relative w-full aspect-[16/9] rounded-sm overflow-hidden mb-4 border border-luxury-border">
               <Link href={FACEBOOK} target="_blank">
                 <Image
-                  src="https://images.unsplash.com/photo-1631730201811-2f6451dbce8a"
+                  src="/assets/images/header-background.png"
                   alt="Banner fanpage PAJ Silver - trang sức cao cấp"
                   fill
                   className="object-cover"
