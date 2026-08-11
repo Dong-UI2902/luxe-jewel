@@ -63,7 +63,7 @@ const heroSlides = [
 const categories = [
   {
     id: 1,
-    nameKey: '',
+    nameKey: 'Combo quà tặng',
     slug: 'gift-boxes',
     image: '/assets/images/IMG_3003.jpg',
     span: 'col-span-1 row-span-2 rounded-md',
@@ -71,7 +71,7 @@ const categories = [
   },
   {
     id: 2,
-    nameKey: '',
+    nameKey: 'Dây chuyền',
     slug: 'necklaces',
     image: '/assets/images/IMG_2713.jpg',
     span: 'col-span-1 row-span-1 md:row-span-2 rounded-md',
@@ -79,7 +79,7 @@ const categories = [
   },
   {
     id: 3,
-    nameKey: '',
+    nameKey: 'Vòng tay',
     slug: 'bracelets',
     image: '/assets/images/IMG_2923.jpg',
     span: 'col-span-1 row-span-1 rounded-md',
@@ -87,7 +87,7 @@ const categories = [
   },
   {
     id: 4,
-    nameKey: '',
+    nameKey: 'Nhẫn đôi',
     slug: 'couple-rings',
     image: '/assets/images/ảnh_Viber_2026-07-06_15-26-12-247.jpg',
     span: 'col-span-2 md:col-span-1 row-span-1 rounded-md',
@@ -1057,14 +1057,14 @@ const CategoriesSection: React.FC = () => {
             {/* <div className="absolute inset-0 bg-gradient-to-t from-charcoal/60 via-charcoal/10 to-transparent transition-opacity duration-300 group-hover:from-charcoal/75" /> */}
 
             {/* Content */}
-            {/* <div className="absolute bottom-0 left-0 p-3 sm:p-5 transform translate-y-1 group-hover:translate-y-0 transition-transform duration-300">
-              <h3 className="font-display text-white text-base sm:text-xl md:text-2xl font-light mb-1">
-                {t(cat.nameKey)}
+            <div className="absolute bottom-0 left-0 p-3 sm:p-5 transform translate-y-1 group-hover:translate-y-0 transition-transform duration-300">
+              <h3 className="font-display text-white text-base sm:text-xl md:text-2xl font-light mb-1 [text-shadow:_0_2px_4px_rgba(0,0,0,0.4)]">
+                {cat.nameKey}
               </h3>
-              <p className="text-white text-xs tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-sans">
+              {/* <p className="text-white text-xs tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-sans">
                 {countsLoading ? '...' : `${categoryCounts[cat.slug] ?? 0} sản phẩm`} →
-              </p>
-            </div> */}
+              </p> */}
+            </div>
 
             {/* Gold corner accent */}
             {/* <div className="absolute top-3 right-3 w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
