@@ -1081,7 +1081,7 @@ export default function ShoppingCartCheckoutPage() {
           <div className="text-center mb-8 sm:mb-10">
             <Link href="/homepage" className="inline-flex items-center gap-2 mb-3 sm:mb-4">
               <span className="font-display text-xl sm:text-2xl font-semibold tracking-wide text-charcoal">
-                LuxeJewel
+                PAJ Silver
               </span>
             </Link>
             <h1 className="font-display text-2xl sm:text-3xl font-light text-charcoal">
