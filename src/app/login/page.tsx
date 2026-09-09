@@ -86,7 +86,7 @@ export default function LoginPage() {
           <Link href="/homepage" className="inline-flex items-center gap-3 group">
             <AppLogo size={36} />
             <span className="font-display text-2xl font-semibold tracking-[0.08em] text-luxury-white group-hover:text-gold transition-colors duration-300">
-              LuxeJewel
+              PAJ SILVER
             </span>
           </Link>
           <p className="mt-3 text-luxury-muted text-sm tracking-widest uppercase">
