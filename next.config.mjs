@@ -15,6 +15,7 @@ const nextConfig = {
 
   images: {
     remotePatterns: imageHosts,
+    unoptimized: true,
   },
 
   async redirects() {
@@ -25,6 +26,6 @@ const nextConfig = {
         permanent: false,
       },
     ];
-  }
+  },
 };
 export default nextConfig;
