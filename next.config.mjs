@@ -15,7 +15,11 @@ const nextConfig = {
 
   images: {
     remotePatterns: imageHosts,
-    unoptimized: true,
+    // unoptimized: process.env.NODE_ENV !== 'production',
+    // deviceSizes: [640, 1080, 1920],
+    // imageSizes: [16, 64, 256],
+    loader: 'custom',
+    loaderFile: './supabaseLoader.js',
   },
 
   async redirects() {
