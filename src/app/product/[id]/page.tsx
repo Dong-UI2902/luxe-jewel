@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import ProductImageModal from '@/components/ProductImageModal';
 import CartDrawer from '@/components/CartDrawer';
 import AppImage from '@/components/ui/AppImage';
 import Icon from '@/components/ui/AppIcon';
@@ -147,12 +148,9 @@ export default function ProductPage() {
   const [activeTab, setActiveTab] = useState<'description' | 'care' | 'shipping'>('description');
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
-  const [isZoomed, setIsZoomed] = useState(false);
-  const [zoomPos, setZoomPos] = useState({ x: 0, y: 0 });
-  const [isOpenMobileModal, setIsOpenMobileModal] = useState(false);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
 
   const productId = params?.id as string;
-  console.log(selectedImage);
 
   useEffect(() => {
     if (!productId) return;
@@ -225,13 +223,6 @@ export default function ProductPage() {
     router.push('/shopping-cart-checkout');
   };
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    setZoomPos({ x, y });
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-luxury-white">
@@ -259,7 +250,6 @@ export default function ProductPage() {
   const allImages = [product.image_url, ...(product.gallery_urls || [])].filter(
     Boolean
   ) as string[];
-  console.log(allImages);
 
   if (allImages.length === 0) {
     allImages.push('https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=800&q=90');
@@ -340,47 +330,36 @@ export default function ProductPage() {
                 ))}
               </div>
 
-              {/* Main image with zoom */}
+              {/* Main image opens the zoom modal */}
               <div className="flex-1 flex flex-col gap-3">
                 {/* Khung chứa ảnh lớn */}
-                <div
-                  className="relative aspect-[1/1] overflow-hidden bg-luxury-warm cursor-crosshair"
-                  onMouseMove={handleMouseMove}
-                  onMouseEnter={() => setIsZoomed(true)}
-                  onMouseLeave={() => setIsZoomed(false)}
-                  onClick={() => {
-                    if (window.innerWidth < 640) {
-                      setIsOpenMobileModal(true);
-                    }
-                  }}
-                >
-                  <AppImage
-                    src={allImages[selectedImage] || allImages[0]}
-                    alt={product.name}
-                    fill
-                    className="object-cover"
-                    priority
-                    key={allImages[selectedImage]}
-                    style={
-                      isZoomed
-                        ? {
-                            transform: 'scale(2)',
-                            transformOrigin: `${zoomPos.x}% ${zoomPos.y}%`,
-                            transition: 'transform 0.1s ease',
-                          }
-                        : { transition: 'transform 0.3s ease' }
-                    }
-                    unoptimized={true}
-                  />
+                <div className="relative aspect-[1/1] overflow-hidden bg-luxury-warm">
+                  <button
+                    type="button"
+                    aria-label="Mở ảnh sản phẩm để phóng to"
+                    onClick={() => setIsImageModalOpen(true)}
+                    className="absolute inset-0 cursor-zoom-in"
+                  >
+                    <AppImage
+                      src={allImages[selectedImage] || allImages[0]}
+                      alt={product.name}
+                      fill
+                      className="object-cover"
+                      priority
+                      key={allImages[selectedImage]}
+                      style={{ objectFit: 'contain' }}
+                      unoptimized={true}
+                    />
+                  </button>
 
                   {product.is_new && (
-                    <span className="absolute top-3 left-3 text-[10px] uppercase tracking-[0.15em] font-bold text-charcoal bg-gold px-2 py-0.5 z-10">
+                    <span className="absolute top-3 left-3 text-[10px] uppercase tracking-[0.15em] font-bold text-charcoal bg-gold px-2 py-0.5 z-10 pointer-events-none">
                       {t('product_detail.new_badge')}
                     </span>
                   )}
 
                   {discountPct && (
-                    <span className="absolute top-3 right-3 text-[10px] uppercase tracking-[0.15em] font-bold text-white bg-red-600 px-2 py-0.5 z-10">
+                    <span className="absolute top-3 right-3 text-[10px] uppercase tracking-[0.15em] font-bold text-white bg-red-600 px-2 py-0.5 z-10 pointer-events-none">
                       -{discountPct}%
                     </span>
                   )}
@@ -391,14 +370,6 @@ export default function ProductPage() {
                       onClick={(e) => {
                         e.stopPropagation();
                         setSelectedImage((selectedImage - 1 + allImages.length) % allImages.length);
-                      }}
-                      onMouseEnter={(e) => {
-                        e.stopPropagation(); // Chặn lan truyền sự kiện
-                        setIsZoomed(false); // Ép ảnh trả về kích thước bình thường
-                      }}
-                      onMouseLeave={(e) => {
-                        e.stopPropagation();
-                        setIsZoomed(true); // Khi chuột rời nút bấm và về lại vùng ảnh thì bật zoom lại
                       }}
                       className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-luxury-white/80 backdrop-blur-sm flex items-center justify-center hover:bg-luxury-white transition-colors z-10 min-w-[44px] min-h-[44px]"
                     >
@@ -411,22 +382,14 @@ export default function ProductPage() {
                         e.stopPropagation();
                         setSelectedImage((selectedImage + 1) % allImages.length);
                       }}
-                      onMouseEnter={(e) => {
-                        e.stopPropagation(); // Chặn lan truyền sự kiện
-                        setIsZoomed(false); // Ép ảnh trả về kích thước bình thường
-                      }}
-                      onMouseLeave={(e) => {
-                        e.stopPropagation();
-                        setIsZoomed(true);
-                      }}
                       className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-luxury-white/80 backdrop-blur-sm flex items-center justify-center hover:bg-luxury-white transition-colors z-10 min-w-[44px] min-h-[44px]"
                     >
                       <Icon name="ChevronRightIcon" size={14} />
                     </button>
                   </div>
 
-                  <p className="absolute bottom-3 right-3 text-[10px] text-luxury-muted bg-luxury-white/80 px-2 py-1 z-10 hidden sm:block">
-                    Hover to zoom
+                  <p className="absolute bottom-3 right-3 text-[10px] text-luxury-muted bg-luxury-white/80 px-2 py-1 z-10 pointer-events-none">
+                    Chạm vào ảnh để phóng to
                   </p>
                 </div>
 
@@ -452,82 +415,13 @@ export default function ProductPage() {
                   </div>
                 )}
 
-                {/* MOBILE MODAL TAB IMAGE */}
-                {isOpenMobileModal && (
-                  <div className="fixed inset-0 z-[100] flex flex-col items-center justify-between bg-white px-4 py-6 sm:hidden animate-fade-in">
-                    <div className="w-full flex justify-end">
-                      <button
-                        onClick={() => setIsOpenMobileModal(false)}
-                        className="p-2 text-charcoal active:opacity-50"
-                        aria-label="Đóng"
-                      >
-                        <svg
-                          width="28"
-                          height="28"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <line x1="18" y1="6" x2="6" y2="18"></line>
-                          <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                      </button>
-                    </div>
-
-                    <div className="relative flex-1 flex items-center justify-center w-full max-h-[75vh]">
-                      <AppImage
-                        key={`modal-main-img-${selectedImage}`}
-                        src={allImages[selectedImage] || allImages[0]}
-                        alt={product.name}
-                        className="max-w-full max-h-full object-contain select-none"
-                        unoptimized={true}
-                      />
-                    </div>
-
-                    <div className="w-full flex justify-center gap-20 pb-4">
-                      <button
-                        onClick={() =>
-                          setSelectedImage(
-                            (selectedImage - 1 + allImages.length) % allImages.length
-                          )
-                        }
-                        className="p-3 text-charcoal active:opacity-40"
-                      >
-                        <svg
-                          width="32"
-                          height="32"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <polyline points="15 18 9 12 15 6" />
-                        </svg>
-                      </button>
-                      <button
-                        onClick={() => setSelectedImage((selectedImage + 1) % allImages.length)}
-                        className="p-3 text-charcoal active:opacity-40"
-                      >
-                        <svg
-                          width="32"
-                          height="32"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <polyline points="9 18 15 12 9 6" />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
+                {isImageModalOpen && (
+                  <ProductImageModal
+                    images={allImages}
+                    initialIndex={selectedImage}
+                    name={product.name}
+                    onClose={() => setIsImageModalOpen(false)}
+                  />
                 )}
               </div>
             </div>
